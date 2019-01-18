@@ -5,7 +5,10 @@ from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
 from rakan cimport Precinct as cPrecinct
+from rakan cimport District as cDistrict
 from rakan cimport Rakan as cRakan
+
+
 
 cdef class PyPrecinct:
 
@@ -61,6 +64,45 @@ cdef class PyPrecinct:
         (<PyPrecinct>py_obj).__cprecinct = cprecinct
         return py_obj
 
+		
+		
+cdef class PyDistrict:
+
+    cdef cDistrict __cdistrict
+
+    def __cinit__(self):
+        self.__cdistrict = cDistrict()
+
+    #def __dealloc__(self):
+    #    del self.__cprecinct
+
+    #def __str__(self):
+    #    return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
+
+    @property
+    def area(self):
+        return self.__cdistrict.area
+
+    @property
+    def democrat_votes(self):
+        return self.__cdistrict.democrat_votes
+
+    @property
+    def republican_votes(self):
+        return self.__cdistrict.republican_votes
+
+    @property
+    def other_votes(self):
+        return self.__cdistrict.other_votes
+
+    @staticmethod
+    cdef factory(cDistrict cdistrict):
+        py_obj = PyDistrict.__new__(PyDistrict)
+        (<PyDistrict>py_obj).__cdistrict = cdistrict
+        return py_obj
+		
+		
+
 cdef class PyRakan:
 
     cdef cRakan __crakan
@@ -89,6 +131,12 @@ cdef class PyRakan:
         c_precincts = self.__crakan.atlas()
         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
         return py_precincts
+		
+    @property
+    def districts(self) -> list:
+        c_districts = self.__crakan.districts()
+        py_districts = [PyDistrict.factory(dereference(_)) for _ in c_districts]
+        return py_districts
 
     @property
     def edges(self) -> list:

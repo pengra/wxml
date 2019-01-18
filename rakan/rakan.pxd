@@ -29,12 +29,23 @@ cdef extern from "graph.h" namespace "rakan":
         int other_votes
         clist[Precinct*] neighbors
         
+    cdef cppclass District:
+        int rid
+        int district
+        int population
+        int area
+        int democrat_votes
+        int republican_votes
+        int other_votes
+        District() except +
+        clist[Precinct*] precincts
+		
     cdef cppclass Rakan:
         Rakan() except +
         Rakan(int size, int district) except +
 
         # == API for debugging in python ==
-        cvector[clist[int]] districts()
+        cvector[District*] districts()
         cvector[Precinct*] atlas()
         DynamicBoundary edges()
 

@@ -27,18 +27,22 @@ namespace rakan {
     };
 
 	struct District{
-		int population; // population of this district
-        int area; // geographic area
-        int democrat_votes; // democratic votes
-        int republican_votes; // republican votes
-        int other_votes; // other votes
+	public:
+		int population;
+		int area;
+		int democrat_votes;
+		int republican_votes;
+		int other_votes;
 		
-		std::list<int> precincts
-	}
+		std::list<int> precincts;
+		District();
+		
+	};
 	
-    typedef std::vector<Precinct*> Atlas;
-    typedef std::vector<> Districts;
-
+    
+    typedef std::vector<District*> Districts;
+	typedef std::vector<Precinct*> Atlas;
+	
     // To be wrapped in a Python API for mathematicians who know what they're doing.
     // I'm just a software engineer.
     class Rakan {

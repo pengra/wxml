@@ -8,6 +8,9 @@ namespace rakan {
     Precinct::Precinct(int rid, int district, std::list<Precinct*> neighbors)
         : rid(rid), district(district), neighbors(neighbors) { };
     
+	District::District()
+		: population(0), area(0), democrat_votes(0), republican_votes(0), other_votes(0) { };
+	
     Rakan::Rakan() {
         this->_atlas = Atlas();
         this->_edges = DynamicBoundary();
@@ -20,6 +23,9 @@ namespace rakan {
         this->_atlas.reserve(size);
         this->_edges = DynamicBoundary(size);
         this->_districts = Districts(districts);
+		for (int i=0; i<districts; i++){
+			this->_districts[i] = new District;
+		}
     };
 
     // == API FOR DEBUGGING IN PYTHON ==
@@ -50,7 +56,12 @@ namespace rakan {
         this->_edges.add_node(new_rid);
         
         // update district table
-        this->_districts[district].push_back(new_rid);
+        this->_districts[district]->precincts.push_back(new_rid);
+		this->_districts[district]->population += this->_atlas[new_rid]->population;
+		this->_districts[district]->area += this->_atlas[new_rid]->area;
+		this->_districts[district]->republican_votes += this->_atlas[new_rid]->republican_votes;
+		this->_districts[district]->democrat_votes += this->_atlas[new_rid]->democrat_votes;
+		this->_districts[district]->population += this->_atlas[new_rid]->other_votes;
 
         // add to unchecked changes
         this->_unchecked_changes.push_back(new_rid);
@@ -348,8 +359,23 @@ namespace rakan {
     }
 
     // update district map
-    void Rakan::_update_districts(int rid, int district) {
-        this->_districts[this->_atlas[rid]->district].remove(rid);
-        this->_districts[district].push_back(rid);
+	void Rakan::_update_districts(int rid, int district) {
+		this->_districts[this->_atlas[rid]->district]->population -= this->_atlas[rid]->population;
+		this->_districts[district]->population += this->_atlas[rid]->population;
+		
+		this->_districts[this->_atlas[rid]->district]->area -= this->_atlas[rid]->area;
+		this->_districts[district]->area += this->_atlas[rid]->area;
+		
+		this->_districts[this->_atlas[rid]->district]->republican_votes -= this->_atlas[rid]->republican_votes;
+		this->_districts[district]->republican_votes += this->_atlas[rid]->republican_votes;
+		
+		this->_districts[this->_atlas[rid]->district]->democrat_votes -= this->_atlas[rid]->democrat_votes;
+		this->_districts[district]->democrat_votes += this->_atlas[rid]->democrat_votes;
+
+		this->_districts[this->_atlas[rid]->district]->other_votes -= this->_atlas[rid]->other_votes;
+		this->_districts[district]->other_votes += this->_atlas[rid]->other_votes;
+		
+        this->_districts[this->_atlas[rid]->district]->precincts.remove(rid);
+        this->_districts[district]->precincts.push_back(rid);
     }
 }
