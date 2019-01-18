@@ -95,10 +95,17 @@ if __name__ == "__main__":
     rakan = build_rakan(nx_path)
     graph = networkx.read_gpickle(nx_path)
     rakan.is_valid()
+    print("<Enter> to step, 'pdb' to debug, 'q' to quit, <n> to walk n times.")
     while True:
-        response = input("<Enter> to step, 'pdb' to debug, 'q' to quit.")
-        if response == 'pdb': import pdb; pdb.set_trace()
-        if response == 'q': break
-        rakan.step()
+        response = input()
+        if response == 'pdb': 
+            import pdb; pdb.set_trace()
+        elif response == 'q': 
+            break
+        elif response.isnumeric():
+            for _ in range(int(response)):
+                rakan.step()
+        else:
+            rakan.step()
 
     print("Run complete.")
