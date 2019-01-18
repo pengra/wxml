@@ -40,6 +40,9 @@ namespace rakan {
 
     // add a precinct with specified district
     int Rakan::add_precinct(int district, int population) {
+        if (district >= (int)this->_districts.size())
+            throw std::invalid_argument("District is invalid");
+
         int new_rid = this->_atlas.size();
 
         // update atlas
@@ -128,8 +131,9 @@ namespace rakan {
         std::cout << "done. ";
 
         // track all possible paths
-        std::cout << "building pool .. ";
-        std::vector<bool> pool = std::vector<bool>(this->_atlas.size());
+        std::cout << "building pool + seen .. ";
+        std::vector<bool> pool1 = std::vector<bool>(this->_atlas.size()); // items cursor1 has traversed
+        std::vector<bool> pool2 = std::vector<bool>(this->_atlas.size()); // items cursor2 has traversed
         std::cout << "done. " << std::endl;
 
         // set up both queues
@@ -137,64 +141,87 @@ namespace rakan {
         std::cout << rid1;
         std::cout << " " << rid2;
         std::cout << std::endl;
-        std::list<int> rid1queue = std::list<int>();
-        std::list<int> rid2queue = std::list<int>();
+        std::list<int> rid1queue = std::list<int> { rid1 };
+        std::list<int> rid2queue = std::list<int> { rid2 };
         std::cout << " .. queues built ..";
-        rid1queue.push_back(rid1);
-        rid2queue.push_back(rid2);
 
         std::cout << " launch cursors ";
 
         int cursor1, cursor2;
 
         std::cout << " .. running: ";
-        while (!rid1queue.empty() || !rid2queue.empty()) {
-            std::cout << "|";
+        
+        int auto_kill = 100;
+
+        while ((!rid1queue.empty() || !rid2queue.empty()) && auto_kill-- > 0) {
+            std::cout << " .. looping .. ";
             
             if (!rid1queue.empty()) {
                 cursor1 = rid1queue.front();
+                std::cout << " .. rid1queue pop : " << cursor1 << " .. ";
                 rid1queue.pop_front();
-            } else {
-                // If queue is empty, set to black_listed_rid to ignore it
-                cursor1 = black_listed_rid;
+
+                if (cursor1 == black_listed_rid) {
+                    std::cout << " .. is blacklisted ..";
+                    continue;
+                }
+                    
+
+                if (pool2[cursor1]) {
+                    std::cout << " .. connected returning true ..";
+                    connected = true;
+                    break;
+                }
+
+                std::cout << " .. marking pool1 [" << cursor1 << "] = true ..";
+                
+                pool1[cursor1] = true;
+
+                std::cout << " .. populating queue1 with .. ";
+
+                for (Precinct * neighbor : this->_atlas[cursor1]->neighbors) {
+                    if (neighbor->district == district && std::find(rid1queue.begin(), rid1queue.end(), neighbor->rid) == rid1queue.end()) {
+                        std::cout << neighbor->rid << " .. ";
+                        rid1queue.push_back(neighbor->rid);
+                    }
+                }
+
             }
 
             if (!rid2queue.empty()) {
                 cursor2 = rid2queue.front();
+                std::cout << " .. rid2queue pop : " << cursor2 << " .. ";
                 rid2queue.pop_front();
-            } else {
-                // If queue is empty, same thing
-                cursor2 = black_listed_rid;
-            }
-            
 
-            if (cursor1 != black_listed_rid) {
-                if (pool[cursor1]) {
+                if (cursor2 == black_listed_rid) {
+                    std::cout << " .. is blacklisted ..";
+                    continue;
+                }
+
+                if (pool1[cursor2]) {
+                    std::cout << " .. connected returning true ..";
                     connected = true;
                     break;
                 }
-                pool[cursor1] = true;
 
-                for (Precinct * neighbor : this->_atlas[cursor1]->neighbors) {
-                    if (neighbor->district == district)
-                        rid1queue.push_back(neighbor->rid);
-                }
-            }
+                std::cout << " .. marking pool2 [" << cursor2 << "] = true ..";
+                pool2[cursor2] = true;
 
-            if (cursor2 != black_listed_rid) {
-                if (pool[cursor2]) {
-                    connected = true;
-                    break;
-                }
-                pool[cursor2] = true;
+                std::cout << " .. populating queue2 with .. ";
 
                 for (Precinct * neighbor : this->_atlas[cursor2]->neighbors) {
-                    if (neighbor->district == district)
+                    if (neighbor->district == district && std::find(rid2queue.begin(), rid2queue.end(), neighbor->rid) == rid2queue.end()) {
+                        std::cout << neighbor->rid << " .. ";
                         rid2queue.push_back(neighbor->rid);
+                    }
                 }
             }
         }
-        std::cout << "Returning " << connected << std::endl;
+        if (connected)
+            std::cout << "Precincts are connected " << connected << std::endl;
+        else
+            std::cout << "Precincts are NOT connected " << connected << std::endl;
+
         
         return connected;
     }
@@ -212,7 +239,7 @@ namespace rakan {
     // and the second integer is the district number to convert it to.
     std::pair<int, int> Rakan::propose_random_move() {
         std::cout << "Proposing Move ... " << std::endl;
-        std::cout << "Sanity check: " << &this->_edges << std::endl;
+        std::cout << "Sanity check: " << &this->_edges;
         //try {
         std::pair<int, int> random_rids = this->_edges.get_random_district_edge();
         std::cout << "Retrieved Random move: " << random_rids.first << " and " << random_rids.second << std::endl;
@@ -227,14 +254,24 @@ namespace rakan {
     // if the move is illegal, exceptions will be thrown
     void Rakan::move_precinct(int rid, int district) {
         std::cout << "Moving " << rid << " to district #" << district << std::endl;
-        if (!this->is_valid())
+        if (rid < 0 || rid >= (int)this->_atlas.size()) {
+            throw std::invalid_argument("Illegal Move (Reason: No such rid)");
+        }
+        if (district < 0 || district >= (int)this->_districts.size()) {
+            throw std::invalid_argument("Invalid Move (Reason: No such district)");
+        }
+        if (!this->is_valid()) {
             throw std::logic_error("Cannot make move when graph is invalid");
+        }
         std::cout << "is_valid passed ... ";
-        if (!this->_is_legal_new_district(rid, district))
+        if (!this->_is_legal_new_district(rid, district)) {
             throw std::invalid_argument("Illegal Move (Reason: No neighbors have this district)");
+        }
         std::cout << "is_legal_new_district passed ... ";
-        if (this->_severs_neighbors(rid))
+        if (this->_severs_neighbors(rid)) {
             throw std::invalid_argument("Illegal Move (Reason: Severs the neighboring district(s))");
+        }
+            
         std::cout << "severs_neighbors passed" << std::endl;
         
         // update this->_districts
@@ -248,7 +285,7 @@ namespace rakan {
         std::cout << "updating district boundaries..." << std::endl;
 
         // update atlas
-        // this->_update_atlas(rid, district);
+        this->_update_atlas(rid, district);
 
         std::cout << "updating atlas..." << std::endl;
 

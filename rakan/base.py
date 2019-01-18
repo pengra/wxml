@@ -25,9 +25,18 @@ class BaseRakanWithServer(BaseRakan):
     Rakan with a websocket for communication with Xayah.
     """
     ws_port = 3001 # websocket port
-    update_speed = 100000 # number of seconds of how often rakan sends xayah an update
+    update_speed = 1 # number of seconds of how often rakan sends xayah an update
     iterations = 0 # iterations rakan has gone through
+    _move_history = []
+    nx_graph = None
 
+    @property
+    def move_history(self):
+        return self._move_history
+
+    def record_move(self, rid, district):
+        self._move_history.append((rid, district))
+    
     def __init__(self, *args, **kwargs):
         print("Rakan running with websocket server!")
         super().__init__(*args, **kwargs)
@@ -50,31 +59,20 @@ class BaseRakanWithServer(BaseRakan):
 
     def send_seed(self, websocket, path):
         print("New Xayah Client!")
-        for precinct in self.precincts:
-            yield from websocket.send(
-                json.dumps({
-                    "precinct_vertexes": [v[0] for k, v in self._vertexes.items()],
-                    "precint_districts": [_.district for _ in self.precincts],
-                    "iterations": self.iterations,
-                })
-            )
+        yield from websocket.send(json.dumps({
+            "precinct_vertexes": [v[0] for k, v in self._vertexes.items()],
+            "precinct_districts": [_.district for _ in self.precincts],
+            "edges": [_ for _ in self.nx_graph.edges] if self.nx_graph else [],
+            "iterations": self.iterations,
+        }))
         while True:
+            # Send Xayah move history and clear it.
             yield from websocket.send(json.dumps({
-
+                'update': self._move_history,
+                'iterations': self.iterations,
             }))
+            self._move_history = []
             time.sleep(self.update_speed)
-
-    # When connected, send xayah update every n seconds
-    @asyncio.coroutine
-    def send_move(self, websocket, path):
-        while True:
-            yield from websocket.send(json.dumps({
-                "1": 3,
-                "3": 1,
-            }))
-            time.sleep(self.update_speed)
-        print("> Updating Xayah")
-
 
     # Scold the user for not implementing anything
     def step(self, *args, **kwargs):

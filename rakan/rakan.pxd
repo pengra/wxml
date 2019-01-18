@@ -1,5 +1,3 @@
-# language_level: 3
-
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
 from libcpp cimport bool as cbool
@@ -15,7 +13,7 @@ cdef extern from "dynamicboundary.h" namespace "rakan":
     # DO NOT USE UNLESS IF YOU KNOW WHAT YOU'RE DOING
     cdef cppclass DynamicBoundary: 
         cvector[cpair[clist[int], clist[int]]] _tree
-        cpair[int, int] get_district_edge(int index) except +
+        cpair[int, int] get_district_edge(int index) except +;
         int _d_edges;
         int _s_edges;
         int _nodes;
