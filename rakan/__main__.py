@@ -29,7 +29,7 @@ class Rakan(BaseRakanWithServer):
         except ValueError:
             # Sometimes the proposed move severs the district
             # Just ignore it
-            pass
+            self.step()
 
         
 
@@ -91,6 +91,7 @@ if __name__ == "__main__":
     # nx_path = "rakan/test.dnx"
     rakan = build_rakan(nx_path)
     graph = networkx.read_gpickle(nx_path)
+    rakan.is_valid()
     while True:
         if input() == 'pdb': import pdb; pdb.set_trace()
         rakan.step()

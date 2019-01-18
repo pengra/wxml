@@ -25,9 +25,10 @@ class BaseRakanWithServer(BaseRakan):
     Rakan with a websocket for communication with Xayah.
     """
     ws_port = 3001 # websocket port
-    update_speed = 1 # number of seconds of how often rakan sends xayah an update
+    update_speed = 2 # number of seconds of how often rakan sends xayah an update
     iterations = 0 # iterations rakan has gone through
     _move_history = []
+    _thread_lock = False
     nx_graph = None
 
     @property
@@ -35,7 +36,12 @@ class BaseRakanWithServer(BaseRakan):
         return self._move_history
 
     def record_move(self, rid, district):
-        self._move_history.append((rid, district))
+        while True:
+            if not self._thread_lock:
+                self._thread_lock = True
+                self._move_history.append((rid, district))
+                self._thread_lock = False
+                return
     
     def __init__(self, *args, **kwargs):
         print("Rakan running with websocket server!")
@@ -67,12 +73,15 @@ class BaseRakanWithServer(BaseRakan):
         }))
         while True:
             # Send Xayah move history and clear it.
-            yield from websocket.send(json.dumps({
-                'update': self._move_history,
-                'iterations': self.iterations,
-            }))
-            self._move_history = []
-            time.sleep(self.update_speed)
+            if not self._thread_lock:
+                self._thread_lock = True
+                yield from websocket.send(json.dumps({
+                    'update': self._move_history,
+                    'iterations': self.iterations,
+                }))
+                self._move_history = []
+                self._thread_lock = False
+                time.sleep(self.update_speed)
 
     # Scold the user for not implementing anything
     def step(self, *args, **kwargs):
