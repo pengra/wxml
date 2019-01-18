@@ -2,7 +2,6 @@
 
 
 // Simple dynamic boundary via just marking edges
-// Will not be wrapped in Python.
 
 namespace rakan {
     
@@ -11,18 +10,16 @@ namespace rakan {
         this->_tree = false_tree(size);
     }
 
-    // Build a false tree
+    // Build a false tree with default size
+    // Javastyle'd defaults because I'm bad at coding
     DynamicBoundary::DynamicBoundary() {
         this->_tree = false_tree();
     }
 
-
-    // add a node to the tree (no edges)
+    // add a node to the tree (no edges are added in this step)
     void DynamicBoundary::add_node(int rid) {
         // In python:
-        // self._tree[rid] = [[], []]
-        // The first list is the different district precinct neighbors
-        // The second list is the same district precinct neighbors
+        // self._tree[rid] = [[diff district neighbors], [same district neighbors]]
         this->_tree[rid] = false_node();
         this->_nodes++;
     }
@@ -44,28 +41,50 @@ namespace rakan {
 
     // return a pair of rids of two neighboring precincts that are
     // are in two different districts
-    //std::pair<int, int> DynamicBoundary::get_random_district_edge() {
     std::pair<int, int> DynamicBoundary::get_random_district_edge() {
-        std::cout << " -> Generating random number ... " << this->_d_edges;
-        if (this->_d_edges <= 0)
+        // In C++ 0%0 does not throw an exception, need to check ahead of time
+        if (this->_d_edges <= 0) {
             throw std::logic_error("No district edges to select from");
-        std::pair<int, int> x = this->get_district_edge(rand() % this->_d_edges);
-        std::cout << "proposed move: " << x.first << " " << x.second << std::endl;
-        return x;
+        }
+        // Grab a random edge, where each edge has equal probability of being
+        // selected.
+        return this->get_district_edge(rand() % this->_d_edges);
     }
 
-    // return the nth edge of this tree
+    // return the nth different district edge of this tree
     std::pair<int, int> DynamicBoundary::get_district_edge(int index) {
-        std::cout << " getting edge " << index << " ... ";
-        if (index >= this->_d_edges || index < 0)
+        // If the overall structure is [([0,1], [2,3]), ([4,5,6], [7])]
+        // Then _d_edges will be 5 and the return values are as follows:
+        // get_district_edge(0) -> 0
+        // get_district_edge(1) -> 1
+        // get_district_edge(2) -> 4
+        // get_district_edge(3) -> 5
+        // get_district_edge(4) -> 6
+        // get_district_edge(5) -> out_of_range exception
+
+        if (index >= this->_d_edges || index < 0) {
             throw std::out_of_range("invalid index: " + std::to_string(index));
+        }
+
+        // Overall logic: iterate through the pairs
+        // get the length of the first item in the pairs
+        // decrement index by that length
+        // Repeat until the length > index and return the index
+        // of the first item of that pair.
+        
         int rid = 0;
         while (index >= (int)this->_tree[rid].first.size()) {
+            // decrement index
             index -= this->_tree[rid].first.size();
+            // increment rid
             rid++;
         }
+
+        // We've reached a list n where the length of n > index
         std::list<int>::iterator it = this->_tree[rid].first.begin();
+        // Advance index units in the list
         std::advance(it, index);
+        // return (rid, item at index)
         return std::pair<int, int>(rid, *it);
     }
 
@@ -73,24 +92,25 @@ namespace rakan {
     // If the two two nodes are marked as different-district precincts, they're marked as same-district precincts after this operation
     // Similarly, two nodes are marked as different-district precincts if they were originally different-district precincts.
     void DynamicBoundary::toggle_edge(int rid1, int rid2) {
-        std::cout << "Toggling edge between " << rid1 << " & " << rid2 << std::endl;
+        // Must use pointers because otherwise you're not modifying the right thing.
         false_node * node = &this->_tree[rid1];
         false_node * node2 = &this->_tree[rid2];
 
-        // is rid2 in rid1's different district neighbor list?
+        // both are iterators        
         auto node_first_pos = std::find(node->first.begin(), node->first.end(), rid2);
         auto node_second_pos = std::find(node->second.begin(), node->second.end(), rid2);
+
         if (node_first_pos != node->first.end()) {
-            std::cout << "Discovered in first list" << std::endl;
+            // is rid2 in rid1's different district neighbor list? yes.
             node->first.erase(node_first_pos);
             node->second.push_back(rid2);
             node2->first.remove(rid1);
             node2->second.push_back(rid1);
             this->_d_edges -= 2;
             this->_s_edges += 2;
-        // is rid2 in rid1's same district neighbor list?
+        
         } else if (node_second_pos != node->second.end()) {
-            std::cout << "Discovered in second list" << std::endl;
+            // is rid2 in rid1's same district neighbor list? yes.
             node->second.erase(node_second_pos);
             node->first.push_back(rid2);
             node2->second.remove(rid1);
@@ -105,11 +125,14 @@ namespace rakan {
 
     // returns the number of edges
     int DynamicBoundary::edge_count() {
+        // syntatic sugar for adding up the edges
         return this->_d_edges + this->_s_edges;
     }
 
     // returns the number of nodes
     int DynamicBoundary::node_count() {
+        // syntatic sugar for counting nodes
+        // kinda pointless because they're public anyways.
         return this->_nodes;
     }
 }

@@ -76,6 +76,9 @@ cdef class PyRakan:
 
     # == API for debugging in python ==
 
+    def __str__(self) -> str:
+        return "<Rakan nodes={} @ {}>".format(self.__len__(), id(self))
+
     def __len__(self) -> int:
         return self.__crakan.atlas().size()
 

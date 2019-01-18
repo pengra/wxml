@@ -15,22 +15,21 @@ class Rakan(BaseRakanWithServer):
     Arguments are completely arbritary and can be rewritten by the user.
     """
     def step(self, max_value=1, *more_positional_stuff, **wow_we_got_key_words_up_here):
-        print("===================================")
-        # Rakan is able to propose a random move in O(k)
+        print("|", end="")
         precinct, district = self.propose_random_move()
         # Completely random
-        # if random.randint(0, max_value) == 1:
         
         try:
+            # Sometimes propose_random_move severs districts, and move_precinct will catch that.
             self.move_precinct(precinct, district)
+            # For Xayah, record the move.
             if hasattr(self, "record_move"):
                 self.record_move(precinct, district)
             self.iterations += 1
         except ValueError:
             # Sometimes the proposed move severs the district
-            # Just ignore it
+            # Just try again
             self.step()
-
         
 
     """
@@ -48,13 +47,17 @@ class Rakan(BaseRakanWithServer):
         for i in range(100):
             self.step(max_value=2)
 
+
+"""
+Example code to build a Rakan instance.
+Read a networkx graph and sends it off to Xayah upon its connection.
+"""
 def build_rakan(nx_path):
-    """
-    Example code to build a Rakan instance
-    """
     graph = networkx.read_gpickle(nx_path)
+    print("=" * 80)
     print("Properties:", graph.graph)
     print("Adjust the Graph as you see fit. Results will be saved. Type 'c' to continue or'exit' to cancel.")
+    print("=" * 80)
     import pdb; pdb.set_trace()
     networkx.write_gpickle(graph, nx_path)
 
@@ -93,6 +96,9 @@ if __name__ == "__main__":
     graph = networkx.read_gpickle(nx_path)
     rakan.is_valid()
     while True:
-        if input() == 'pdb': import pdb; pdb.set_trace()
+        response = input("<Enter> to step, 'pdb' to debug, 'q' to quit.")
+        if response == 'pdb': import pdb; pdb.set_trace()
+        if response == 'q': break
         rakan.step()
+
     print("Run complete.")

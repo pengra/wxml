@@ -81,19 +81,12 @@ namespace rakan {
         int other_seats();
         int other_setas(int rid, int district);
 
-        /* MORE APIS TO ADD OVER TIME
-            Grunularity (bulk move precincts)
-            Statistical tests
-            Profiler
-            Multi-threading
-        */
-
-
         // internal methods
         std::set<std::pair<int, int>> _checks_required(int rid); // a set of paris that need to be checked that require are_connected checks
         bool _is_valid();
         bool _is_legal_new_district(int rid, int district); // is it legal to attain this new district?
         bool _severs_neighbors(int rid); // check all the neighbors are still conected one way or another
+        bool _destroys_district(int rid); // check that a district isn't being removed from the map.
         void _update_district_boundary(int rid, int district); // update the dynamic boundary
         void _update_atlas(int rid, int district); // update the atlas
         void _update_districts(int rid, int district); // update district map

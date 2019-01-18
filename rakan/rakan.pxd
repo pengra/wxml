@@ -48,9 +48,9 @@ cdef extern from "graph.h" namespace "rakan":
         Rakan(int size, int district) except +
 
         # == API for debugging in python ==
-        cvector[clist[int]] districts()
-        cvector[Precinct*] atlas()
-        DynamicBoundary edges()
+        cvector[clist[int]] districts() except +;
+        cvector[Precinct*] atlas() except +;
+        DynamicBoundary edges() except +;
 
         # == API for myself ==
         clist[int] _unchecked_changes

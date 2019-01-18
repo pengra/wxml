@@ -1,14 +1,22 @@
 #include "graph.h"
 #include <stdio.h>
 
+// Some syntatic that should be defined in production.h/development.h but stored here because I'm assuming we're always in development
+#define ATLAS_RID_CHECK(RID) if (RID > (int)this->_atlas.size() || RID < 0) { throw std::invalid_argument("Invalid RID: " + std::to_string(RID)); }
+#define DISTRICT_CHECK(DISTRICT) if (district >= (int)this->_districts.size() || district < 0) { throw std::invalid_argument("Invalid District" + std::to_string(DISTRICT)); }
+
 namespace rakan {
-    // Simple Precinct Class. Not declared as a struct for potential expansions.
+    // Simple Precinct Struct Constructors.
     Precinct::Precinct(int rid, int district) 
         : rid(rid), district(district) { };
     Precinct::Precinct(int rid, int district, std::list<Precinct*> neighbors)
         : rid(rid), district(district), neighbors(neighbors) { };
     
     Rakan::Rakan() {
+        // Data Structures:
+        // Atlas is a vector of pointers to precincts
+        // edges is the dynamicboundary object instance
+        // districts is a vector of lists of integers
         this->_atlas = Atlas();
         this->_edges = DynamicBoundary();
         this->_districts = Districts();
@@ -16,6 +24,8 @@ namespace rakan {
 
     // Rakan Class.
     Rakan::Rakan(int size, int districts) {
+        // Vectors take size parameters.
+        // same exact data structures
         this->_atlas = Atlas();
         this->_atlas.reserve(size);
         this->_edges = DynamicBoundary(size);
@@ -39,15 +49,20 @@ namespace rakan {
     // == API FOR CONSTRUCTION ==
 
     // add a precinct with specified district
+    // Each precinct is assigned an rid that will be used to reference
+    // that precinct from now on. rids start at 0 and increment by one.
+    // the return value of this method is the rid.
     int Rakan::add_precinct(int district, int population) {
-        if (district >= (int)this->_districts.size())
-            throw std::invalid_argument("District is invalid");
+        DISTRICT_CHECK(district);
+        if (population < 0) {
+            throw std::invalid_argument("Population is negative");
+        }
 
         int new_rid = this->_atlas.size();
 
         // update atlas
         this->_atlas.push_back(new Precinct(new_rid, district));
-        this->_atlas[new_rid]->population = population;
+        this->_atlas[new_rid]->population = population; // Not defined in constructor because there could be more attributes.
 
         // update dynamic boundary
         this->_edges.add_node(new_rid);
@@ -62,26 +77,33 @@ namespace rakan {
     }
 
     Rakan::~Rakan() {
-        for (Precinct * a : this->_atlas) {
-            delete a;
+        // destructor for the atlas
+        for (Precinct * precinct : this->_atlas) {
+            delete precinct;
         }
     }
 
     // set two precincts to be neighbors. Requires precincts to have been added to district.
+    // Note that it's not possible at this time to remove neighbors once they've been set.
     void Rakan::set_neighbors(int rid1, int rid2) {
-        // get precincts
+        // get precincts in question
+        ATLAS_RID_CHECK(rid1);
+        ATLAS_RID_CHECK(rid2);
+
         Precinct * precinct1 = this->_atlas[rid1];
         Precinct * precinct2 = this->_atlas[rid2];
 
-        // update atlas
+        // update atlas's neighbors property
         precinct1->neighbors.push_back(precinct2);
         precinct2->neighbors.push_back(precinct1);
 
-        // update dynamic boundary
+        // update dynamic boundary, notes if the precincts are in the same district or not.
         this->_edges.add_edge(rid1, rid2, precinct1->district != precinct2->district);
 
-        // add to _unchecked_changes. Only need to be done once.
-        this->_unchecked_changes.push_back(rid1);
+        // add to _unchecked_changes. Only need to be done once. So check real quick.
+        if (std::find(this->_unchecked_changes.begin(), this->_unchecked_changes.end(), rid1) == this->_unchecked_changes.end()) {
+            this->_unchecked_changes.push_back(rid1);
+        }
     }
 
     // == API FOR NERDS ==
@@ -89,145 +111,134 @@ namespace rakan {
     // get the neighbors of the given rid
     // Returned as a map where {district: [rids], district: [rids], ..}
     std::map<int, std::list<int>> Rakan::get_neighbors(int rid) {
-        std::cout << "grabbing a list of district neighbors for precinct #" << rid << std::endl;
-        if (rid > (int)this->_atlas.size() || rid < 0)
-            throw std::out_of_range("Specified RID not found");
+        ATLAS_RID_CHECK(rid);
+
         std::map<int, std::list<int>> neighbors;
+        
         for (Precinct * neighbor : this->_atlas[rid]->neighbors) {
+            // Return only the RID
+            // Don't return the object because that's dangerous
+            // Especially when interacting with them via Python
             neighbors[neighbor->district].push_back(neighbor->rid);
         }
+        
         return neighbors;
     }
 
     // get the neighbors of different districts for the given rid
+    // Just calls get_neighbors but ignores the entries that are in the same
+    // district.
     std::map<int, std::list<int>> Rakan::get_diff_district_neighbors(int rid) {
-        std::cout << "grabbing a list of different district neighbors for precinct #" << rid << std::endl;
-        if (rid > (int)this->_atlas.size() || rid < 0)
-            throw std::out_of_range("Specified RID not found");
+        ATLAS_RID_CHECK(rid);
+        
         std::map<int, std::list<int>> neighbors;
-        int bad_district = this->_atlas[rid]->district;
+        int current_district = this->_atlas[rid]->district;
+
         for (Precinct * neighbor : this->_atlas[rid]->neighbors) {
-            if (neighbor->district != bad_district)
+            if (neighbor->district != current_district) {
                 neighbors[neighbor->district].push_back(neighbor->rid);
+            }
         }
         return neighbors;
     }
 
     // are the two precincts connected via the same district path?
-    // Will not use the black_listed_rid as part of path
+    // Will not use the black_listed_rid as part of path.
     bool Rakan::are_connected(int rid1, int rid2, int black_listed_rid = -1) {
-        std::cout << "Testing connection between " << rid1 << " & " << rid2 << " without " << black_listed_rid << std::endl;
-        if (this->_atlas[rid1]->district != this->_atlas[rid2]->district)
+        // This works by doing a double breadth first search
+        ATLAS_RID_CHECK(rid1);
+        ATLAS_RID_CHECK(rid2);
+
+        if (this->_atlas[rid1]->district != this->_atlas[rid2]->district) {
             throw std::invalid_argument("Districts between selected precincts are different");
-        else if (rid1 == black_listed_rid || rid2 == black_listed_rid)
+        } else if (rid1 == black_listed_rid || rid2 == black_listed_rid) {
             throw std::invalid_argument("Cannot blacklist the precinct that is undergoing the connectivitiy test");
+        }
         
+        // Begin by assuming the two precincts are not connected
         bool connected = false;
         
-        std::cout << " areconnected tests passed .. ";
-        // allowed district
-        std::cout << "updating atlas .. ";
+        // Get the district we must traverse through
         int district = this->_atlas[rid1]->district;
-        std::cout << "done. ";
 
-        // track all possible paths
-        std::cout << "building pool + seen .. ";
+        // Build two pools. Each one stores the "seen" values of the BFT.
+        // When these two pools intersect, we consider the two initial rids to be
+        // connected.
         std::vector<bool> pool1 = std::vector<bool>(this->_atlas.size()); // items cursor1 has traversed
         std::vector<bool> pool2 = std::vector<bool>(this->_atlas.size()); // items cursor2 has traversed
-        std::cout << "done. " << std::endl;
 
-        // set up both queues
-        std::cout << "building queues with ";
-        std::cout << rid1;
-        std::cout << " " << rid2;
-        std::cout << std::endl;
+        // Classic BFT but with 2 queues for both sides.
         std::list<int> rid1queue = std::list<int> { rid1 };
         std::list<int> rid2queue = std::list<int> { rid2 };
-        std::cout << " .. queues built ..";
-
-        std::cout << " launch cursors ";
-
         int cursor1, cursor2;
 
-        std::cout << " .. running: ";
-        
-        int auto_kill = 100;
+        // Assume that if the script runs for more than the number of precincts
+        // something went wrong and terminate.
+        int auto_kill = this->_atlas.size();
 
+        // The traversals. While we haven't initiated the auto_kill and one queue has at least one item...
         while ((!rid1queue.empty() || !rid2queue.empty()) && auto_kill-- > 0) {
-            std::cout << " .. looping .. ";
-            
+            // Check out the first queue.
             if (!rid1queue.empty()) {
+                // grab the first item of the queue.
                 cursor1 = rid1queue.front();
-                std::cout << " .. rid1queue pop : " << cursor1 << " .. ";
                 rid1queue.pop_front();
 
+                // Skip this entire loop if the cursor is blacklisted
                 if (cursor1 == black_listed_rid) {
-                    std::cout << " .. is blacklisted ..";
                     continue;
                 }
                     
-
+                // If the other cursor has encountered this spot,
+                // mark connected as true and break
                 if (pool2[cursor1]) {
-                    std::cout << " .. connected returning true ..";
                     connected = true;
                     break;
                 }
 
-                std::cout << " .. marking pool1 [" << cursor1 << "] = true ..";
-                
+                // Mark this value in the pool as a value we've seen
                 pool1[cursor1] = true;
 
-                std::cout << " .. populating queue1 with .. ";
-
+                // Iterate through the neighbors of this cursor and add them to the queue
+                // Make sure they already aren't in the queue
                 for (Precinct * neighbor : this->_atlas[cursor1]->neighbors) {
                     if (neighbor->district == district && std::find(rid1queue.begin(), rid1queue.end(), neighbor->rid) == rid1queue.end()) {
-                        std::cout << neighbor->rid << " .. ";
                         rid1queue.push_back(neighbor->rid);
                     }
                 }
 
             }
 
+            // Same exact logic but with the second queue now.
             if (!rid2queue.empty()) {
                 cursor2 = rid2queue.front();
-                std::cout << " .. rid2queue pop : " << cursor2 << " .. ";
                 rid2queue.pop_front();
 
                 if (cursor2 == black_listed_rid) {
-                    std::cout << " .. is blacklisted ..";
                     continue;
                 }
 
                 if (pool1[cursor2]) {
-                    std::cout << " .. connected returning true ..";
                     connected = true;
                     break;
                 }
 
-                std::cout << " .. marking pool2 [" << cursor2 << "] = true ..";
                 pool2[cursor2] = true;
-
-                std::cout << " .. populating queue2 with .. ";
 
                 for (Precinct * neighbor : this->_atlas[cursor2]->neighbors) {
                     if (neighbor->district == district && std::find(rid2queue.begin(), rid2queue.end(), neighbor->rid) == rid2queue.end()) {
-                        std::cout << neighbor->rid << " .. ";
                         rid2queue.push_back(neighbor->rid);
                     }
                 }
             }
         }
-        if (connected)
-            std::cout << "Precincts are connected " << connected << std::endl;
-        else
-            std::cout << "Precincts are NOT connected " << connected << std::endl;
-
         
         return connected;
     }
 
     // is the graph still valid?
     bool Rakan::is_valid() {
+        // Go through _unchecked_changes if it's not empty.
         if (!this->_unchecked_changes.empty())
             return this->_is_valid();
         return this->__is_valid;
@@ -238,77 +249,62 @@ namespace rakan {
     // Move proposed as pair integers, where the first integer is the rid
     // and the second integer is the district number to convert it to.
     std::pair<int, int> Rakan::propose_random_move() {
-        std::cout << "Proposing Move ... " << std::endl;
-        std::cout << "Sanity check: " << &this->_edges;
-        //try {
+        // Get a random pair of districts that are adjacent but in different districts
         std::pair<int, int> random_rids = this->_edges.get_random_district_edge();
-        std::cout << "Retrieved Random move: " << random_rids.first << " and " << random_rids.second << std::endl;
+        // Get the district of the second value and propose to move the first precinct into that district.
         return std::pair<int, int>(random_rids.first, this->_atlas[random_rids.second]->district);
-        // } catch (std::exception e) {
-        //     throw std::logic_error(e.what());
-        //     std::cout << e.what() << std::endl;
-        // }
+    }
+
+    // Check that the district isn't being deleted.
+    // Just check that there's at least one precinct in the distrct.
+    bool Rakan::_destroys_district(int rid) {
+        int district = this->_atlas[rid]->district;
+        return this->_districts[district].size() <= 1;
     }
 
     // move the specified rid to the new district
     // if the move is illegal, exceptions will be thrown
     void Rakan::move_precinct(int rid, int district) {
-        std::cout << "Moving " << rid << " to district #" << district << std::endl;
         if (rid < 0 || rid >= (int)this->_atlas.size()) {
             throw std::invalid_argument("Illegal Move (Reason: No such rid)");
-        }
-        if (district < 0 || district >= (int)this->_districts.size()) {
+        } else if (district < 0 || district >= (int)this->_districts.size()) {
             throw std::invalid_argument("Invalid Move (Reason: No such district)");
-        }
-        if (!this->is_valid()) {
+        } else if (!this->is_valid()) {
             throw std::logic_error("Cannot make move when graph is invalid");
-        }
-        std::cout << "is_valid passed ... ";
-        if (!this->_is_legal_new_district(rid, district)) {
+        } else if (!this->_is_legal_new_district(rid, district)) {
             throw std::invalid_argument("Illegal Move (Reason: No neighbors have this district)");
-        }
-        std::cout << "is_legal_new_district passed ... ";
-        if (this->_severs_neighbors(rid)) {
+        } else if (this->_severs_neighbors(rid)) {
             throw std::invalid_argument("Illegal Move (Reason: Severs the neighboring district(s))");
+        } else if (this->_destroys_district(rid)) {
+            throw std::invalid_argument("Illegal Move (Reason: Eliminates a district)");
         }
             
-        std::cout << "severs_neighbors passed" << std::endl;
-        
         // update this->_districts
         this->_update_districts(rid, district);
-
-        std::cout << "updating districts..." << std::endl;
 
         // update dynamic boundary
         this->_update_district_boundary(rid, district);
 
-        std::cout << "updating district boundaries..." << std::endl;
-
         // update atlas
         this->_update_atlas(rid, district);
-
-        std::cout << "updating atlas..." << std::endl;
-
-        // add to checked changes
-        // this->_checked_changes.push_back(rid);
-
-        std::cout << "adding to checked changes..." << std::endl;
     }
 
     // return a set of rid pairs that need are_connected checks given that the 
-    // passed in rid is switching districts
+    // passed in rid is switching districts. Created by getting a list of neighbors,
+    // and returning a set of pairs of neighbors in the same district.
     std::set<std::pair<int, int>> Rakan::_checks_required(int rid) {
-        std::cout << std::endl << "Creating checks required: " << std::endl;
         int first, second;
+
         std::set<std::pair<int, int>> to_check;
         std::map<int, std::list<int>> pool = this->get_neighbors(rid);
 
+        // Essentially, if a group of neighbors is as so: [1,2,3,4]
+        // Return: [(1, 2), (1,3), (1, 4)]
         for (auto it = pool.begin(); it != pool.end(); ++it) {
             auto it2 = it->second.begin();
             first = *it2;
             for (it2++; it2 != it->second.end(); it2++) {
                 second = *it2;
-                std::cout << " Creating a check for: " << first << " & " << second << std::endl;
                 to_check.insert(std::pair<int, int>(first, second));
             }
         }
@@ -316,21 +312,26 @@ namespace rakan {
     }
 
     // perform checks if there are unchecked changes
+    // As of now, unchecked changes occur when adding precincts
     bool Rakan::_is_valid() {
-        std::cout << "is_valid checks" << std::endl;
+        // keep popping items off of _unchecked_changes
+        // run are_connected tests on all of its neighbors
         while (!this->_unchecked_changes.empty()) {
             int rid = this->_unchecked_changes.front();
-            this->_unchecked_changes.pop_front();
-            std::cout << "checking unchecked precinct #" << rid << std::endl;
             std::set<std::pair<int, int>> pool = this->_checks_required(rid);
             for (std::pair<int, int> item : pool) {
                 if (!this->are_connected(item.first, item.second)) {
+                    // if the test failed, break immediately
+                    // Assume the user does some set_neighbor calls
+                    // So this test can be called again
                     this->__is_valid = false;
                     return false;
                 }
-                this->_checked_changes.push_back(rid);
+                // Remove from unchecked.
             }
+            this->_unchecked_changes.pop_front();
         }
+        // Got through the whole list, everything checked out.
         this->__is_valid = true;
         return true;
     }
@@ -340,41 +341,48 @@ namespace rakan {
     bool Rakan::_is_legal_new_district(int rid, int district) {
         Precinct precinct = *(this->_atlas[rid]);
 
-        if (precinct.district == district)
+        // If the precinct is in the district, of course the move is valid
+        // Assuming all moves prior to this were valid and that the map
+        // was valid at the start.
+        if (precinct.district == district) {
             return true;
+        }
         
-        for (Precinct * neighbor : precinct.neighbors)
-            if (neighbor->district == district)
+        // Check all the neighbors, if one of them has the district
+        // requested, return true.
+        for (Precinct * neighbor : precinct.neighbors) {
+            if (neighbor->district == district) {
                 return true;
+            }
+        }
 
+        // None of the neighbors has the district, which means the move
+        // is invalid.
         return false;
     }
 
     // Check all the neighbors are still connected one way or another.
     bool Rakan::_severs_neighbors(int rid) {
-        std::cout << "Check if rid severs neighbors: " << rid << std::endl;
+        // Make sure we're not cutting off a district in half
         std::set<std::pair<int, int>> checks = this->_checks_required(rid);
-        std::cout << "address of checks: " << &checks << std::endl;
+
+        // Go through the checks and make sure they're all connected
         for (std::pair<int, int> item : checks) {
-            std::cout << "Testing ";
-            std::cout << item.first;
-            std::cout << " and ";
-            std::cout << item.second;
-            std::cout << " with blacklist: ";
-            std::cout << rid;
-            std::cout << std::endl;
             if (!this->are_connected(item.first, item.second, rid)) {
-                std::cout << "Returning true" << std::endl;
+                // If something becomes disconnected, it means a district got severed
                 return true;
             }
         }
-        std::cout << "Returning false" << std::endl;
+        // If all checks pass, no neighboring districts were severed
         return false;
     }
 
     // update the dynamic boundary tree
     void Rakan::_update_district_boundary(int rid, int district) {
+        // In the dynamic boundary, update the fact that an rid is in a different district
         for (Precinct * neighbor : this->_atlas[rid]->neighbors) {
+            // Only toggle the edge if the neighbor is in this rid's old district
+            // or if the neighbor is in the rid's new district.
             if (neighbor->district == district || neighbor->district == this->_atlas[rid]->district) {
                 this->_edges.toggle_edge(rid, neighbor->rid);
             }
@@ -383,11 +391,13 @@ namespace rakan {
 
     // update the atlas
     void Rakan::_update_atlas(int rid, int district) {
+        // Simple district update on the graph
         this->_atlas[rid]->district = district;
     }
 
     // update district map
     void Rakan::_update_districts(int rid, int district) {
+        // Remove the rid from the district map and add it to the correct one
         this->_districts[this->_atlas[rid]->district].remove(rid);
         this->_districts[district].push_back(rid);
     }
