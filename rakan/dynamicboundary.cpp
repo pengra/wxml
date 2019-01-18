@@ -8,24 +8,14 @@ namespace rakan {
     
     // Build a false tree
     DynamicBoundary::DynamicBoundary(int size) {
-        this->_tree = *(new false_tree(size));
+        this->_tree = false_tree(size);
     }
 
     // Build a false tree
     DynamicBoundary::DynamicBoundary() {
-        this->_tree = *(new false_tree());
+        this->_tree = false_tree();
     }
 
-
-    // Destructor
-    DynamicBoundary::~DynamicBoundary() {
-        for (false_node * node : this->_tree) {
-            delete[] node->first;
-            delete[] node->second;
-            delete node;
-        }
-        delete[] &this->_tree;
-    }
 
     // add a node to the tree (no edges)
     void DynamicBoundary::add_node(int rid) {
@@ -33,7 +23,7 @@ namespace rakan {
         // self._tree[rid] = [[], []]
         // The first list is the different district precinct neighbors
         // The second list is the same district precinct neighbors
-        this->_tree[rid] = new false_node();
+        this->_tree[rid] = false_node();
         this->_nodes++;
     }
 
@@ -42,12 +32,12 @@ namespace rakan {
     void DynamicBoundary::add_edge(int rid1, int rid2, bool diff) {
         if (diff) { // create an edge of two precincts in different districts
             this->_d_edges += 2; // because two edges are established
-            this->_tree[rid1]->first->push_back(rid2);
-            this->_tree[rid2]->first->push_back(rid1);
+            this->_tree[rid1].first.push_back(rid2);
+            this->_tree[rid2].first.push_back(rid1);
         } else { // create an edge of two precincts in the same district
             this->_s_edges += 2; // because two edges are established
-            this->_tree[rid1]->second->push_back(rid2);
-            this->_tree[rid2]->second->push_back(rid1);
+            this->_tree[rid1].second.push_back(rid2);
+            this->_tree[rid2].second.push_back(rid1);
         }
 
     }
@@ -70,11 +60,11 @@ namespace rakan {
         if (index >= this->_d_edges || index < 0)
             throw std::out_of_range("invalid index: " + std::to_string(index));
         int rid = 0;
-        while (index >= (int)this->_tree[rid]->first->size()) {
-            index -= this->_tree[rid]->first->size();
+        while (index >= (int)this->_tree[rid].first.size()) {
+            index -= this->_tree[rid].first.size();
             rid++;
         }
-        std::list<int>::iterator it = this->_tree[rid]->first->begin();
+        std::list<int>::iterator it = this->_tree[rid].first.begin();
         std::advance(it, index);
         return std::pair<int, int>(rid, *it);
     }
@@ -83,23 +73,28 @@ namespace rakan {
     // If the two two nodes are marked as different-district precincts, they're marked as same-district precincts after this operation
     // Similarly, two nodes are marked as different-district precincts if they were originally different-district precincts.
     void DynamicBoundary::toggle_edge(int rid1, int rid2) {
-        false_node * node = this->_tree[rid1];
-        false_node * node2 = this->_tree[rid2];
+        std::cout << "Toggling edge between " << rid1 << " & " << rid2 << std::endl;
+        false_node * node = &this->_tree[rid1];
+        false_node * node2 = &this->_tree[rid2];
 
         // is rid2 in rid1's different district neighbor list?
-        if (std::find(node->first->begin(), node->first->end(), rid2) != node->first->end()) {
-            node->first->remove(rid2);
-            node->second->push_back(rid2);
-            node2->first->remove(rid1);
-            node2->second->push_back(rid1);
+        auto node_first_pos = std::find(node->first.begin(), node->first.end(), rid2);
+        auto node_second_pos = std::find(node->second.begin(), node->second.end(), rid2);
+        if (node_first_pos != node->first.end()) {
+            std::cout << "Discovered in first list" << std::endl;
+            node->first.erase(node_first_pos);
+            node->second.push_back(rid2);
+            node2->first.remove(rid1);
+            node2->second.push_back(rid1);
             this->_d_edges -= 2;
             this->_s_edges += 2;
         // is rid2 in rid1's same district neighbor list?
-        } else if (std::find(node->second->begin(), node->second->end(), rid2) != node->second->end()) {
-            node->second->remove(rid2);
-            node->first->push_back(rid2);
-            node2->second->remove(rid1);
-            node2->first->push_back(rid1);
+        } else if (node_second_pos != node->second.end()) {
+            std::cout << "Discovered in second list" << std::endl;
+            node->second.erase(node_second_pos);
+            node->first.push_back(rid2);
+            node2->second.remove(rid1);
+            node2->first.push_back(rid1);
             this->_s_edges -= 2;
             this->_d_edges += 2;
         } else {

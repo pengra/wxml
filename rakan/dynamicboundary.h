@@ -9,8 +9,8 @@
 
 namespace rakan {
     
-    typedef std::pair<std::list<int>*, std::list<int>*> false_node;
-    typedef std::vector<false_node*> false_tree;
+    typedef std::pair<std::list<int>, std::list<int>> false_node;
+    typedef std::vector<false_node> false_tree;
 
     class DynamicBoundary {
     public: // for python
@@ -21,7 +21,6 @@ namespace rakan {
     public:
         // Constructing the tree
         DynamicBoundary();
-        ~DynamicBoundary();
         DynamicBoundary(int size);
         void add_node(int rid);
         void add_edge(int rid1, int rid2, bool diff); // add an edge
