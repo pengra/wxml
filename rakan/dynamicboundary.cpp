@@ -31,6 +31,16 @@ namespace rakan {
     void DynamicBoundary::add_edge(int rid1, int rid2, bool diff) {
         TREE_RID_CHECK(rid1);
         TREE_RID_CHECK(rid2);
+
+        // Check that the edge hasn't already been added.
+        // This operation is expensive, but since it's occurring in the construction
+        // and not in the walk, it only needs to occur once.
+        if (std::find(this->_tree[rid1].first.begin(), this->_tree[rid1].first.end(), rid2) != this->_tree[rid1].first.end()) {
+            throw std::invalid_argument("Cannot add the same edge twice.");
+        } else if (std::find(this->_tree[rid1].second.begin(), this->_tree[rid1].second.end(), rid2) != this->_tree[rid1].second.end()) {
+            throw std::invalid_argument("Cannot add the same edge twice.");
+        }
+
         if (diff) { // create an edge of two precincts in different districts
             this->_d_edges += 2; // because two edges are established
             this->_tree[rid1].first.push_back(rid2);
