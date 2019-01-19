@@ -17,6 +17,6 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       before_script:
-        - pip install -r requirements.txt && alias g++-7="g++-7 -std=c++11" && alias gcc-7="gcc-7 -std=c++11" && cd rakan/ && touch rakan.pyx && touch rakan.pxd && python setup.py build_ext --inplace && cd .. 
+        - pip install -r requirements.txt && alias g++="g++-7 -std=c++11" && alias gcc="gcc-7 -std=c++11" && cd rakan/ && touch rakan.pyx && touch rakan.pxd && python setup.py build_ext --inplace && cd .. 
       script:
         - py.test --ignore=xayah --doctest-cython
