@@ -3,6 +3,7 @@ from rakan.rakan import PyRakan
 import asyncio
 import websockets
 import threading
+import networkx
 
 import json
 import time
@@ -13,7 +14,25 @@ class BaseRakan(PyRakan):
     Use for production code.
     """
     iterations = 0 # iterations rakan has gone through
-    nx_graph = None
+    super_layer = 0 # super precinct layer
+    nx_graph = None # the graph object
+
+    """
+    Save the current rakan state to a file.
+    Modifies self.nx_graph
+    """
+    def save(self, nx_path="save.dnx"):
+        for precinct in self.precincts:
+            self.nx_graph[precinct.rid]['dis'] = precinct.district
+        networkx.save_gpickle(self.nx_graph, nx_path)
+
+    def read_nx(self, nx_path):
+        self.nx_graph = networkx.read_gpickle(nx_path)
+        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
+        for node in sorted(self.nx_graph.nodes):
+            self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
+        for (node1, node2) in self.nx_graph.edges:
+            self.set_neighbors(node1, node2)
 
     # Scold the user for not implementing anything
     def step(self, *args, **kwargs):
@@ -30,6 +49,15 @@ class BaseRakanWithServer(BaseRakan):
     update_speed = 1 # number of seconds of how often rakan sends xayah an update
     _move_history = [] # the set of moves unreported to xayah
     _thread_lock = False # a threadlock to prevent skipping moves
+
+    def read_nx(self, nx_path):
+        self.nx_graph = networkx.read_gpickle(nx_path)
+        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
+        for node in sorted(self.nx_graph.nodes):
+            self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
+            self.add_vertexes(node, self.nx_graph.nodes[node]['vertexes'])
+        for (node1, node2) in self.nx_graph.edges:
+            self.set_neighbors(node1, node2)
 
     @property
     def move_history(self):

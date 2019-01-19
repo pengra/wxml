@@ -30,7 +30,6 @@ class Rakan(BaseRakanWithServer):
             # Sometimes the proposed move severs the district
             # Just try again
             self.step()
-        
 
     """
     An example walk.
@@ -58,34 +57,12 @@ def build_rakan(nx_path):
     print("Properties:", graph.graph)
     print("Adjust the Graph as you see fit. Results will be saved. Type 'c' to continue or'exit' to cancel.")
     print("=" * 80)
+
     import pdb; pdb.set_trace()
     networkx.write_gpickle(graph, nx_path)
 
-    r = Rakan(len(graph.nodes), graph.graph['districts'])
-    r.nx_graph = graph
-    
-    bar = IncrementalBar("Building Rakan (Step 1: Nodes)", max=len(graph.nodes))
-    
-    # load up nodes with their respective populations
-    for node in sorted(graph.nodes):
-        r.add_precinct(graph.nodes[node]['dis'], graph.nodes[node]['pop'])
-        if isinstance(r, BaseRakanWithServer):
-            try:
-                r.add_vertexes(node, graph.nodes[node]['vertexes'])
-            except:
-                pass
-        bar.next()
-    
-    bar.finish()
-
-    bar = IncrementalBar("Building Rakan (Step 2: Edges)", max=len(graph.edges))
-
-    for (node1, node2) in graph.edges:
-        
-        r.set_neighbors(node1, node2)
-        bar.next()
-
-    bar.finish()
+    r = Rakan()
+    r.read_nx(nx_path)
 
     return r
 
