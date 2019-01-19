@@ -12,6 +12,9 @@ cdef class PyPrecinct:
     cdef cPrecinct __cprecinct
 
     def __cinit__(self, int rid=0, int district=0):
+        self._reset(rid, district)
+
+    def _reset(self, int rid, int district):
         self.__cprecinct = cPrecinct(rid, district)
 
     #def __dealloc__(self):
@@ -66,9 +69,12 @@ cdef class PyRakan:
     cdef cRakan __crakan
 
     def __init__(self, size = 10000, districts = 100):
-        self.__crakan = cRakan(size, districts)
+        self._reset(size, districts)
 
     def __cinit__(self, int size = 10000, int districts = 100):
+        self._reset(size, districts)
+
+    def _reset(self, int size, int districts):
         self.__crakan = cRakan(size, districts)
 
     def __dealloc__(self):
