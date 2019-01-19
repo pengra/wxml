@@ -1,5 +1,6 @@
 #include "dynamicboundary.h"
 
+#define TREE_RID_CHECK(RID) if (RID >= (int)this->_tree.size() || RID < 0) { throw std::invalid_argument("Invalid RID: " + std::to_string(RID)); }
 
 // Simple dynamic boundary via just marking edges
 
@@ -20,6 +21,7 @@ namespace rakan {
     void DynamicBoundary::add_node(int rid) {
         // In python:
         // self._tree[rid] = [[diff district neighbors], [same district neighbors]]
+        TREE_RID_CHECK(rid);
         this->_tree[rid] = false_node();
         this->_nodes++;
     }
@@ -27,6 +29,8 @@ namespace rakan {
     // add an edge to the tree (two directional)
     // both rids must already be added to the tree via add_node
     void DynamicBoundary::add_edge(int rid1, int rid2, bool diff) {
+        TREE_RID_CHECK(rid1);
+        TREE_RID_CHECK(rid2);
         if (diff) { // create an edge of two precincts in different districts
             this->_d_edges += 2; // because two edges are established
             this->_tree[rid1].first.push_back(rid2);
