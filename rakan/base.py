@@ -1,4 +1,8 @@
-from rakan.rakan import PyRakan
+try:
+    from rakan.rakan import PyRakan
+except ImportError:
+    # py.test import
+    from .rakan.rakan import PyRakan
 
 import asyncio
 import websockets
