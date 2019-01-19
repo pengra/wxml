@@ -9,6 +9,8 @@ matrix:
         - eval "${MATRIX_EVAL}"
       addons:
         apt:
+          sources:
+            - ubuntu-toolchain-r-test
           packages:
             - g++-7
       env:
