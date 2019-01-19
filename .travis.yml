@@ -1,0 +1,11 @@
+matrix:
+  include:
+    # works on Precise and Trusty
+    - language: python
+      python: 
+        - 3.6
+        - 3.7
+      before_script:
+        - pip install -r requirements.txt && cd rakan/ && touch rakan.pyx && touch rakan.pxd && python setup.py build_ext --inplace && cd ..
+      script:
+        - py.test --ignore=xayah --doctest-cython
