@@ -3,4 +3,5 @@
 site/
 *.pyc
 *.rnx
+*.snx
 secrets*.*
