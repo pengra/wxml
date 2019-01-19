@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 // Some syntatic that should be defined in production.h/development.h but stored here because I'm assuming we're always in development
-#define ATLAS_RID_CHECK(RID) if (RID > (int)this->_atlas.size() || RID < 0) { throw std::invalid_argument("Invalid RID: " + std::to_string(RID)); }
+#define ATLAS_RID_CHECK(RID) if (RID >= (int)this->_atlas.size() || RID < 0) { throw std::invalid_argument("Invalid RID: " + std::to_string(RID)); }
 #define DISTRICT_CHECK(DISTRICT) if (district >= (int)this->_districts.size() || district < 0) { throw std::invalid_argument("Invalid District" + std::to_string(DISTRICT)); }
 
 namespace rakan {
