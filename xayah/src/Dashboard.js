@@ -7,6 +7,9 @@ import './App.css';
 class Precinct extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      nodeCoord: null,
+    }
 
     this.nodeCoord = this.nodeCoord.bind(this)
   }
@@ -16,6 +19,9 @@ class Precinct extends Component {
     // map: map to render to
     // vertexes: vertex coordinates of polygon
   nodeCoord() {
+    if (this.state.nodeCoord !== null) {
+      return this.state.nodeCoord;
+    }
     let x_total = 0
     let y_total = 0
     this.props.vertexes.map((item) => {
@@ -23,14 +29,16 @@ class Precinct extends Component {
       y_total += item[1];
 
     })
-    return [x_total / this.props.vertexes.length, y_total / this.props.vertexes.length];
+    const coord = [x_total / this.props.vertexes.length, y_total / this.props.vertexes.length]
+    this.setState({nodeCoord: coord });
+    return 
   }
   render() {
     return (
       <div>
         <Polygon color={this.props.color} positions={this.props.vertexes}>
           <Tooltip direction="bottom" opacity={1}>{this.props.name}</Tooltip>
-          <Circle center={this.nodeCoord()} opacity={100} fillcolor={this.props.color} radius={2} />
+          {/* <Circle center={this.nodeCoord()} opacity={100} fillcolor={this.props.color} radius={2} /> */}
         </Polygon>
       </div>
     );
@@ -57,13 +65,7 @@ class PrecinctMap extends Component {
 
     this.connectRakan = this.connectRakan.bind(this);
   }
-  componentDidMount() {
-    // logic for loading the whole thing first
-    this.setState({precincts: [] })
-
-    this.connectRakan();
-  }
-
+  
   // Loading Rakan
   connectRakan() {
     const rakanSocket = new WebSocket('ws://127.0.0.1:' + this.props.rakanPort);
@@ -74,6 +76,7 @@ class PrecinctMap extends Component {
 
     // on message, (rakan sent an update) update the map
     rakanSocket.onmessage = (event) => {
+      console.log("Receiving!")
       // read payload
       let payload = JSON.parse(event.data);
       let updated = false
@@ -141,18 +144,36 @@ class PrecinctMap extends Component {
 
   }
 
+  componentDidMount() {
+    // logic for loading the whole thing first
+    this.setState({precincts: [] })
+
+    this.connectRakan();
+    console.log(this.refs.map.leafletElement.getBounds());
+  }
+
   render() {
     const position = [this.state.lat, this.state.lng] // this.state.precincts[0].nodeCoord()
     const colors = [
-      "red", "yellow", "blue", "green", "purple"
+      "red", 
+      "yellow", 
+      "blue", 
+      "green", 
+      "purple",
+      "orange",
+      "black",
+      "gold",
+      "teal",
     ]
+
     const polygons = this.state.precincts.map((e, i) => <Precinct key={i} name={i} color={colors[this.state.districts[i]]} vertexes={e.map((a) => [a[1], a[0]])}></Precinct>)
-    const connectors = this.state.edges.map((e, i) => <Polyline key={i} color={"lime"} positions={e}/>)
+    // const connectors = this.state.edges.map((e, i) => <Polyline key={i} strokeWidth={0.1} color={"lime"} positions={e}/>)
+    
     return (
-      <Map center={position} zoom={this.state.zoom} id="mapid" style={{height: "50vh"}}>
+      <Map center={position} zoom={this.state.zoom} id="mapid" style={{height: "90vh"}} ref='map'>
         <TileLayer attribution="Shout out to the amazing folks @ <a href='https://openstreetmap.org'>OpenStreetMap</a>" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
         {polygons}
-        {connectors}
+        {/* {connectors} */}
       </Map>
     );
   }
