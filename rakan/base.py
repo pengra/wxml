@@ -27,7 +27,7 @@ class BaseRakan(PyRakan):
     """
     def save(self, nx_path="save.dnx"):
         for precinct in self.precincts:
-            self.nx_graph[precinct.rid]['dis'] = precinct.district
+            self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         networkx.save_gpickle(self.nx_graph, nx_path)
 
     def read_nx(self, nx_path):
@@ -152,12 +152,13 @@ class BaseRakanWithServer(BaseRakan):
             "iterations": self.iterations,
         }))
         # Update infinitely
+        last_iteration = self.iterations
         while True:
             # Send Xayah move history and clear it.
 
             # Threading logic
             # If resource is busy, try again until it's free
-            if not self._thread_lock:
+            if not self._thread_lock and last_iteration != self.iterations:
                 # lock resource
                 self._thread_lock = True
                 # transmit resource
@@ -165,6 +166,7 @@ class BaseRakanWithServer(BaseRakan):
                     'update': self._move_history,
                     'iterations': self.iterations,
                 }))
+                last_iteration = self.iterations
                 # reset resource
                 self._move_history = []
                 # unlock resource
