@@ -173,6 +173,8 @@ class BaseRakanWithServer(BaseRakan):
                 self._thread_lock = False
                 # take a breather
                 time.sleep(self.update_speed)
+            
+            time.sleep(0.1)
 
     # Scold the user for not implementing anything
 
