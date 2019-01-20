@@ -7,3 +7,4 @@ __pycache__/
 *.rnx
 *.txt
 cython_debug/
+.pytest_cache/
