@@ -2,7 +2,7 @@ from rakan import PyRakan as BaseRakan
 import random
 import math
 
-class MarkovChainMonteCarlo(BaseRakan):
+class IowaModel(BaseRakan):
     """
     A MCMC method for the state of Iowa
     We hope to generalize code for any state
