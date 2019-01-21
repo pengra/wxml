@@ -5,3 +5,5 @@ site/
 *.rnx
 *.snx
 secrets*.*
+*.html
+*.json
