@@ -89,6 +89,16 @@ class BaseRakan(PyRakan):
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")
 
+    def score(self, rid=None, district=None):
+        # alpha = -0.2
+        # beta = -1.2
+        # return score = math.exp(
+        #   (alpha * self.population_score(rid, district)) + 
+        #   (beta * self.compactness_score(rid, district))
+        # )
+        raise NotImplementedError("Scoring algorithm not implemented!")
+
+
 
 """
 DEPRECIATED.
