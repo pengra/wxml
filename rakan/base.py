@@ -58,7 +58,7 @@ class BaseRakan(PyRakan):
 
     def report(self, html_path="save.html"):
         geojson = self.export(json_path=None)
-        with open("rakan/template.html") as handle:
+        with open("rakan/template.htm") as handle:
             template = handle.read()
             with open(html_path, "w") as w_handle:
                 w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
