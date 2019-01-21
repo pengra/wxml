@@ -30,6 +30,10 @@ class BaseRakan(PyRakan):
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         networkx.write_gpickle(self.nx_graph, nx_path)
 
+    """
+    Save the current rakan state to a geojson file.
+    Does not modify self.nx_graph
+    """
     def export(self, json_path="save.json"):
         features = []
         for precinct in self.precincts:
@@ -56,6 +60,10 @@ class BaseRakan(PyRakan):
         else:
             return geojson
 
+    """
+    Generate a mapjsgl page.
+    Used for analyzing how the districts have crawled around.
+    """
     def report(self, html_path="save.html"):
         geojson = self.export(json_path=None)
         with open("rakan/template.htm") as handle:
@@ -63,7 +71,9 @@ class BaseRakan(PyRakan):
             with open(html_path, "w") as w_handle:
                 w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
         
-
+    """
+    Build rakan from a .dnx file.
+    """
     def read_nx(self, nx_path):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
@@ -79,6 +89,10 @@ class BaseRakan(PyRakan):
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")
 
+
+"""
+DEPRECIATED.
+"""
 class BaseRakanWithServer(BaseRakan):
     """
     Rakan with a websocket for communication with Xayah.
