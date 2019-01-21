@@ -30,6 +30,10 @@ cdef class PyPrecinct:
         return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
 
     @property
+    def popoulation(self):
+        return self.__cprecinct.population
+
+    @property
     def rid(self):
         return self.__cprecinct.rid;
 
