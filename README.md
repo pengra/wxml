@@ -2,6 +2,8 @@
 
 An interesting Gerrymanering analysis tool by the UW WXML team. Circa 2018.
 
+Full documentation: https://wxml.pengra.io
+
 ## Pre-requisite Setup
 
 - Rakan prereqs:
