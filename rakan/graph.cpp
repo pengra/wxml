@@ -380,9 +380,11 @@ namespace rakan {
 
         // Go through the checks and make sure they're all connected
         for (std::pair<int, int> item : checks) {
-            if (!this->are_connected(item.first, item.second, rid)) {
+            // Run all the connection tests in different threads.
+            auto future = std::async(&Rakan::are_connected, this, item.first, item.second, rid, 1);
+            if (!future.get()) { 
                 // If something becomes disconnected, it means a district got severed
-                return true;
+                return true; 
             }
         }
         // If all checks pass, no neighboring districts were severed

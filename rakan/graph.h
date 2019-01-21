@@ -6,6 +6,9 @@
 #include <set>
 #include <iostream>
 #include <queue>
+#include <thread>
+#include <future>
+
 #include "dynamicboundary.h"
 
 namespace rakan {
