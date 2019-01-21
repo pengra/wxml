@@ -2,6 +2,7 @@
 #Need to figure out how to pass in arguments 
 from rakan import PyRakan as BaseRakan
 import random
+import math
 
 class MarcovChainMonteCarlo(BaseRakan):
     """
@@ -29,10 +30,10 @@ class MarcovChainMonteCarlo(BaseRakan):
 	candCompac = self.getcompactness(precinct)
 	candEnergy = self.getpopenergy(precinct)
 
-#calculate acceptance ratio 
+#calculate uniform random number to compare with ratio 
 	u = uniform(0,1)
 
-#acceptance ratio
+#acceptance acceptance ratio
 	f = exp(alpha*currentCompac + beta*currentPopEng)
 	fprime = exp(alpha*candCompac + beta*candEnergy)
 	a = fprime/f
