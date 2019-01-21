@@ -30,6 +30,40 @@ class BaseRakan(PyRakan):
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         networkx.save_gpickle(self.nx_graph, nx_path)
 
+    def export(self, json_path="save.json"):
+        features = []
+        for precinct in self.precincts:
+            features.append({
+                "type": "Feature",
+                "properties": {
+                    "district": precinct.district,
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": self.nx_graph.nodes[precinct.rid]['vertexes']
+                }
+            })
+            self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
+        
+        geojson = json.dumps({
+            "type": "FeatureCollection",
+            "features": features
+        })
+
+        if not (json_path is None):
+            with open(json_path, 'w') as handle:
+                handle.write(geojson)
+        else:
+            return geojson
+
+    def report(self, html_path="save.html"):
+        geojson = self.export(json_path=None)
+        with open("rakan/template.html") as handle:
+            template = handle.read()
+            with open(html_path, "w") as w_handle:
+                w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
+        
+
     def read_nx(self, nx_path):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
@@ -121,7 +155,7 @@ class BaseRakanWithServer(BaseRakan):
         Xayah Connect via (js):
             const socket = new WebSocket("ws://127.0.0.1:3001");
         """
-        # Create the socket
+         # Create the socket
         self._init_socket = websockets.serve(self.send_seed, '127.0.0.1', self.ws_port)
         
         # Create in seperate thread and run forever
@@ -132,25 +166,10 @@ class BaseRakanWithServer(BaseRakan):
         wst.start()
 
     def send_seed(self, websocket, path):
-        """
-        Method that returns json blobs sent directly to Xayah.
-        By default, it sends all information of all precincts
-            - geographic information of precinct polygon (precinct_vertexes)
-            - what district each precinct is in (precinct_districts)
-            - what precinct is "touching" other precincts on the graph (edges)
-            - how long rakan has been running (iterations)
-        Then, after every self.update_speed seconds, send smaller bits of information
-            - what precincts changed districts (update)
-            - how long rakan has been running (iterations)
-        """
-        print("New Xayah Client!")
         # Send the initial blob of everything Xayah needs to know
-        yield from websocket.send(json.dumps({
-            "precinct_vertexes": [v[0] for k, v in self._vertexes.items()],
-            "precinct_districts": [_.district for _ in self.precincts],
-            "edges": [_ for _ in self.nx_graph.edges] if self.nx_graph else [],
-            "iterations": self.iterations,
-        }))
+        yield from websocket.send(self.export(None))
+        
+    def districts(self, websocket, path):
         # Update infinitely
         last_iteration = self.iterations
         while True:
@@ -174,7 +193,7 @@ class BaseRakanWithServer(BaseRakan):
                 # take a breather
                 time.sleep(self.update_speed)
             
-            time.sleep(0.1)
+            time.sleep(0.01)
 
     # Scold the user for not implementing anything
 
