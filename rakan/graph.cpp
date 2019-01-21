@@ -417,4 +417,44 @@ namespace rakan {
         this->_districts[this->_atlas[rid]->district]->precincts.remove(rid);
         this->_districts[district]->precincts.push_back(rid);
     }
+	
+	//calculate the standard deviation of the populations
+	double Rakan::get_population_score(){
+		double mean = 0;
+		double score = 0;
+		for (int i = 0; i< (int)this->_districts.size(); i++){
+			mean += this->_districts[i]->population;
+		}
+		mean /= _districts.size();
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			double diff = this->_districts[i]->population - mean;
+			score += diff*diff;
+		}
+		score /= _districts.size()-1;
+		return score;
+	}
+	
+	//calculate the standard deviation of the population for a proposed move
+	double Rakan::get_proposed_population_score(int rid1, int rid2){
+		double mean = 0;
+		double score = 0;
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			mean += this->_districts[i]->population;
+		}
+		mean /= _districts.size();
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			double diff = this->_districts[i]->population - mean;
+			if (this->_atlas[rid1]->district == i){
+				diff -= this->_atlas[rid1]->population;
+				diff += this->_atlas[rid2]->population;
+			}
+			if (this->_atlas[rid1]->district == i){
+				diff -= this->_atlas[rid2]->population;
+				diff += this->_atlas[rid1]->population;
+			}
+			score += diff*diff;
+		}
+		score /= _districts.size()-1;
+		return score;
+	}
 }
