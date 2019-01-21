@@ -1,13 +1,14 @@
 from base import BaseRakanWithServer, BaseRakan
 from progress.bar import IncrementalBar
 
-import faulthandler; faulthandler.enable()
 import time
-
 import random
+import math
 import networkx
 
 class Rakan(BaseRakan):
+
+    ALPHA = -(0.1 ** 18) # Weight for population
 
     """
     An example step
@@ -17,34 +18,24 @@ class Rakan(BaseRakan):
     """
     def step(self, max_value=1, *more_positional_stuff, **wow_we_got_key_words_up_here):
         precinct, district = self.propose_random_move()
-        # Completely random
         
         try:
-            # Sometimes propose_random_move severs districts, and move_precinct will catch that.
-            self.move_precinct(precinct, district)
-            # For Xayah, record the move.
-            if hasattr(self, "record_move"):
-                self.record_move(precinct, district)
-            self.iterations += 1
+            if random.random() <= (self.score() / self.score(precinct, district)):
+                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
+                self.move_precinct(precinct, district)
+                self.iterations += 1
         except ValueError:
             # Sometimes the proposed move severs the district
             # Just try again
             self.step()
 
     """
-    An example walk.
-    Perhaps there is specific behavior for the 10 steps
-    and specific behavior for the last 10.
-
-    Arguments are completely arbritary and can be rewritten by the user.
+    An example scoring algorithm.
     """
-    def walk(self, *more_positional_stuff, **wow_we_got_key_words_up_here):
-        # for instance:
-        for i in range(100):
-            self.step(max_value=1)
-        
-        for i in range(100):
-            self.step(max_value=2)
+    def score(self, rid=None, district=None):
+        return math.exp(
+            self.ALPHA * self.population_score(rid, district)
+        )
 
 
 """
@@ -86,7 +77,8 @@ s <name>
     Save current graph into <name>.dnx."""
     
     # nx_path = "rakan/iowa.dnx"
-    nx_path = "rakan/washington.dnx"
+    # nx_path = "rakan/washington.dnx"
+    nx_path = "wa.140100.dnx"
     
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
@@ -116,15 +108,18 @@ s <name>
         elif response.isnumeric():
             target = int(response)
             bar = IncrementalBar("Walking {} steps".format(target), max=target)
+            old_score = rakan.score()
             start = time.time()
             for _ in range(target):
                 bar.next()
                 rakan.step()
             end = time.time()
             bar.finish()
+            new_score = rakan.score()
             print("Average iterations / second:", target / (end - start))
             print("Average seconds / iteration:", (end - start) / target)
             print("Total time: ", end - start)
+            print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
         # walk
         elif response == 'w':
             start = time.time()
