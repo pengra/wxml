@@ -8,14 +8,22 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
     <style>
         body { margin:0; padding:0; }
-        #map { position:absolute; top:0; bottom:0; width:100%; }
+        header { top: 0; position:fixed; top: 0; height: 2em; z-index: 100 }
+        #searchbar { width: 100%; position: fixed; border: 0; height: 2em; padding: 10px; color: #666; }
+        #map { position:absolute; top:0; bottom:0; width:100%; z-index: 0}
     </style>
 </head>
 <body>
 
+
 <div id='map'></div>
+
 <script>
 mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ydG9uanAiLCJhIjoiY2pyNWxjd25sMGZ4aTN6bzIwYTlleWJhMSJ9.TCtD0pLNE8IPnuLzEAtq-A';
+
+var geojsonDump = {"$DA":"TA$"};
+var searchResults = []
+
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
@@ -23,14 +31,31 @@ var map = new mapboxgl.Map({
     zoom: 3
 });
 
-map.on('load', function () {
+var searchBar = document.getElementById("searchbar");
 
+map.on('load', function () {
     map.addLayer({
-        "id": "redistrictings",
+        "id": "search",
         "type": "fill",
         "source": {
             "type": "geojson",
-            "data": {"$DA":"TA$"}
+            "data": {
+                "type": "FeatureCollection",
+                "features": searchResults,
+            }
+        },
+        "paint": {
+            "fill-color": "#fff",
+            "fill-opacity": 1,
+        }
+    })
+
+    map.addLayer({
+        "id": "precincts",
+        "type": "fill",
+        "source": {
+            "type": "geojson",
+            "data": geojsonDump,
         },
         "layout": {
         },
@@ -58,7 +83,29 @@ map.on('load', function () {
             'fill-opacity': 0.8
         }
     });
+
+    var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+    });
+
+    map.on('click', 'precincts', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        popup.setLngLat(e.lngLat)
+            .setHTML(e.features[0].properties.description)
+            .addTo(map);
+    });
+
+    map.on('mouseleave', 'precincts', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+
 });
+
+
 </script>
 
 </body>
