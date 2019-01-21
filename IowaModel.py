@@ -1,5 +1,3 @@
-
-#Need to figure out how to pass in arguments 
 from rakan import PyRakan as BaseRakan
 import random
 import math
@@ -10,42 +8,52 @@ class MarcovChainMonteCarlo(BaseRakan):
     We hope to generalize code for any state
 
     """
-    #declare variables
-    float CompactEnergy 
-    float PopEnergy
-    int alpha
-    int beta
+  def __init__(self, int rid, int district, int alpha, int beta, int num_steps)
+    	self.initial_precinct = rid 
+   	self.alpha = alpha
+    	self.beta = beta
+    	self.num_steps = num_steps
+    	self.district = district
 
-#initialize starting point at random precinct 
-    startPoint = random.randint(0, precinct)
 
-#Calculate current energies
-    currentCompac = self.getcompactness(startPoint)
-    currentPopEng = self.getpopenergy(startPoint)
+  def get_acceptance_ratio(curr_compact_score, proposed_compact_score, curr_pop_score, proposed_pop_score)
+  
+    	f_of_x = exp(self.alpha*curr_compact_score+self.beta*curr_pop_score)
+   	f_of_x_prime = exp(self.alpha*proposed_compact_score+self.beta*proposed_pop_score)
 
-#propose move 
-	precinct, district = self.propose_random_move(startPoint)
+   	return (f_of_x_prime/f_of_x)
 
-#calculate candidate energies
-	candCompac = self.getcompactness(precinct)
-	candEnergy = self.getpopenergy(precinct)
 
-#calculate uniform random number to compare with ratio 
-	u = uniform(0,1)
 
-#acceptance acceptance ratio
-	f = exp(alpha*currentCompac + beta*currentPopEng)
-	fprime = exp(alpha*candCompac + beta*candEnergy)
-	a = fprime/f
+  def step(self):
+    	#propose a move
+    	precinct, proposed_district = self.propose_random_move()
+        
+        #calculate curren compact/pop scores
+        curr_compact_score = self.compactness_score()
+        curr_pop_score = self.population_score()
 
-#accept or reject
-if u <= a:
-	#accept
-	self.make_move(precinct, district)
-else:
-	#reject
-	break
+        #calculate proposed compact/pop scores
+        proposed_compact_score = self.compactness_score(precinct, proposed_district)
+        proposed_pop_score = self.get_proposed_population_score(precinct, proposed_district)
 
+        #calculate acceptance ratio
+        acceptance_ratio = self.get_acceptance_ratio(curr_compact_score, curr_pop_score,proposed_pop_score,proposed_compact_score)
+        acceptance_ratio = min(1, acceptance_ratio)
+        uni_rand = random.random(0, 1)
+
+        #accept and move
+        if acceptance_ratio < uni_rand:
+        	self.move_precinct(precinct, proposed_district)
+        #reject and do nothing
+        else:
+        	break
+
+
+   def walk(self, num_steps):
+        # walk for determined number of steps 
+        for i in range(self.num_steps):
+            self.step(self)
      
 
 
