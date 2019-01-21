@@ -10,7 +10,7 @@ class MarkovChainMonteCarlo(BaseRakan):
     """
   def __init__(self, int rid, int district, int alpha, int beta, int num_steps)
     	self.initial_precinct = rid 
-   	self.alpha = alpha
+   	    self.alpha = alpha
     	self.beta = beta
     	self.num_steps = num_steps
     	self.district = district
@@ -18,7 +18,7 @@ class MarkovChainMonteCarlo(BaseRakan):
 
   def get_acceptance_ratio(curr_compact_score, proposed_compact_score, curr_pop_score, proposed_pop_score)
   
-    	f_of_x = exp(self.alpha*curr_compact_score+self.beta*curr_pop_score)
+    f_of_x = exp(self.alpha*curr_compact_score+self.beta*curr_pop_score)
    	f_of_x_prime = exp(self.alpha*proposed_compact_score+self.beta*proposed_pop_score)
 
    	return (f_of_x_prime/f_of_x)
@@ -54,13 +54,4 @@ class MarkovChainMonteCarlo(BaseRakan):
         # walk for determined number of steps 
         for i in range(self.num_steps):
             self.step(self)
-     
-
-
-
-
-
-
-
-
-
+   
