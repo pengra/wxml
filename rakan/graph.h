@@ -84,8 +84,8 @@ namespace rakan {
         void move_precinct(int rid, int district); // move the specified rid to the new district
 
         // todo: scoring
-        double population_score();
-        double population_score(int rid, int district);
+        double get_population_score();
+        double get_proposed_population_score(int rid1, int rid2);
         double compactness_score();
         double compactness_score(int rid, int district);
         int democrat_seats();

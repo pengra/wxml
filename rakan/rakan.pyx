@@ -180,4 +180,9 @@ cdef class PyRakan:
 
     def move_precinct(self, int rid, int district):
         return self.__crakan.move_precinct(rid, district)
+		
+    def get_population_score(self):
+        return self.__crakan.get_population_score()
 
+    def get_proposed_population_score(self, rid1, rid2):
+        return self.__crakan.get_proposed_population_score(rid1, rid2)

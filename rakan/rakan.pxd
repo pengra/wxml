@@ -82,7 +82,8 @@ cdef extern from "graph.h" namespace "rakan":
         void move_precinct(int rid, int district) except + # move the specified rid to the new district
 
         # scoring
-        double population_score() except +
+        double get_population_score() except +
+        double get_proposed_population_score(int rid1, int rid2) except +
         double population_score(int rid, int district) except +
         double compactness_score() except +
         double compactness_score(int rid, int district) except +
