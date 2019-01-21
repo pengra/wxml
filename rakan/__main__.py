@@ -7,7 +7,7 @@ import time
 import random
 import networkx
 
-class Rakan(BaseRakanWithServer):
+class Rakan(BaseRakan):
 
     """
     An example step
@@ -55,11 +55,11 @@ def build_rakan(nx_path):
     graph = networkx.read_gpickle(nx_path)
     print("=" * 80)
     print("Properties:", graph.graph)
-    print("Adjust the Graph as you see fit. Results will be saved. Type 'c' to continue or'exit' to cancel.")
+    print("Adjust the Graph as you see fit. Results will be saved. Type 'pdb' to modify.")
     print("=" * 80)
-
-    import pdb; pdb.set_trace()
-    networkx.write_gpickle(graph, nx_path)
+    if input(">>> continue? <enter> or 'pdb' ") == 'pdb':
+        import pdb; pdb.set_trace()
+        networkx.write_gpickle(graph, nx_path)
 
     r = Rakan()
     r.read_nx(nx_path)
@@ -67,19 +67,52 @@ def build_rakan(nx_path):
     return r
 
 if __name__ == "__main__":
+    help_ = """
+h
+    Show this help message
+q
+    Quit the program
+<Enter>
+    Run one iteration
+<any integer>
+    Run that many iterations
+w
+    Call user defined rakan.walk()
+e <name>
+    Export the current state as geojson int <name>.json.
+r <name>
+    Export a report of the current state
+s <name>
+    Save current graph into <name>.dnx."""
+    
     # nx_path = "rakan/iowa.dnx"
     nx_path = "rakan/washington.dnx"
+    
     rakan = build_rakan(nx_path)
-    graph = networkx.read_gpickle(nx_path)
-    input("<Enter to run validation. Server is currently live.>")
+    graph = rakan.nx_graph
     rakan.is_valid()
-    print("<Enter> to step, 'pdb' to debug, 'q' to quit, <n> to walk n times.")
+    print("Rakan is live. 'h' for help \n")
     while True:
-        response = input()
+        response = input(">>> ")
+        # debug
         if response == 'pdb': 
             import pdb; pdb.set_trace()
+        # quit
         elif response == 'q': 
             break
+        # help
+        elif response == 'h':
+            print(help_)
+        # save
+        elif response.startswith('s '):
+            rakan.save(nx_path=response.split(' ', 1)[1] + '.json')
+        # export
+        elif response.startswith('e '):
+            rakan.export(json_path=response.split(' ', 1)[1] + '.json')
+        # export
+        elif response.startswith('r '):
+            rakan.report(html_path=response.split(' ', 1)[1] + '.html')
+        # run
         elif response.isnumeric():
             target = int(response)
             bar = IncrementalBar("Walking {} steps".format(target), max=target)
@@ -90,7 +123,23 @@ if __name__ == "__main__":
             end = time.time()
             bar.finish()
             print("Average iterations / second:", target / (end - start))
-        else:
+            print("Average seconds / iteration:", (end - start) / target)
+            print("Total time: ", end - start)
+        # walk
+        elif response == 'w':
+            start = time.time()
+            rakan.walk()
+            end = time.time()
+            print("Walk time:", end - start, "seconds")
+        # one step
+        elif response == '':
+            start = time.time()
             rakan.step()
+            end = time.time()
+            print("Average iterations / second:", 1 / (end - start))
+            print("iteration completed in:", (end - start), 'seconds')
+        # ??
+        else:
+            print("Unknown Command")
 
     print("Run complete.")
