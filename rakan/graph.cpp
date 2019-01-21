@@ -399,6 +399,7 @@ namespace rakan {
 
     // update district map
 	void Rakan::_update_districts(int rid, int district) {
+		
 		this->_districts[this->_atlas[rid]->district]->population -= this->_atlas[rid]->population;
 		this->_districts[district]->population += this->_atlas[rid]->population;
 		
@@ -435,7 +436,7 @@ namespace rakan {
 	}
 	
 	//calculate the standard deviation of the population for a proposed move
-	double Rakan::get_proposed_population_score(int rid1, int rid2){
+	double Rakan::get_proposed_population_score(int rid, int district){
 		double mean = 0;
 		double score = 0;
 		for (int i = 0; i < (int)this->_districts.size(); i++){
@@ -445,12 +446,10 @@ namespace rakan {
 		for (int i = 0; i < (int)this->_districts.size(); i++){
 			double diff = this->_districts[i]->population - mean;
 			if (this->_atlas[rid1]->district == i){
-				diff -= this->_atlas[rid1]->population;
-				diff += this->_atlas[rid2]->population;
+				diff -= this->_atlas[rid]->population;
 			}
-			if (this->_atlas[rid1]->district == i){
-				diff -= this->_atlas[rid2]->population;
-				diff += this->_atlas[rid1]->population;
+			if (district == i){
+				diff += this->_atlas[rid]->population;
 			}
 			score += diff*diff;
 		}

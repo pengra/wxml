@@ -83,7 +83,7 @@ cdef extern from "graph.h" namespace "rakan":
 
         # scoring
         double get_population_score() except +
-        double get_proposed_population_score(int rid1, int rid2) except +
+        double get_proposed_population_score(int rid, int district) except +
         double population_score(int rid, int district) except +
         double compactness_score() except +
         double compactness_score(int rid, int district) except +

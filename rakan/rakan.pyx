@@ -184,5 +184,5 @@ cdef class PyRakan:
     def get_population_score(self):
         return self.__crakan.get_population_score()
 
-    def get_proposed_population_score(self, rid1, rid2):
-        return self.__crakan.get_proposed_population_score(rid1, rid2)
+    def get_proposed_population_score(self, rid, district):
+        return self.__crakan.get_proposed_population_score(rid, district)
