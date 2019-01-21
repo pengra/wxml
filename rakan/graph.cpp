@@ -155,7 +155,7 @@ namespace rakan {
 
     // are the two precincts connected via the same district path?
     // Will not use the black_listed_rid as part of path.
-    bool Rakan::are_connected(int rid1, int rid2, int black_listed_rid = -1) {
+    bool Rakan::are_connected(int rid1, int rid2, int black_listed_rid = -1, int kill_multiplier = 1) {
         // This works by doing a double breadth first search
         ATLAS_RID_CHECK(rid1);
         ATLAS_RID_CHECK(rid2);
@@ -185,7 +185,7 @@ namespace rakan {
 
         // Assume that if the script runs for more than the number of precincts
         // something went wrong and terminate.
-        int auto_kill = this->_atlas.size();
+        int auto_kill = this->_atlas.size() * kill_multiplier;
 
         // The traversals. While we haven't initiated the auto_kill and one queue has at least one item...
         while ((!rid1queue.empty() || !rid2queue.empty()) && auto_kill-- > 0) {
@@ -331,10 +331,11 @@ namespace rakan {
             int rid = this->_unchecked_changes.front();
             std::set<std::pair<int, int>> pool = this->_checks_required(rid);
             for (std::pair<int, int> item : pool) {
-                if (!this->are_connected(item.first, item.second)) {
+                if (!this->are_connected(item.first, item.second, -1, 2)) {
                     // if the test failed, break immediately
                     // Assume the user does some set_neighbor calls
                     // So this test can be called again
+                    std::cout << "[CRakan] Check failed on " << item.first << " and " << item.second << std::endl;
                     this->__is_valid = false;
                     return false;
                 }

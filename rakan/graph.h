@@ -79,7 +79,7 @@ namespace rakan {
         std::map<int, std::list<int>> get_neighbors(int rid); // given an rid, get a map of {districts: [rids]}
         std::map<int, std::list<int>> get_diff_district_neighbors(int rid); // given an rid, get a map of {different districts: [rids]} 
         // A dual breadth first serach to determine connectivity via the same district will not use the black_listed rid as part of path
-        bool are_connected(int rid1, int rid2, int black_listed_rid); 
+        bool are_connected(int rid1, int rid2, int black_listed_rid, int kill_multiplier); 
         bool is_valid(); // is the graph still valid?
         std::pair<int, int> propose_random_move(); // propose a random move in the form of rid, new district
         void move_precinct(int rid, int district); // move the specified rid to the new district
