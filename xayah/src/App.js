@@ -32,7 +32,7 @@ class App extends Component {
     } else {
       // launch the dashboard
       return (
-        <Dashboard />
+        <Dashboard rakanPort={3001} />
       );
     }
   }

@@ -5,13 +5,19 @@ from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
 from rakan cimport Precinct as cPrecinct
+from rakan cimport District as cDistrict
 from rakan cimport Rakan as cRakan
+
+
 
 cdef class PyPrecinct:
 
     cdef cPrecinct __cprecinct
 
     def __cinit__(self, int rid=0, int district=0):
+        self._reset(rid, district)
+
+    def _reset(self, int rid, int district):
         self.__cprecinct = cPrecinct(rid, district)
 
     #def __dealloc__(self):
@@ -22,6 +28,10 @@ cdef class PyPrecinct:
 
     def __str__(self):
         return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
+
+    @property
+    def population(self):
+        return self.__cprecinct.population
 
     @property
     def rid(self):
@@ -61,19 +71,65 @@ cdef class PyPrecinct:
         (<PyPrecinct>py_obj).__cprecinct = cprecinct
         return py_obj
 
+		
+		
+cdef class PyDistrict:
+
+    cdef cDistrict __cdistrict
+
+    def __cinit__(self):
+        self.__cdistrict = cDistrict()
+
+    #def __dealloc__(self):
+    #    del self.__cprecinct
+
+    #def __str__(self):
+    #    return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
+
+    @property
+    def area(self):
+        return self.__cdistrict.area
+
+    @property
+    def democrat_votes(self):
+        return self.__cdistrict.democrat_votes
+
+    @property
+    def republican_votes(self):
+        return self.__cdistrict.republican_votes
+
+    @property
+    def other_votes(self):
+        return self.__cdistrict.other_votes
+
+    @staticmethod
+    cdef factory(cDistrict cdistrict):
+        py_obj = PyDistrict.__new__(PyDistrict)
+        (<PyDistrict>py_obj).__cdistrict = cdistrict
+        return py_obj
+		
+		
+
 cdef class PyRakan:
 
     cdef cRakan __crakan
 
-    # Initialization + Destruction
+    def __init__(self, size = 10000, districts = 100):
+        self._reset(size, districts)
 
     def __cinit__(self, int size = 10000, int districts = 100):
+        self._reset(size, districts)
+
+    def _reset(self, int size, int districts):
         self.__crakan = cRakan(size, districts)
 
     def __dealloc__(self):
         pass
 
     # == API for debugging in python ==
+
+    def __str__(self) -> str:
+        return "<Rakan nodes={} @ {}>".format(self.__len__(), id(self))
 
     def __len__(self) -> int:
         return self.__crakan.atlas().size()
@@ -88,6 +144,12 @@ cdef class PyRakan:
         c_precincts = self.__crakan.atlas()
         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
         return py_precincts
+		
+    @property
+    def districts(self) -> list:
+        c_districts = self.__crakan.districts()
+        py_districts = [PyDistrict.factory(dereference(_)) for _ in c_districts]
+        return py_districts
 
     @property
     def edges(self) -> list:
@@ -95,6 +157,7 @@ cdef class PyRakan:
         return edges._tree
 
     # == API for myself ==
+
     @property
     def _unchecked_changes(self) -> list:
         return self.__crakan._unchecked_changes
@@ -130,4 +193,9 @@ cdef class PyRakan:
 
     def move_precinct(self, int rid, int district):
         return self.__crakan.move_precinct(rid, district)
-
+		
+    def population_score(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.population_score()
+        else:
+            return self.__crakan.population_score(rid, district)

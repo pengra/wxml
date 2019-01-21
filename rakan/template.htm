@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Report</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        header { top: 0; position:fixed; top: 0; height: 2em; z-index: 100 }
+        #searchbar { width: 100%; position: fixed; border: 0; height: 2em; padding: 10px; color: #666; }
+        #map { position:absolute; top:0; bottom:0; width:100%; z-index: 0}
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ydG9uanAiLCJhIjoiY2pyNWxjd25sMGZ4aTN6bzIwYTlleWJhMSJ9.TCtD0pLNE8IPnuLzEAtq-A';
+
+var geojsonDump = {"$DA":"TA$"};
+var searchResults = []
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v9',
+    center: [-96, 37.8],
+    zoom: 3
+});
+
+var searchBar = document.getElementById("searchbar");
+
+map.on('load', function () {
+    map.addLayer({
+        "id": "search",
+        "type": "fill",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": searchResults,
+            }
+        },
+        "paint": {
+            "fill-color": "#fff",
+            "fill-opacity": 1,
+        }
+    })
+
+    map.addLayer({
+        "id": "precincts",
+        "type": "fill",
+        "source": {
+            "type": "geojson",
+            "data": geojsonDump,
+        },
+        "layout": {
+        },
+        'paint': {
+            'fill-color': {
+                property: "district",
+                stops: [
+                    [0, "#001f3f"], // Navy
+                    [1, "#3D9970"], // Olive
+                    [2, "#FF851B"], // Orange
+                    [3, "#85144b"], // Maroon
+                    [4, "#AAAAAA"], // Silver
+                    [5, "#0074D9"], // Blue
+                    [6, "#2ECC40"], // Green
+                    [7, "#FF4136"], // Red
+                    [8, "#F012BE"], // Fuchsia
+                    [9, "#111111"], // Black
+                    [10, "#7FDBFF"], // Aqua
+                    [11, "#FFDC00"], // Yellow
+                    [12, "#B10DC9"], // Purple
+                    [13, "#39CCCC"], // Teal
+                    [14, "#01FF70"], // Lime
+                ]
+            },
+            'fill-opacity': 0.8
+        }
+    });
+
+    var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+    });
+
+    map.on('click', 'precincts', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        popup.setLngLat(e.lngLat)
+            .setHTML(e.features[0].properties.description)
+            .addTo(map);
+    });
+
+    map.on('mouseleave', 'precincts', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+
+});
+
+
+</script>
+
+</body>
+</html>

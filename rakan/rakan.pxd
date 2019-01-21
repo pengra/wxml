@@ -1,5 +1,3 @@
-# language_level: 3
-
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
 from libcpp cimport bool as cbool
@@ -9,11 +7,27 @@ from libcpp.pair cimport pair as cpair
 
 cdef extern from "dynamicboundary.cpp": pass
 cdef extern from "graph.cpp": pass
+
 cdef extern from "dynamicboundary.h" namespace "rakan": 
+    # THIS IS FOR DEBUGGING ONLY.
+    # DO NOT USE UNLESS IF YOU KNOW WHAT YOU'RE DOING
     cdef cppclass DynamicBoundary: 
         cvector[cpair[clist[int], clist[int]]] _tree
-        cpair[int, int] get_district_edge(int index)
-    
+        cpair[int, int] get_district_edge(int index) except +;
+        int _d_edges;
+        int _s_edges;
+        int _nodes;
+        
+        # Construction
+        void add_node(int) except +;
+        void add_edge(int, int, bool) except +;
+
+        cpair[int, int] get_random_district_edge() except +;
+        cpair[int, int] get_district_edge(int) except +;
+        void toggle_edge(int, int) except +;
+
+        int edge_count() except +;
+        int node_count() except +;
 
 cdef extern from "graph.h" namespace "rakan":
     cdef cppclass Precinct:
@@ -29,14 +43,25 @@ cdef extern from "graph.h" namespace "rakan":
         int other_votes
         clist[Precinct*] neighbors
         
+    cdef cppclass District:
+        int rid
+        int district
+        int population
+        int area
+        int democrat_votes
+        int republican_votes
+        int other_votes
+        District() except +
+        clist[Precinct*] precincts
+		
     cdef cppclass Rakan:
         Rakan() except +
         Rakan(int size, int district) except +
 
         # == API for debugging in python ==
-        cvector[clist[int]] districts()
-        cvector[Precinct*] atlas()
-        DynamicBoundary edges()
+        cvector[District*] districts() except +;
+        cvector[Precinct*] atlas() except +;
+        DynamicBoundary edges() except +;
 
         # == API for myself ==
         clist[int] _unchecked_changes
