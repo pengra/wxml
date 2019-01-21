@@ -36,11 +36,19 @@ class BaseRakan(PyRakan):
     """
     def export(self, json_path="save.json"):
         features = []
-        for precinct in self.precincts:
+        for rid, precinct in enumerate(self.precincts):
             features.append({
                 "type": "Feature",
                 "properties": {
                     "district": precinct.district,
+                    "description": """<strong>{name}</strong><br/>
+                    ID: {rid}<br/>
+                    Population: {pop}<br/>
+                    """.format(
+                        name=self.nx_graph.nodes[precinct.rid]['name'],
+                        rid=rid,
+                        pop=precinct.population
+                    )
                 },
                 "geometry": {
                     "type": "Polygon",
