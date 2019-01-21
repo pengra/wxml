@@ -12,6 +12,9 @@ namespace rakan {
     Precinct::Precinct(int rid, int district, std::list<Precinct*> neighbors)
         : rid(rid), district(district), neighbors(neighbors) { };
     
+	District::District()
+		: population(0), area(0), democrat_votes(0), republican_votes(0), other_votes(0) { };
+	
     Rakan::Rakan() {
         // Data Structures:
         // Atlas is a vector of pointers to precincts
@@ -30,6 +33,9 @@ namespace rakan {
         this->_atlas.reserve(size);
         this->_edges = DynamicBoundary(size);
         this->_districts = Districts(districts);
+		for (int i=0; i<districts; i++){
+			this->_districts[i] = new District;
+		}
     };
 
     // == API FOR DEBUGGING IN PYTHON ==
@@ -68,7 +74,12 @@ namespace rakan {
         this->_edges.add_node(new_rid);
         
         // update district table
-        this->_districts[district].push_back(new_rid);
+        this->_districts[district]->precincts.push_back(new_rid);
+		this->_districts[district]->population += this->_atlas[new_rid]->population;
+		this->_districts[district]->area += this->_atlas[new_rid]->area;
+		this->_districts[district]->republican_votes += this->_atlas[new_rid]->republican_votes;
+		this->_districts[district]->democrat_votes += this->_atlas[new_rid]->democrat_votes;
+		this->_districts[district]->population += this->_atlas[new_rid]->other_votes;
 
         // add to unchecked changes
         this->_unchecked_changes.push_back(new_rid);
@@ -259,7 +270,7 @@ namespace rakan {
     // Just check that there's at least one precinct in the distrct.
     bool Rakan::_destroys_district(int rid) {
         int district = this->_atlas[rid]->district;
-        return this->_districts[district].size() <= 1;
+        return this->_districts[district]->precincts.size() <= 1;
     }
 
     // move the specified rid to the new district
@@ -396,9 +407,67 @@ namespace rakan {
     }
 
     // update district map
-    void Rakan::_update_districts(int rid, int district) {
+	void Rakan::_update_districts(int rid, int district) {
+        int oldDistrict = this->_atlas[rid]->district;
+
+        // update district population totals
+		this->_districts[oldDistrict]->population -= this->_atlas[rid]->population;
+		this->_districts[district]->population += this->_atlas[rid]->population;
+
+        // update district areas (geographic?)
+		this->_districts[oldDistrict]->area -= this->_atlas[rid]->area;
+		this->_districts[district]->area += this->_atlas[rid]->area;
+		
+        // update voting data
+		this->_districts[oldDistrict]->republican_votes -= this->_atlas[rid]->republican_votes;
+		this->_districts[district]->republican_votes += this->_atlas[rid]->republican_votes;
+		
+		this->_districts[oldDistrict]->democrat_votes -= this->_atlas[rid]->democrat_votes;
+		this->_districts[district]->democrat_votes += this->_atlas[rid]->democrat_votes;
+
+		this->_districts[oldDistrict]->other_votes -= this->_atlas[rid]->other_votes;
+		this->_districts[district]->other_votes += this->_atlas[rid]->other_votes;
+		
         // Remove the rid from the district map and add it to the correct one
-        this->_districts[this->_atlas[rid]->district].remove(rid);
-        this->_districts[district].push_back(rid);
+        this->_districts[oldDistrict]->precincts.remove(rid);
+        this->_districts[district]->precincts.push_back(rid);
     }
+	
+	// Calculate the standard deviation of the populations
+	double Rakan::population_score() {
+		double mean = 0;
+		double score = 0;
+		for (int i = 0; i < (int)this->_districts.size(); i++) {
+			mean += this->_districts[i]->population;
+		}
+		mean /= this->_districts.size();
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			double diff = this->_districts[i]->population - mean;
+			score += diff * diff;
+		}
+		score /= this->_districts.size() - 1;
+		return score;
+	}
+	
+	// Calculate the standard deviation of the population for a proposed move
+	double Rakan::population_score(int rid, int district) {
+		double mean = 0;
+		double score = 0;
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			mean += this->_districts[i]->population;
+		}
+		mean /= this->_districts.size();
+		for (int i = 0; i < (int)this->_districts.size(); i++){
+			double diff = this->_districts[i]->population - mean;
+			if (this->_atlas[rid]->district == i){
+				diff -= this->_atlas[rid]->population;
+			}
+			if (district == i){
+				diff += this->_atlas[rid]->population;
+			}
+			score += diff * diff;
+		}
+		score /= this->_districts.size() - 1;
+		return score;
+	}
 }
