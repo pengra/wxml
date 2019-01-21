@@ -1391,7 +1391,7 @@ static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_18is_valid(struct __pyx_obj_5ra
 static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_20propose_random_move(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_22move_precinct(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid, int __pyx_v_district); /* proto */
 static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_24get_population_score(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid1, PyObject *__pyx_v_rid2); /* proto */
+static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
 static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_28__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_30__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_5rakan_5rakan_PyPrecinct(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -4388,7 +4388,7 @@ static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_24get_population_score(struct _
  *     def get_population_score(self):
  *         return self.__crakan.get_population_score()             # <<<<<<<<<<<<<<
  * 
- *     def get_proposed_population_score(self, rid1, rid2):
+ *     def get_proposed_population_score(self, rid, district):
  */
   __Pyx_XDECREF(__pyx_r);
   try {
@@ -4425,20 +4425,20 @@ static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_24get_population_score(struct _
 /* "rakan/rakan.pyx":187
  *         return self.__crakan.get_population_score()
  * 
- *     def get_proposed_population_score(self, rid1, rid2):             # <<<<<<<<<<<<<<
- *         return self.__crakan.get_proposed_population_score(rid1, rid2)
+ *     def get_proposed_population_score(self, rid, district):             # <<<<<<<<<<<<<<
+ *         return self.__crakan.get_proposed_population_score(rid, district)
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_5rakan_5rakan_7PyRakan_27get_proposed_population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static PyObject *__pyx_pw_5rakan_5rakan_7PyRakan_27get_proposed_population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_rid1 = 0;
-  PyObject *__pyx_v_rid2 = 0;
+  PyObject *__pyx_v_rid = 0;
+  PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_proposed_population_score (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_rid1,&__pyx_n_s_rid2,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_rid,&__pyx_n_s_district,0};
     PyObject* values[2] = {0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -4454,11 +4454,11 @@ static PyObject *__pyx_pw_5rakan_5rakan_7PyRakan_27get_proposed_population_score
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
         case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rid1)) != 0)) kw_args--;
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rid)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rid2)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_district)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("get_proposed_population_score", 1, 2, 2, 1); __PYX_ERR(1, 187, __pyx_L3_error)
         }
@@ -4472,8 +4472,8 @@ static PyObject *__pyx_pw_5rakan_5rakan_7PyRakan_27get_proposed_population_score
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_rid1 = values[0];
-    __pyx_v_rid2 = values[1];
+    __pyx_v_rid = values[0];
+    __pyx_v_district = values[1];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
@@ -4483,14 +4483,14 @@ static PyObject *__pyx_pw_5rakan_5rakan_7PyRakan_27get_proposed_population_score
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(((struct __pyx_obj_5rakan_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid1, __pyx_v_rid2);
+  __pyx_r = __pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(((struct __pyx_obj_5rakan_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid1, PyObject *__pyx_v_rid2) {
+static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score(struct __pyx_obj_5rakan_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -4501,12 +4501,12 @@ static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score
 
   /* "rakan/rakan.pyx":188
  * 
- *     def get_proposed_population_score(self, rid1, rid2):
- *         return self.__crakan.get_proposed_population_score(rid1, rid2)             # <<<<<<<<<<<<<<
+ *     def get_proposed_population_score(self, rid, district):
+ *         return self.__crakan.get_proposed_population_score(rid, district)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_rid1); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 188, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_rid2); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 188, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 188, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 188, __pyx_L1_error)
   try {
     __pyx_t_3 = __pyx_v_self->__pyx___crakan.get_proposed_population_score(__pyx_t_1, __pyx_t_2);
   } catch(...) {
@@ -4522,8 +4522,8 @@ static PyObject *__pyx_pf_5rakan_5rakan_7PyRakan_26get_proposed_population_score
   /* "rakan/rakan.pyx":187
  *         return self.__crakan.get_population_score()
  * 
- *     def get_proposed_population_score(self, rid1, rid2):             # <<<<<<<<<<<<<<
- *         return self.__crakan.get_proposed_population_score(rid1, rid2)
+ *     def get_proposed_population_score(self, rid, district):             # <<<<<<<<<<<<<<
+ *         return self.__crakan.get_proposed_population_score(rid, district)
  */
 
   /* function exit code */

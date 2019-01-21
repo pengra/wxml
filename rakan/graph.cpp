@@ -436,6 +436,7 @@ namespace rakan {
 	}
 	
 	//calculate the standard deviation of the population for a proposed move
+
 	double Rakan::get_proposed_population_score(int rid, int district){
 		double mean = 0;
 		double score = 0;
@@ -445,7 +446,7 @@ namespace rakan {
 		mean /= _districts.size();
 		for (int i = 0; i < (int)this->_districts.size(); i++){
 			double diff = this->_districts[i]->population - mean;
-			if (this->_atlas[rid1]->district == i){
+			if (this->_atlas[rid]->district == i){
 				diff -= this->_atlas[rid]->population;
 			}
 			if (district == i){
