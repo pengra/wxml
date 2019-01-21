@@ -88,15 +88,6 @@ class BaseRakanWithServer(BaseRakan):
     _move_history = [] # the set of moves unreported to xayah
     _thread_lock = False # a threadlock to prevent skipping moves
 
-    def read_nx(self, nx_path):
-        self.nx_graph = networkx.read_gpickle(nx_path)
-        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
-        for node in sorted(self.nx_graph.nodes):
-            self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
-            self.add_vertexes(node, self.nx_graph.nodes[node]['vertexes'])
-        for (node1, node2) in self.nx_graph.edges:
-            self.set_neighbors(node1, node2)
-
     @property
     def move_history(self):
         """
@@ -136,15 +127,6 @@ class BaseRakanWithServer(BaseRakan):
         print("Rakan running with websocket server!")
         super().__init__(*args, **kwargs)
         self._create_websocket()
-        
-        self._vertexes = {} # vertexes of each rid
-
-    def add_vertexes(self, rid, vertexes):
-        """
-        Adds a log of vertexes. Does not verify the vertexes are accurate.
-        Method for Xayah's rendering of precinct.
-        """
-        self._vertexes[rid] = vertexes
 
     def _create_websocket(self):
         """
