@@ -3,7 +3,9 @@
 site/
 *.pyc
 *.rnx
+*.dnx
 *.snx
 secrets*.*
 *.html
 *.json
+
