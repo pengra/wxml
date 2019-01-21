@@ -28,7 +28,7 @@ class BaseRakan(PyRakan):
     def save(self, nx_path="save.dnx"):
         for precinct in self.precincts:
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
-        networkx.save_gpickle(self.nx_graph, nx_path)
+        networkx.write_gpickle(self.nx_graph, nx_path)
 
     def export(self, json_path="save.json"):
         features = []
