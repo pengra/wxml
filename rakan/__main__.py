@@ -18,7 +18,7 @@ class Rakan(BaseRakan):
     """
     def step(self, max_value=1, *more_positional_stuff, **wow_we_got_key_words_up_here):
         precinct, district = self.propose_random_move()
-        
+
         try:
             if random.random() <= (self.score() / self.score(precinct, district)):
                 # Sometimes propose_random_move severs districts, and move_precinct will catch that.
@@ -78,7 +78,8 @@ s <name>
     
     # nx_path = "rakan/iowa.dnx"
     # nx_path = "rakan/washington.dnx"
-    nx_path = "wa.140100.dnx"
+    nx_path = "rakan/newwashington.dnx"
+    # nx_path = "wa.140100.dnx"
     
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
@@ -97,7 +98,7 @@ s <name>
             print(help_)
         # save
         elif response.startswith('s '):
-            rakan.save(nx_path=response.split(' ', 1)[1] + '.json')
+            rakan.save(nx_path=response.split(' ', 1)[1] + '.dnx')
         # export
         elif response.startswith('e '):
             rakan.export(json_path=response.split(' ', 1)[1] + '.json')
