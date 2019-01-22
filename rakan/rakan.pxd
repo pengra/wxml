@@ -1,3 +1,5 @@
+# distutils: language=c++
+
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
 from libcpp cimport bool as cbool
