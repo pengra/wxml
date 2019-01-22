@@ -90,14 +90,14 @@ namespace rakan {
         // scoring
         double population_score();
         double population_score(int rid, int district);
-        double compactness_score();
-        double proposed_compactness_score(int rid, int district);
+        int compactness_score();
+        int compactness_score(int rid, int district);
         int democrat_seats();
-        int proposed_democrat_seats(int rid, int district);
+        int democrat_seats(int rid, int district);
         int republican_seats();
-        int proposed_republican_seats(int rid, int district);
+        int republican_seats(int rid, int district);
         int other_seats();
-        int proposed_other_seats(int rid, int district);
+        int other_seats(int rid, int district);
 
         // internal methods
         std::set<std::pair<int, int>> _checks_required(int rid); // a set of paris that need to be checked that require are_connected checks

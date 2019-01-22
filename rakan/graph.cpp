@@ -476,21 +476,30 @@ namespace rakan {
 	
 	// Give the number of edges on the boundary of the districts
 	int Rakan::compactness_score(){
-		return this->_edges->_d_edges;
+		return this->_edges._d_edges;
 	}
 	
 	// Give the number of edges on the boundary of the districts after a proposed move
 	int Rakan::compactness_score(int rid, int district){
-		int score = this->_edges->_d_edges;
-		
-		for (int i = 0; i < this->_atlas[rid]->neighbors.size; i++{
-			int neighbor_rid = this->_atlas[rid]->neighbors[i]->rid;
+		int score = this->_edges._d_edges;
+		std::list<Precinct*>::iterator prcnct = this->_atlas[rid]->neighbors.begin();
+    
+		for (int i = 0; i < (int)this->_atlas[rid]->neighbors.size()-1; i++){
+			int neighbor_rid = (*prcnct)->rid;
 			if (this->_atlas[neighbor_rid]->district == district){
 				score -= 1;
 			}
 			if (this->_atlas[neighbor_rid]->district == this->_atlas[rid]->district){
 				score += 1;
 			}
+		std::advance(prcnct, 1);
+		}
+		int neighbor_rid = (*prcnct)->rid;
+		if (this->_atlas[neighbor_rid]->district == district){
+			score -= 1;
+		}
+		if (this->_atlas[neighbor_rid]->district == this->_atlas[rid]->district){
+			score += 1;
 		}
 		return score;
 	}
@@ -498,23 +507,24 @@ namespace rakan {
 	// Give the number of democratic seats in a simulated election
 	int Rakan::democrat_seats(){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if ( d_votes > r_votes && d_votes > o_votes ){
 				seats +=1;
 			}
 		}
+		return seats;
 	}
 	
 	// Give the number of democratic seats in a simulated election
 	// after a proposed move
-	int Rakan::proposed_democrat_seats(int rid, int district){
+	int Rakan::democrat_seats(int rid, int district){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if (this->_atlas[rid]->district == i){
 				d_votes -= this->_atlas[rid]->democrat_votes;
@@ -530,28 +540,30 @@ namespace rakan {
 				seats +=1;
 			}
 		}
+		return seats;
 	}
 	
 	// Give the number of republican seats in a simulated election
 	int Rakan::republican_seats(){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if ( d_votes > r_votes && d_votes > o_votes ){
 				seats +=1;
 			}
 		}
+		return seats;
 	}
 	
 	// Give the number of republican seats in a simulated election
 	// after a proposed move
-	int Rakan::republican_seats()(int rid, int district){
+	int Rakan::republican_seats(int rid, int district){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if (this->_atlas[rid]->district == i){
 				d_votes -= this->_atlas[rid]->democrat_votes;
@@ -567,29 +579,31 @@ namespace rakan {
 				seats +=1;
 			}
 		}
+		return seats;
 	}
 	
 	
 	// Give the number of other seats in a simulated election
 	int Rakan::other_seats(){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if ( d_votes > r_votes && d_votes > o_votes ){
 				seats +=1;
 			}
 		}
+		return seats;
 	}
 	
 	// Give the number of other seats in a simulated election
 	// after a proposed move
-	int Rakan::other_seats()(int rid, int district){
+	int Rakan::other_seats(int rid, int district){
 		int seats = 0;
-		for (int i =0; i < this->_districts.size; i++){
-			int d_votes = this->_distrcts[i]->democrat_votes;
-			int r_votes = this->_distrcts[i]->republican_votes;
+		for (int i =0; i < (int)this->_districts.size(); i++){
+			int d_votes = this->_districts[i]->democrat_votes;
+			int r_votes = this->_districts[i]->republican_votes;
 			int o_votes = this->_districts[i]->other_votes;
 			if (this->_atlas[rid]->district == i){
 				d_votes -= this->_atlas[rid]->democrat_votes;
@@ -605,6 +619,8 @@ namespace rakan {
 				seats +=1;
 			}
 		}
+		return seats;
 	}
+	
 	
 }
