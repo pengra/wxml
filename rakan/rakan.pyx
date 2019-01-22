@@ -199,3 +199,27 @@ cdef class PyRakan:
             return self.__crakan.population_score()
         else:
             return self.__crakan.population_score(rid, district)
+			
+    def compactness_score(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.compactness_score()
+        else:
+            return self.__crakan.compactness_score(rid, district)
+
+    def democrat_seats(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.democrat_seats()
+        else:
+            return self.__crakan.democrat_seats(rid, district)
+
+    def republican_seats(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.republican_seats()
+        else:
+            return self.__crakan.republican_seats(rid, district)
+			
+    def other_seats(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.other_seats()
+        else:
+            return self.__crakan.other_seats(rid, district)

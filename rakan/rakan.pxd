@@ -86,14 +86,14 @@ cdef extern from "graph.h" namespace "rakan":
         # scoring
         double population_score() except +
         double population_score(int rid, int district) except +
-        double compactness_score() except +
-        double compactness_score(int rid, int district) except +
+        int compactness_score() except +
+        int compactness_score(int rid, int district) except +
         int democrat_seats() except +
         int democrat_seats(int rid, int district) except +
         int republican_seats() except +
         int republican_seats(int rid, int district) except +
         int other_seats() except +
-        int other_setas(int rid, int district) except +
+        int other_seats(int rid, int district) except +
 
         # internal methods
         cset[cpair[int, int]] _checks_required(int rid) except + # a set of paris that need to be checked that require are_connected checks

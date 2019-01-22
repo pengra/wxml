@@ -87,17 +87,17 @@ namespace rakan {
         std::pair<int, int> propose_random_move(); // propose a random move in the form of rid, new district
         void move_precinct(int rid, int district); // move the specified rid to the new district
 
-        // todo: scoring
+        // scoring
         double population_score();
         double population_score(int rid, int district);
         double compactness_score();
-        double compactness_score(int rid, int district);
+        double proposed_compactness_score(int rid, int district);
         int democrat_seats();
-        int democrat_seats(int rid, int district);
+        int proposed_democrat_seats(int rid, int district);
         int republican_seats();
-        int republican_seats(int rid, int district);
+        int proposed_republican_seats(int rid, int district);
         int other_seats();
-        int other_setas(int rid, int district);
+        int proposed_other_seats(int rid, int district);
 
         // internal methods
         std::set<std::pair<int, int>> _checks_required(int rid); // a set of paris that need to be checked that require are_connected checks
