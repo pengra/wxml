@@ -14,7 +14,9 @@ Full documentation: https://wxml.pengra.io
 
 ## Rakan Compilation Code
 
-Run: `python setup.py build_ext`
+Run: `./run.sh`
+A very simple interactive terminal will be available.
+Type `h` for help.
 
 ## Launch Xayah code
 
