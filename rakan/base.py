@@ -1,5 +1,5 @@
 try:
-    from rakan.rakan import PyRakan
+    from rakan import PyRakan
 except ImportError:
     # py.test import
     from .rakan.rakan import PyRakan
@@ -44,10 +44,12 @@ class BaseRakan(PyRakan):
                     "description": """<strong>{name}</strong><br/>
                     ID: {rid}<br/>
                     Population: {pop}<br/>
+                    District: {dis}<br/>
                     """.format(
                         name=self.nx_graph.nodes[precinct.rid]['name'],
                         rid=rid,
-                        pop=precinct.population
+                        pop=precinct.population,
+                        dis=precinct.district,
                     )
                 },
                 "geometry": {
