@@ -79,7 +79,7 @@ namespace rakan {
 		this->_districts[district]->area += this->_atlas[new_rid]->area;
 		this->_districts[district]->republican_votes += this->_atlas[new_rid]->republican_votes;
 		this->_districts[district]->democrat_votes += this->_atlas[new_rid]->democrat_votes;
-		this->_districts[district]->population += this->_atlas[new_rid]->other_votes;
+		this->_districts[district]->other_votes += this->_atlas[new_rid]->other_votes;
 
         // add to unchecked changes
         this->_unchecked_changes.push_back(new_rid);
