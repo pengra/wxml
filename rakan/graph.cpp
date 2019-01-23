@@ -8,9 +8,9 @@
 namespace rakan {
     // Simple Precinct Struct Constructors.
     Precinct::Precinct(int rid, int district) 
-        : rid(rid), district(district) { };
+        : rid(rid), district(district), area(0), democrat_votes(0), republican_votes(0), other_votes(0) { };
     Precinct::Precinct(int rid, int district, std::list<Precinct*> neighbors)
-        : rid(rid), district(district), neighbors(neighbors) { };
+        : rid(rid), district(district), democrat_votes(0), republican_votes(0), other_votes(0), neighbors(neighbors) { };
     
 	District::District()
 		: population(0), area(0), democrat_votes(0), republican_votes(0), other_votes(0) { };
@@ -33,9 +33,9 @@ namespace rakan {
         this->_atlas.reserve(size);
         this->_edges = DynamicBoundary(size);
         this->_districts = Districts(districts);
-		for (int i=0; i<districts; i++){
-			this->_districts[i] = new District;
-		}
+        for (int i=0; i<districts; i++){
+            this->_districts[i] = new District;
+        }
     };
 
     // == API FOR DEBUGGING IN PYTHON ==
