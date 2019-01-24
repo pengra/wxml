@@ -8,4 +8,5 @@ site/
 secrets*.*
 *.html
 *.json
-
+*.geojson
+*.ipynb
