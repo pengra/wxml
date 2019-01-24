@@ -2,27 +2,97 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Report</title>
+    <title>Rakan Export</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
     <style>
-        body { margin:0; padding:0; }
+        body { margin:0; padding:0; font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif; }
         header { top: 0; position:fixed; top: 0; height: 2em; z-index: 100 }
-        #searchbar { width: 100%; position: fixed; border: 0; height: 2em; padding: 10px; color: #666; }
-        #map { position:absolute; top:0; bottom:0; width:100%; z-index: 0}
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        h2 {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2dc4b2;
+        }
+
+        #console {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px 20px;
+            background-color: white;
+            width: 300px;
+        }
     </style>
 </head>
 <body>
 
 
 <div id='map'></div>
+<div id='console'>
+    <h1>Rakan Analysis Tool</h1>
+    <p>
+        Score: <span id="score">{"$SC"$}</span><br/>
+        Population Score: <span id="pscore">{"$SCP"$}</span><br/>
+        Compactness Score: <span id="cscore">{"$SCC"$}</span><br/>
+    </p>
+    Iterations: <input id='iterator' disabled onchange='updateInfo(this);' class='row' type='number' min='0' max='"{$IT$}"' step='1' value='"{$IT$}"' />
+</div>
+
 
 <script>
 mapboxgl.accessToken = 'pk.eyJ1Ijoibm9ydG9uanAiLCJhIjoiY2pyNWxjd25sMGZ4aTN6bzIwYTlleWJhMSJ9.TCtD0pLNE8IPnuLzEAtq-A';
 
-var geojsonDump = {"$DA":"TA$"};
-var searchResults = []
+var geojsonDump = [];
+var moves = [];
+var lastIter = "{$IT$}";
+
+var updateInfo = function(e) {
+    if (e >= moves.length) {
+        return;
+    }
+    $("#score").html(moves[e.value]['score']);
+    $("#cscore").html(moves[e.value]['cscore']);
+    $("#pscore").html(moves[e.value]['pscore']);
+    if (e.value > lastIter) {
+        for (var i = lastIter; i <= e.value; i++) {
+            geojsonDump.features[moves[i].move[0]].properties.district = moves[i].move[1];
+        }
+    } else if (e.value < lastIter) {
+        for (var i = lastIter; i >= e.value; i--) {
+            geojsonDump.features[moves[e.value].prev[0]].properties.district = moves[e.value].prev[1];
+        }
+    }
+
+    lastIter = e.value;
+    // map.getSource('precincts').setData(geojsonDump);
+}
+
+$.getJSON('moves.json').done(function(data) {
+    moves = data;
+})
 
 var map = new mapboxgl.Map({
     container: 'map',
@@ -31,81 +101,64 @@ var map = new mapboxgl.Map({
     zoom: 3
 });
 
-var searchBar = document.getElementById("searchbar");
-
 map.on('load', function () {
-    map.addLayer({
-        "id": "search",
-        "type": "fill",
-        "source": {
-            "type": "geojson",
-            "data": {
-                "type": "FeatureCollection",
-                "features": searchResults,
-            }
-        },
-        "paint": {
-            "fill-color": "#fff",
-            "fill-opacity": 1,
-        }
-    })
-
-    map.addLayer({
-        "id": "precincts",
-        "type": "fill",
-        "source": {
-            "type": "geojson",
-            "data": geojsonDump,
-        },
-        "layout": {
-        },
-        'paint': {
-            'fill-color': {
-                property: "district",
-                stops: [
-                    [0, "#001f3f"], // Navy
-                    [1, "#3D9970"], // Olive
-                    [2, "#FF851B"], // Orange
-                    [3, "#85144b"], // Maroon
-                    [4, "#AAAAAA"], // Silver
-                    [5, "#0074D9"], // Blue
-                    [6, "#2ECC40"], // Green
-                    [7, "#FF4136"], // Red
-                    [8, "#F012BE"], // Fuchsia
-                    [9, "#111111"], // Black
-                    [10, "#7FDBFF"], // Aqua
-                    [11, "#FFDC00"], // Yellow
-                    [12, "#B10DC9"], // Purple
-                    [13, "#39CCCC"], // Teal
-                    [14, "#01FF70"], // Lime
-                ]
+    $.getJSON({"$DA":"TA$"}, function(data) {
+        geojsonDump = data;
+        map.addSource('precincts', {
+            type: 'geojson',
+            data: geojsonDump
+        })
+    
+        map.addLayer({
+            "id": "precincts",
+            "type": "fill",
+            "source": 'precincts',
+            "layout": {
             },
-            'fill-opacity': 0.8
-        }
-    });
+            'paint': {
+                'fill-color': {
+                    property: "district",
+                    stops: [
+                        [0, "#001f3f"], // Navy
+                        [1, "#3D9970"], // Olive
+                        [2, "#FF851B"], // Orange
+                        [3, "#85144b"], // Maroon
+                        [4, "#AAAAAA"], // Silver
+                        [5, "#0074D9"], // Blue
+                        [6, "#2ECC40"], // Green
+                        [7, "#FF4136"], // Red
+                        [8, "#F012BE"], // Fuchsia
+                        [9, "#111111"], // Black
+                        [10, "#7FDBFF"], // Aqua
+                        [11, "#FFDC00"], // Yellow
+                        [12, "#B10DC9"], // Purple
+                        [13, "#39CCCC"], // Teal
+                        [14, "#01FF70"], // Lime
+                    ]
+                },
+                'fill-opacity': 0.8
+            }
+        });
 
-    var popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-    });
+        var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
 
-    map.on('click', 'precincts', function(e) {
-        // Change the cursor style as a UI indicator.
-        map.getCanvas().style.cursor = 'pointer';
+        map.on('click', 'precincts', function(e) {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
 
-        popup.setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.description)
-            .addTo(map);
-    });
+            popup.setLngLat(e.lngLat)
+                .setHTML(e.features[0].properties.description)
+                .addTo(map);
+        });
 
-    map.on('mouseleave', 'precincts', function() {
-        map.getCanvas().style.cursor = '';
-        popup.remove();
-    });
+        document.getElementById("iterator").disabled = false;
 
+        console.log(map.getCanvas().toDataURL());
+    })
 });
-
-
 </script>
 
 </body>

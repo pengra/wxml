@@ -12,6 +12,8 @@ import networkx
 import json
 import time
 
+import os
+
 class BaseRakan(PyRakan):
     """
     Basic Rakan format. Use as a template.
@@ -20,6 +22,7 @@ class BaseRakan(PyRakan):
     iterations = 0 # iterations rakan has gone through
     super_layer = 0 # super precinct layer
     nx_graph = None # the graph object
+    _move_history = [] # the set of moves unreported to xayah
 
     """
     Save the current rakan state to a file.
@@ -28,6 +31,8 @@ class BaseRakan(PyRakan):
     def save(self, nx_path="save.dnx"):
         for precinct in self.precincts:
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
+        self.nx_graph.graph['iterations'] = self.iterations
+        self.nx_graph.graph['move_history'] = self._move_history
         networkx.write_gpickle(self.nx_graph, nx_path)
 
     """
@@ -74,12 +79,52 @@ class BaseRakan(PyRakan):
     Generate a mapjsgl page.
     Used for analyzing how the districts have crawled around.
     """
-    def report(self, html_path="save.html"):
-        geojson = self.export(json_path=None)
+    def report(self, dir_path="save"):
+        try:
+            os.mkdir(dir_path)
+        except FileExistsError:
+            pass
+        self.export(json_path=os.path.join(dir_path, "map.geojson"))
         with open("rakan/template.htm") as handle:
             template = handle.read()
-            with open(html_path, "w") as w_handle:
-                w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
+            with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
+                w_handle.write(template.replace(
+                    '{"$DA":"TA$"}', '"./map.geojson"'
+                ).replace(
+                    '"{$IT$}"', str(self.iterations)
+                ).replace(
+                    '{"$SC"$}', str(self.score())
+                ).replace(
+                    '{"$SCP"$}', str(self.population_score())
+                ).replace(
+                    '{"$SCC"$}', str(self.compactness_score())
+                ))
+        with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
+            handle.write(json.dumps(self.move_history))
+
+    @property
+    def move_history(self):
+        """
+        Read only accessor to latest moves
+        """
+        return self._move_history
+
+    def record_move(self, rid, district, prev):
+        """
+        Record the move by rid and district.
+        Does not verify if the move plugged in is valid, nor if it actually happened.
+
+        This method should only be called after move_precinct with the same parameters
+        succesfully executes.
+        """
+        self._move_history.append({
+            "prev": (rid, prev),
+            "move": (rid, district),
+            "pscore": self.population_score(),
+            "cscore": self.compactness_score(),
+            "score": self.score(),
+            "index": self.iterations,
+        })
         
     """
     Build rakan from a .dnx file.
@@ -91,6 +136,8 @@ class BaseRakan(PyRakan):
             self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
+        self.iterations = self.nx_graph.graph.get('iterations', 0)
+        self._move_history = self.nx_graph.graph.get('move_history', list())
 
     # Scold the user for not implementing anything
     def step(self, *args, **kwargs):
@@ -119,37 +166,10 @@ class BaseRakanWithServer(BaseRakan):
     """
     ws_port = 3001 # websocket port
     update_speed = 1 # number of seconds of how often rakan sends xayah an update
-    _move_history = [] # the set of moves unreported to xayah
+    
     _thread_lock = False # a threadlock to prevent skipping moves
 
-    @property
-    def move_history(self):
-        """
-        Read only accessor to latest moves
-        """
-        return self._move_history
-
-    def record_move(self, rid, district):
-        """
-        Record the move by rid and district.
-        Does not verify if the move plugged in is valid, nor if it actually happened.
-
-        This method should only be called after move_precinct with the same parameters
-        succesfully executes.
-        """
-        while True:
-            # Thread lock logic
-
-            # is resource being accessed by different thread?
-            # if so, wait, otherwise, modify
-            if not self._thread_lock:
-                # resource is not busy, lock the thread
-                self._thread_lock = True
-                # modify resource
-                self._move_history.append((rid, district))
-                # unlock resource
-                self._thread_lock = False
-                break
+    
     
     def __init__(self, *args, **kwargs):
         """
