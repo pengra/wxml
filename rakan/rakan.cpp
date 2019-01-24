@@ -1414,24 +1414,25 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_8__str__(struct __pyx_obj_5rakan_PyRak
 static Py_ssize_t __pyx_pf_5rakan_7PyRakan_10__len__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_7PyRakan_9districts___get__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_7PyRakan_9precincts___get__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_12district_of(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_precinct); /* proto */
 static PyObject *__pyx_pf_5rakan_7PyRakan_5edges___get__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_7PyRakan_18_unchecked_changes___get__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_12add_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_district, int __pyx_v_population); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_14set_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_16get_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_20are_connected(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2, int __pyx_v_black_listed_rid); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_22is_valid(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_24propose_random_move(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_26move_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid, int __pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_38__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5rakan_7PyRakan_40__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_14add_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_district, int __pyx_v_population); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_16set_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_18get_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_20get_diff_district_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_22are_connected(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2, int __pyx_v_black_listed_rid); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_24is_valid(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_26propose_random_move(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_28move_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid, int __pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_30population_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_32compactness_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_34democrat_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_36republican_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_38other_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_40__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5rakan_7PyRakan_42__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_5rakan_PyPrecinct(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5rakan_PyDistrict(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5rakan_PyRakan(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -3889,7 +3890,7 @@ static Py_ssize_t __pyx_pf_5rakan_7PyRakan_10__len__(struct __pyx_obj_5rakan_PyR
   return __pyx_r;
 }
 
-/* "rakan.pyx":153
+/* "rakan.pyx":156
  * 
  *     @property
  *     def districts(self) -> list:             # <<<<<<<<<<<<<<
@@ -3923,7 +3924,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9districts___get__(struct __pyx_obj_5r
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "rakan.pyx":154
+  /* "rakan.pyx":157
  *     @property
  *     def districts(self) -> list:
  *         c_districts = self.__crakan.districts()             # <<<<<<<<<<<<<<
@@ -3934,18 +3935,18 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9districts___get__(struct __pyx_obj_5r
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.districts();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 154, __pyx_L1_error)
+    __PYX_ERR(1, 157, __pyx_L1_error)
   }
   __pyx_v_c_districts = __pyx_t_1;
 
-  /* "rakan.pyx":155
+  /* "rakan.pyx":158
  *     def districts(self) -> list:
  *         c_districts = self.__crakan.districts()
  *         py_districts = [PyDistrict.factory(dereference(_)) for _ in c_districts]             # <<<<<<<<<<<<<<
  *         return py_districts
  * 
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 155, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_v_c_districts.begin();
   for (;;) {
@@ -3953,15 +3954,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9districts___get__(struct __pyx_obj_5r
     __pyx_t_4 = *__pyx_t_3;
     ++__pyx_t_3;
     __pyx_v__ = __pyx_t_4;
-    __pyx_t_5 = __pyx_f_5rakan_10PyDistrict_factory((*__pyx_v__)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 155, __pyx_L1_error)
+    __pyx_t_5 = __pyx_f_5rakan_10PyDistrict_factory((*__pyx_v__)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_5))) __PYX_ERR(1, 155, __pyx_L1_error)
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_5))) __PYX_ERR(1, 158, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __pyx_v_py_districts = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "rakan.pyx":156
+  /* "rakan.pyx":159
  *         c_districts = self.__crakan.districts()
  *         py_districts = [PyDistrict.factory(dereference(_)) for _ in c_districts]
  *         return py_districts             # <<<<<<<<<<<<<<
@@ -3973,7 +3974,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9districts___get__(struct __pyx_obj_5r
   __pyx_r = __pyx_v_py_districts;
   goto __pyx_L0;
 
-  /* "rakan.pyx":153
+  /* "rakan.pyx":156
  * 
  *     @property
  *     def districts(self) -> list:             # <<<<<<<<<<<<<<
@@ -4071,7 +4072,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9precincts___get__(struct __pyx_obj_5r
  *         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
  *         return py_precincts             # <<<<<<<<<<<<<<
  * 
- *     @property
+ *     def district_of(self, precinct) -> int:
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_py_precincts);
@@ -4099,7 +4100,76 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_9precincts___get__(struct __pyx_obj_5r
   return __pyx_r;
 }
 
-/* "rakan.pyx":159
+/* "rakan.pyx":152
+ *         return py_precincts
+ * 
+ *     def district_of(self, precinct) -> int:             # <<<<<<<<<<<<<<
+ *         return self.__crakan.atlas()[precinct].district
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5rakan_7PyRakan_13district_of(PyObject *__pyx_v_self, PyObject *__pyx_v_precinct); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_13district_of(PyObject *__pyx_v_self, PyObject *__pyx_v_precinct) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("district_of (wrapper)", 0);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_12district_of(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((PyObject *)__pyx_v_precinct));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5rakan_7PyRakan_12district_of(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_precinct) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  std::vector<rakan::Precinct *>  __pyx_t_1;
+  std::vector<rakan::Precinct *> ::size_type __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("district_of", 0);
+
+  /* "rakan.pyx":153
+ * 
+ *     def district_of(self, precinct) -> int:
+ *         return self.__crakan.atlas()[precinct].district             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  try {
+    __pyx_t_1 = __pyx_v_self->__pyx___crakan.atlas();
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    __PYX_ERR(1, 153, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_precinct); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(1, 153, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int((__pyx_t_1[__pyx_t_2])->district); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 153, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "rakan.pyx":152
+ *         return py_precincts
+ * 
+ *     def district_of(self, precinct) -> int:             # <<<<<<<<<<<<<<
+ *         return self.__crakan.atlas()[precinct].district
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("rakan.PyRakan.district_of", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "rakan.pyx":162
  * 
  *     @property
  *     def edges(self) -> list:             # <<<<<<<<<<<<<<
@@ -4128,7 +4198,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_5edges___get__(struct __pyx_obj_5rakan
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "rakan.pyx":160
+  /* "rakan.pyx":163
  *     @property
  *     def edges(self) -> list:
  *         edges = self.__crakan.edges()             # <<<<<<<<<<<<<<
@@ -4139,11 +4209,11 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_5edges___get__(struct __pyx_obj_5rakan
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.edges();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 160, __pyx_L1_error)
+    __PYX_ERR(1, 163, __pyx_L1_error)
   }
   __pyx_v_edges = __pyx_t_1;
 
-  /* "rakan.pyx":161
+  /* "rakan.pyx":164
  *     def edges(self) -> list:
  *         edges = self.__crakan.edges()
  *         return edges._tree             # <<<<<<<<<<<<<<
@@ -4151,13 +4221,13 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_5edges___get__(struct __pyx_obj_5rakan
  *     # == API for myself ==
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_std_3a__3a_list_3c_int_3e____2c_std_3a__3a_list_3c_int_3e____3e___(__pyx_v_edges._tree); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 161, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_std_3a__3a_list_3c_int_3e____2c_std_3a__3a_list_3c_int_3e____3e___(__pyx_v_edges._tree); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 164, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":159
+  /* "rakan.pyx":162
  * 
  *     @property
  *     def edges(self) -> list:             # <<<<<<<<<<<<<<
@@ -4176,7 +4246,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_5edges___get__(struct __pyx_obj_5rakan
   return __pyx_r;
 }
 
-/* "rakan.pyx":166
+/* "rakan.pyx":169
  * 
  *     @property
  *     def _unchecked_changes(self) -> list:             # <<<<<<<<<<<<<<
@@ -4203,7 +4273,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18_unchecked_changes___get__(struct __
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "rakan.pyx":167
+  /* "rakan.pyx":170
  *     @property
  *     def _unchecked_changes(self) -> list:
  *         return self.__crakan._unchecked_changes             # <<<<<<<<<<<<<<
@@ -4211,13 +4281,13 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18_unchecked_changes___get__(struct __
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_list_to_py_int(__pyx_v_self->__pyx___crakan._unchecked_changes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 167, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_list_to_py_int(__pyx_v_self->__pyx___crakan._unchecked_changes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":166
+  /* "rakan.pyx":169
  * 
  *     @property
  *     def _unchecked_changes(self) -> list:             # <<<<<<<<<<<<<<
@@ -4236,7 +4306,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18_unchecked_changes___get__(struct __
   return __pyx_r;
 }
 
-/* "rakan.pyx":170
+/* "rakan.pyx":173
  * 
  *     @property
  *     def _checked_changes(self) -> list:             # <<<<<<<<<<<<<<
@@ -4263,7 +4333,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __py
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "rakan.pyx":171
+  /* "rakan.pyx":174
  *     @property
  *     def _checked_changes(self) -> list:
  *         return self.__crakan._checked_changes             # <<<<<<<<<<<<<<
@@ -4271,13 +4341,13 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __py
  *     # == API for construction ==
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_list_to_py_int(__pyx_v_self->__pyx___crakan._checked_changes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 171, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_list_to_py_int(__pyx_v_self->__pyx___crakan._checked_changes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":170
+  /* "rakan.pyx":173
  * 
  *     @property
  *     def _checked_changes(self) -> list:             # <<<<<<<<<<<<<<
@@ -4296,7 +4366,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __py
   return __pyx_r;
 }
 
-/* "rakan.pyx":175
+/* "rakan.pyx":178
  *     # == API for construction ==
  * 
  *     def add_precinct(self, int district, int population = 0) -> int:             # <<<<<<<<<<<<<<
@@ -4305,8 +4375,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_13add_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_13add_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_15add_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_15add_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_district;
   int __pyx_v_population;
   PyObject *__pyx_r = 0;
@@ -4339,7 +4409,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_13add_precinct(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_precinct") < 0)) __PYX_ERR(1, 175, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_precinct") < 0)) __PYX_ERR(1, 178, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4350,36 +4420,36 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_13add_precinct(PyObject *__pyx_v_self,
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_district = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_district == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 175, __pyx_L3_error)
+    __pyx_v_district = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_district == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 178, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_population = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_population == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 175, __pyx_L3_error)
+      __pyx_v_population = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_population == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 178, __pyx_L3_error)
     } else {
       __pyx_v_population = ((int)0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("add_precinct", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 175, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("add_precinct", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 178, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.add_precinct", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_12add_precinct(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_district, __pyx_v_population);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_14add_precinct(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_district, __pyx_v_population);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_12add_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_district, int __pyx_v_population) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_14add_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_district, int __pyx_v_population) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("add_precinct", 0);
 
-  /* "rakan.pyx":176
+  /* "rakan.pyx":179
  * 
  *     def add_precinct(self, int district, int population = 0) -> int:
  *         return self.__crakan.add_precinct(district, population)             # <<<<<<<<<<<<<<
@@ -4391,15 +4461,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_12add_precinct(struct __pyx_obj_5rakan
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.add_precinct(__pyx_v_district, __pyx_v_population);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 176, __pyx_L1_error)
+    __PYX_ERR(1, 179, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 176, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":175
+  /* "rakan.pyx":178
  *     # == API for construction ==
  * 
  *     def add_precinct(self, int district, int population = 0) -> int:             # <<<<<<<<<<<<<<
@@ -4418,7 +4488,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_12add_precinct(struct __pyx_obj_5rakan
   return __pyx_r;
 }
 
-/* "rakan.pyx":178
+/* "rakan.pyx":181
  *         return self.__crakan.add_precinct(district, population)
  * 
  *     def set_neighbors(self, int rid1, int rid2):             # <<<<<<<<<<<<<<
@@ -4427,8 +4497,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_12add_precinct(struct __pyx_obj_5rakan
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_15set_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_15set_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_17set_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_17set_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_rid1;
   int __pyx_v_rid2;
   PyObject *__pyx_r = 0;
@@ -4457,11 +4527,11 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_15set_neighbors(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rid2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_neighbors", 1, 2, 2, 1); __PYX_ERR(1, 178, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_neighbors", 1, 2, 2, 1); __PYX_ERR(1, 181, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_neighbors") < 0)) __PYX_ERR(1, 178, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_neighbors") < 0)) __PYX_ERR(1, 181, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4469,31 +4539,31 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_15set_neighbors(PyObject *__pyx_v_self
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_rid1 = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 178, __pyx_L3_error)
-    __pyx_v_rid2 = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_rid2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 178, __pyx_L3_error)
+    __pyx_v_rid1 = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 181, __pyx_L3_error)
+    __pyx_v_rid2 = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_rid2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 181, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_neighbors", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 178, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_neighbors", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 181, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.set_neighbors", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_14set_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid1, __pyx_v_rid2);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_16set_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid1, __pyx_v_rid2);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_14set_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_16set_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("set_neighbors", 0);
 
-  /* "rakan.pyx":179
+  /* "rakan.pyx":182
  * 
  *     def set_neighbors(self, int rid1, int rid2):
  *         return self.__crakan.set_neighbors(rid1, rid2)             # <<<<<<<<<<<<<<
@@ -4505,15 +4575,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_14set_neighbors(struct __pyx_obj_5raka
     __pyx_v_self->__pyx___crakan.set_neighbors(__pyx_v_rid1, __pyx_v_rid2);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 179, __pyx_L1_error)
+    __PYX_ERR(1, 182, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 179, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":178
+  /* "rakan.pyx":181
  *         return self.__crakan.add_precinct(district, population)
  * 
  *     def set_neighbors(self, int rid1, int rid2):             # <<<<<<<<<<<<<<
@@ -4532,7 +4602,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_14set_neighbors(struct __pyx_obj_5raka
   return __pyx_r;
 }
 
-/* "rakan.pyx":183
+/* "rakan.pyx":186
  *     # == API for the mathematicians ==
  * 
  *     def get_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
@@ -4541,14 +4611,14 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_14set_neighbors(struct __pyx_obj_5raka
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_17get_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_17get_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_19get_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_19get_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid) {
   int __pyx_v_rid;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_neighbors (wrapper)", 0);
   assert(__pyx_arg_rid); {
-    __pyx_v_rid = __Pyx_PyInt_As_int(__pyx_arg_rid); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 183, __pyx_L3_error)
+    __pyx_v_rid = __Pyx_PyInt_As_int(__pyx_arg_rid); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 186, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4556,21 +4626,21 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_17get_neighbors(PyObject *__pyx_v_self
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_16get_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((int)__pyx_v_rid));
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_18get_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((int)__pyx_v_rid));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_16get_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_18get_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   std::map<int,std::list<int> >  __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_neighbors", 0);
 
-  /* "rakan.pyx":184
+  /* "rakan.pyx":187
  * 
  *     def get_neighbors(self, int rid) -> dict:
  *         return self.__crakan.get_neighbors(rid)             # <<<<<<<<<<<<<<
@@ -4580,84 +4650,6 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16get_neighbors(struct __pyx_obj_5raka
   __Pyx_XDECREF(__pyx_r);
   try {
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.get_neighbors(__pyx_v_rid);
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 184, __pyx_L1_error)
-  }
-  __pyx_t_2 = __pyx_convert_map_to_py_int____std_3a__3a_list_3c_int_3e___(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 184, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyDict_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 184, __pyx_L1_error)
-  __pyx_r = ((PyObject*)__pyx_t_2);
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "rakan.pyx":183
- *     # == API for the mathematicians ==
- * 
- *     def get_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
- *         return self.__crakan.get_neighbors(rid)
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("rakan.PyRakan.get_neighbors", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "rakan.pyx":186
- *         return self.__crakan.get_neighbors(rid)
- * 
- *     def get_diff_district_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
- *         return self.__crakan.get_diff_district_neighbors(rid)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_19get_diff_district_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_19get_diff_district_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid) {
-  int __pyx_v_rid;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("get_diff_district_neighbors (wrapper)", 0);
-  assert(__pyx_arg_rid); {
-    __pyx_v_rid = __Pyx_PyInt_As_int(__pyx_arg_rid); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 186, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("rakan.PyRakan.get_diff_district_neighbors", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((int)__pyx_v_rid));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  std::map<int,std::list<int> >  __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  __Pyx_RefNannySetupContext("get_diff_district_neighbors", 0);
-
-  /* "rakan.pyx":187
- * 
- *     def get_diff_district_neighbors(self, int rid) -> dict:
- *         return self.__crakan.get_diff_district_neighbors(rid)             # <<<<<<<<<<<<<<
- * 
- *     def are_connected(self, int rid1, int rid2, int black_listed_rid = -1) -> bool:
- */
-  __Pyx_XDECREF(__pyx_r);
-  try {
-    __pyx_t_1 = __pyx_v_self->__pyx___crakan.get_diff_district_neighbors(__pyx_v_rid);
   } catch(...) {
     __Pyx_CppExn2PyErr();
     __PYX_ERR(1, 187, __pyx_L1_error)
@@ -4670,6 +4662,84 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(struct _
   goto __pyx_L0;
 
   /* "rakan.pyx":186
+ *     # == API for the mathematicians ==
+ * 
+ *     def get_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
+ *         return self.__crakan.get_neighbors(rid)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("rakan.PyRakan.get_neighbors", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "rakan.pyx":189
+ *         return self.__crakan.get_neighbors(rid)
+ * 
+ *     def get_diff_district_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
+ *         return self.__crakan.get_diff_district_neighbors(rid)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5rakan_7PyRakan_21get_diff_district_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_21get_diff_district_neighbors(PyObject *__pyx_v_self, PyObject *__pyx_arg_rid) {
+  int __pyx_v_rid;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_diff_district_neighbors (wrapper)", 0);
+  assert(__pyx_arg_rid); {
+    __pyx_v_rid = __Pyx_PyInt_As_int(__pyx_arg_rid); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 189, __pyx_L3_error)
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("rakan.PyRakan.get_diff_district_neighbors", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_20get_diff_district_neighbors(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((int)__pyx_v_rid));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5rakan_7PyRakan_20get_diff_district_neighbors(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  std::map<int,std::list<int> >  __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("get_diff_district_neighbors", 0);
+
+  /* "rakan.pyx":190
+ * 
+ *     def get_diff_district_neighbors(self, int rid) -> dict:
+ *         return self.__crakan.get_diff_district_neighbors(rid)             # <<<<<<<<<<<<<<
+ * 
+ *     def are_connected(self, int rid1, int rid2, int black_listed_rid = -1) -> bool:
+ */
+  __Pyx_XDECREF(__pyx_r);
+  try {
+    __pyx_t_1 = __pyx_v_self->__pyx___crakan.get_diff_district_neighbors(__pyx_v_rid);
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    __PYX_ERR(1, 190, __pyx_L1_error)
+  }
+  __pyx_t_2 = __pyx_convert_map_to_py_int____std_3a__3a_list_3c_int_3e___(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 190, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (!(likely(PyDict_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 190, __pyx_L1_error)
+  __pyx_r = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "rakan.pyx":189
  *         return self.__crakan.get_neighbors(rid)
  * 
  *     def get_diff_district_neighbors(self, int rid) -> dict:             # <<<<<<<<<<<<<<
@@ -4688,7 +4758,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(struct _
   return __pyx_r;
 }
 
-/* "rakan.pyx":189
+/* "rakan.pyx":192
  *         return self.__crakan.get_diff_district_neighbors(rid)
  * 
  *     def are_connected(self, int rid1, int rid2, int black_listed_rid = -1) -> bool:             # <<<<<<<<<<<<<<
@@ -4697,8 +4767,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_18get_diff_district_neighbors(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_21are_connected(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_21are_connected(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_23are_connected(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_23are_connected(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_rid1;
   int __pyx_v_rid2;
   int __pyx_v_black_listed_rid;
@@ -4730,7 +4800,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_21are_connected(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rid2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("are_connected", 0, 2, 3, 1); __PYX_ERR(1, 189, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("are_connected", 0, 2, 3, 1); __PYX_ERR(1, 192, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -4740,7 +4810,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_21are_connected(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "are_connected") < 0)) __PYX_ERR(1, 189, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "are_connected") < 0)) __PYX_ERR(1, 192, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4752,37 +4822,37 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_21are_connected(PyObject *__pyx_v_self
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_rid1 = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 189, __pyx_L3_error)
-    __pyx_v_rid2 = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_rid2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 189, __pyx_L3_error)
+    __pyx_v_rid1 = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 192, __pyx_L3_error)
+    __pyx_v_rid2 = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_rid2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 192, __pyx_L3_error)
     if (values[2]) {
-      __pyx_v_black_listed_rid = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_black_listed_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 189, __pyx_L3_error)
+      __pyx_v_black_listed_rid = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_black_listed_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 192, __pyx_L3_error)
     } else {
       __pyx_v_black_listed_rid = ((int)-1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("are_connected", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 189, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("are_connected", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 192, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.are_connected", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_20are_connected(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid1, __pyx_v_rid2, __pyx_v_black_listed_rid);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_22are_connected(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid1, __pyx_v_rid2, __pyx_v_black_listed_rid);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_20are_connected(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2, int __pyx_v_black_listed_rid) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_22are_connected(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid1, int __pyx_v_rid2, int __pyx_v_black_listed_rid) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   bool __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("are_connected", 0);
 
-  /* "rakan.pyx":190
+  /* "rakan.pyx":193
  * 
  *     def are_connected(self, int rid1, int rid2, int black_listed_rid = -1) -> bool:
  *         return self.__crakan.are_connected(rid1, rid2, black_listed_rid)             # <<<<<<<<<<<<<<
@@ -4794,15 +4864,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_20are_connected(struct __pyx_obj_5raka
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.are_connected(__pyx_v_rid1, __pyx_v_rid2, __pyx_v_black_listed_rid);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 190, __pyx_L1_error)
+    __PYX_ERR(1, 193, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 190, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":189
+  /* "rakan.pyx":192
  *         return self.__crakan.get_diff_district_neighbors(rid)
  * 
  *     def are_connected(self, int rid1, int rid2, int black_listed_rid = -1) -> bool:             # <<<<<<<<<<<<<<
@@ -4821,7 +4891,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_20are_connected(struct __pyx_obj_5raka
   return __pyx_r;
 }
 
-/* "rakan.pyx":192
+/* "rakan.pyx":195
  *         return self.__crakan.are_connected(rid1, rid2, black_listed_rid)
  * 
  *     def is_valid(self) -> bool:             # <<<<<<<<<<<<<<
@@ -4830,26 +4900,26 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_20are_connected(struct __pyx_obj_5raka
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_23is_valid(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_23is_valid(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_25is_valid(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_25is_valid(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("is_valid (wrapper)", 0);
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_22is_valid(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_24is_valid(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_22is_valid(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_24is_valid(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   bool __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("is_valid", 0);
 
-  /* "rakan.pyx":193
+  /* "rakan.pyx":196
  * 
  *     def is_valid(self) -> bool:
  *         return self.__crakan.is_valid()             # <<<<<<<<<<<<<<
@@ -4861,15 +4931,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_22is_valid(struct __pyx_obj_5rakan_PyR
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.is_valid();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 193, __pyx_L1_error)
+    __PYX_ERR(1, 196, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 193, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":192
+  /* "rakan.pyx":195
  *         return self.__crakan.are_connected(rid1, rid2, black_listed_rid)
  * 
  *     def is_valid(self) -> bool:             # <<<<<<<<<<<<<<
@@ -4888,7 +4958,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_22is_valid(struct __pyx_obj_5rakan_PyR
   return __pyx_r;
 }
 
-/* "rakan.pyx":195
+/* "rakan.pyx":198
  *         return self.__crakan.is_valid()
  * 
  *     def propose_random_move(self) -> tuple:             # <<<<<<<<<<<<<<
@@ -4897,26 +4967,26 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_22is_valid(struct __pyx_obj_5rakan_PyR
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_25propose_random_move(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_25propose_random_move(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_27propose_random_move(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_27propose_random_move(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("propose_random_move (wrapper)", 0);
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_24propose_random_move(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_26propose_random_move(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_24propose_random_move(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_26propose_random_move(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   std::pair<int,int>  __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("propose_random_move", 0);
 
-  /* "rakan.pyx":196
+  /* "rakan.pyx":199
  * 
  *     def propose_random_move(self) -> tuple:
  *         return self.__crakan.propose_random_move()             # <<<<<<<<<<<<<<
@@ -4928,16 +4998,16 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_24propose_random_move(struct __pyx_obj
     __pyx_t_1 = __pyx_v_self->__pyx___crakan.propose_random_move();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 196, __pyx_L1_error)
+    __PYX_ERR(1, 199, __pyx_L1_error)
   }
-  __pyx_t_2 = __pyx_convert_pair_to_py_int____int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 196, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_pair_to_py_int____int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyTuple_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 196, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 199, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":195
+  /* "rakan.pyx":198
  *         return self.__crakan.is_valid()
  * 
  *     def propose_random_move(self) -> tuple:             # <<<<<<<<<<<<<<
@@ -4956,7 +5026,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_24propose_random_move(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "rakan.pyx":198
+/* "rakan.pyx":201
  *         return self.__crakan.propose_random_move()
  * 
  *     def move_precinct(self, int rid, int district):             # <<<<<<<<<<<<<<
@@ -4965,8 +5035,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_24propose_random_move(struct __pyx_obj
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_27move_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_27move_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_29move_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_29move_precinct(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_v_rid;
   int __pyx_v_district;
   PyObject *__pyx_r = 0;
@@ -4995,11 +5065,11 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_27move_precinct(PyObject *__pyx_v_self
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_district)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("move_precinct", 1, 2, 2, 1); __PYX_ERR(1, 198, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("move_precinct", 1, 2, 2, 1); __PYX_ERR(1, 201, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_precinct") < 0)) __PYX_ERR(1, 198, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "move_precinct") < 0)) __PYX_ERR(1, 201, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5007,31 +5077,31 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_27move_precinct(PyObject *__pyx_v_self
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_rid = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 198, __pyx_L3_error)
-    __pyx_v_district = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_district == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 198, __pyx_L3_error)
+    __pyx_v_rid = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_rid == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 201, __pyx_L3_error)
+    __pyx_v_district = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_district == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 201, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("move_precinct", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 198, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("move_precinct", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 201, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.move_precinct", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_26move_precinct(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_28move_precinct(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_26move_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid, int __pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_28move_precinct(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, int __pyx_v_rid, int __pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("move_precinct", 0);
 
-  /* "rakan.pyx":199
+  /* "rakan.pyx":202
  * 
  *     def move_precinct(self, int rid, int district):
  *         return self.__crakan.move_precinct(rid, district)             # <<<<<<<<<<<<<<
@@ -5043,15 +5113,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_26move_precinct(struct __pyx_obj_5raka
     __pyx_v_self->__pyx___crakan.move_precinct(__pyx_v_rid, __pyx_v_district);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(1, 199, __pyx_L1_error)
+    __PYX_ERR(1, 202, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 199, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "rakan.pyx":198
+  /* "rakan.pyx":201
  *         return self.__crakan.propose_random_move()
  * 
  *     def move_precinct(self, int rid, int district):             # <<<<<<<<<<<<<<
@@ -5070,7 +5140,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_26move_precinct(struct __pyx_obj_5raka
   return __pyx_r;
 }
 
-/* "rakan.pyx":201
+/* "rakan.pyx":204
  *         return self.__crakan.move_precinct(rid, district)
  * 
  *     def population_score(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5079,8 +5149,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_26move_precinct(struct __pyx_obj_5raka
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_29population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_29population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_31population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_31population_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rid = 0;
   PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
@@ -5117,7 +5187,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_29population_score(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "population_score") < 0)) __PYX_ERR(1, 201, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "population_score") < 0)) __PYX_ERR(1, 204, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5134,20 +5204,20 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_29population_score(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("population_score", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 201, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("population_score", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 204, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.population_score", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_28population_score(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_30population_score(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_30population_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5159,7 +5229,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("population_score", 0);
 
-  /* "rakan.pyx":202
+  /* "rakan.pyx":205
  * 
  *     def population_score(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5179,7 +5249,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "rakan.pyx":203
+    /* "rakan.pyx":206
  *     def population_score(self, rid=None, district=None):
  *         if rid is None and district is None:
  *             return self.__crakan.population_score()             # <<<<<<<<<<<<<<
@@ -5191,15 +5261,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.population_score();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 203, __pyx_L1_error)
+      __PYX_ERR(1, 206, __pyx_L1_error)
     }
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 203, __pyx_L1_error)
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 206, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "rakan.pyx":202
+    /* "rakan.pyx":205
  * 
  *     def population_score(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5208,7 +5278,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
  */
   }
 
-  /* "rakan.pyx":205
+  /* "rakan.pyx":208
  *             return self.__crakan.population_score()
  *         else:
  *             return self.__crakan.population_score(rid, district)             # <<<<<<<<<<<<<<
@@ -5217,22 +5287,22 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 205, __pyx_L1_error)
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 205, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 208, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 208, __pyx_L1_error)
     try {
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.population_score(__pyx_t_6, __pyx_t_7);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 205, __pyx_L1_error)
+      __PYX_ERR(1, 208, __pyx_L1_error)
     }
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 205, __pyx_L1_error)
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "rakan.pyx":201
+  /* "rakan.pyx":204
  *         return self.__crakan.move_precinct(rid, district)
  * 
  *     def population_score(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5251,7 +5321,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
   return __pyx_r;
 }
 
-/* "rakan.pyx":207
+/* "rakan.pyx":210
  *             return self.__crakan.population_score(rid, district)
  * 
  *     def compactness_score(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5260,8 +5330,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_28population_score(struct __pyx_obj_5r
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_31compactness_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_31compactness_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_33compactness_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_33compactness_score(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rid = 0;
   PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
@@ -5298,7 +5368,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_31compactness_score(PyObject *__pyx_v_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compactness_score") < 0)) __PYX_ERR(1, 207, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compactness_score") < 0)) __PYX_ERR(1, 210, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5315,20 +5385,20 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_31compactness_score(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("compactness_score", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 207, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("compactness_score", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 210, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.compactness_score", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_30compactness_score(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_32compactness_score(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_32compactness_score(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5340,7 +5410,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("compactness_score", 0);
 
-  /* "rakan.pyx":208
+  /* "rakan.pyx":211
  * 
  *     def compactness_score(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5360,7 +5430,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "rakan.pyx":209
+    /* "rakan.pyx":212
  *     def compactness_score(self, rid=None, district=None):
  *         if rid is None and district is None:
  *             return self.__crakan.compactness_score()             # <<<<<<<<<<<<<<
@@ -5372,15 +5442,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.compactness_score();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 209, __pyx_L1_error)
+      __PYX_ERR(1, 212, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 209, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 212, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "rakan.pyx":208
+    /* "rakan.pyx":211
  * 
  *     def compactness_score(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5389,7 +5459,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
  */
   }
 
-  /* "rakan.pyx":211
+  /* "rakan.pyx":214
  *             return self.__crakan.compactness_score()
  *         else:
  *             return self.__crakan.compactness_score(rid, district)             # <<<<<<<<<<<<<<
@@ -5398,22 +5468,22 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 211, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 211, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 214, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 214, __pyx_L1_error)
     try {
       __pyx_t_7 = __pyx_v_self->__pyx___crakan.compactness_score(__pyx_t_4, __pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 211, __pyx_L1_error)
+      __PYX_ERR(1, 214, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 211, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 214, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "rakan.pyx":207
+  /* "rakan.pyx":210
  *             return self.__crakan.population_score(rid, district)
  * 
  *     def compactness_score(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5432,7 +5502,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
   return __pyx_r;
 }
 
-/* "rakan.pyx":213
+/* "rakan.pyx":216
  *             return self.__crakan.compactness_score(rid, district)
  * 
  *     def democrat_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5441,8 +5511,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_30compactness_score(struct __pyx_obj_5
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_33democrat_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_33democrat_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_35democrat_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_35democrat_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rid = 0;
   PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
@@ -5479,7 +5549,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_33democrat_seats(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "democrat_seats") < 0)) __PYX_ERR(1, 213, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "democrat_seats") < 0)) __PYX_ERR(1, 216, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5496,20 +5566,20 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_33democrat_seats(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("democrat_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 213, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("democrat_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 216, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.democrat_seats", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_32democrat_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_34democrat_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_34democrat_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5521,7 +5591,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("democrat_seats", 0);
 
-  /* "rakan.pyx":214
+  /* "rakan.pyx":217
  * 
  *     def democrat_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5541,7 +5611,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "rakan.pyx":215
+    /* "rakan.pyx":218
  *     def democrat_seats(self, rid=None, district=None):
  *         if rid is None and district is None:
  *             return self.__crakan.democrat_seats()             # <<<<<<<<<<<<<<
@@ -5553,15 +5623,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.democrat_seats();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 215, __pyx_L1_error)
+      __PYX_ERR(1, 218, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 215, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 218, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "rakan.pyx":214
+    /* "rakan.pyx":217
  * 
  *     def democrat_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5570,7 +5640,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
  */
   }
 
-  /* "rakan.pyx":217
+  /* "rakan.pyx":220
  *             return self.__crakan.democrat_seats()
  *         else:
  *             return self.__crakan.democrat_seats(rid, district)             # <<<<<<<<<<<<<<
@@ -5579,22 +5649,22 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 217, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 217, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 220, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 220, __pyx_L1_error)
     try {
       __pyx_t_7 = __pyx_v_self->__pyx___crakan.democrat_seats(__pyx_t_4, __pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 217, __pyx_L1_error)
+      __PYX_ERR(1, 220, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 217, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "rakan.pyx":213
+  /* "rakan.pyx":216
  *             return self.__crakan.compactness_score(rid, district)
  * 
  *     def democrat_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5613,7 +5683,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
   return __pyx_r;
 }
 
-/* "rakan.pyx":219
+/* "rakan.pyx":222
  *             return self.__crakan.democrat_seats(rid, district)
  * 
  *     def republican_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5622,8 +5692,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_32democrat_seats(struct __pyx_obj_5rak
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_35republican_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_35republican_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_37republican_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_37republican_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rid = 0;
   PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
@@ -5660,7 +5730,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_35republican_seats(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "republican_seats") < 0)) __PYX_ERR(1, 219, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "republican_seats") < 0)) __PYX_ERR(1, 222, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5677,20 +5747,20 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_35republican_seats(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("republican_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 219, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("republican_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 222, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.republican_seats", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_34republican_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_36republican_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_36republican_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5702,7 +5772,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("republican_seats", 0);
 
-  /* "rakan.pyx":220
+  /* "rakan.pyx":223
  * 
  *     def republican_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5722,7 +5792,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "rakan.pyx":221
+    /* "rakan.pyx":224
  *     def republican_seats(self, rid=None, district=None):
  *         if rid is None and district is None:
  *             return self.__crakan.republican_seats()             # <<<<<<<<<<<<<<
@@ -5734,15 +5804,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.republican_seats();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 221, __pyx_L1_error)
+      __PYX_ERR(1, 224, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 221, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 224, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "rakan.pyx":220
+    /* "rakan.pyx":223
  * 
  *     def republican_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5751,7 +5821,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
  */
   }
 
-  /* "rakan.pyx":223
+  /* "rakan.pyx":226
  *             return self.__crakan.republican_seats()
  *         else:
  *             return self.__crakan.republican_seats(rid, district)             # <<<<<<<<<<<<<<
@@ -5760,22 +5830,22 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 223, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 223, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 226, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 226, __pyx_L1_error)
     try {
       __pyx_t_7 = __pyx_v_self->__pyx___crakan.republican_seats(__pyx_t_4, __pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 223, __pyx_L1_error)
+      __PYX_ERR(1, 226, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 223, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 226, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "rakan.pyx":219
+  /* "rakan.pyx":222
  *             return self.__crakan.democrat_seats(rid, district)
  * 
  *     def republican_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5794,7 +5864,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
   return __pyx_r;
 }
 
-/* "rakan.pyx":225
+/* "rakan.pyx":228
  *             return self.__crakan.republican_seats(rid, district)
  * 
  *     def other_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5803,8 +5873,8 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_34republican_seats(struct __pyx_obj_5r
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_37other_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_37other_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_39other_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_39other_seats(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rid = 0;
   PyObject *__pyx_v_district = 0;
   PyObject *__pyx_r = 0;
@@ -5841,7 +5911,7 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_37other_seats(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "other_seats") < 0)) __PYX_ERR(1, 225, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "other_seats") < 0)) __PYX_ERR(1, 228, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5858,20 +5928,20 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_37other_seats(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("other_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 225, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("other_seats", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 228, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("rakan.PyRakan.other_seats", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_36other_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_38other_seats(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), __pyx_v_rid, __pyx_v_district);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_38other_seats(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, PyObject *__pyx_v_rid, PyObject *__pyx_v_district) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5883,7 +5953,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("other_seats", 0);
 
-  /* "rakan.pyx":226
+  /* "rakan.pyx":229
  * 
  *     def other_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5903,7 +5973,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "rakan.pyx":227
+    /* "rakan.pyx":230
  *     def other_seats(self, rid=None, district=None):
  *         if rid is None and district is None:
  *             return self.__crakan.other_seats()             # <<<<<<<<<<<<<<
@@ -5915,15 +5985,15 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_
       __pyx_t_4 = __pyx_v_self->__pyx___crakan.other_seats();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 227, __pyx_L1_error)
+      __PYX_ERR(1, 230, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 227, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "rakan.pyx":226
+    /* "rakan.pyx":229
  * 
  *     def other_seats(self, rid=None, district=None):
  *         if rid is None and district is None:             # <<<<<<<<<<<<<<
@@ -5932,29 +6002,29 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_
  */
   }
 
-  /* "rakan.pyx":229
+  /* "rakan.pyx":232
  *             return self.__crakan.other_seats()
  *         else:
  *             return self.__crakan.other_seats(rid, district)             # <<<<<<<<<<<<<<
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 229, __pyx_L1_error)
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 229, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_As_int(__pyx_v_rid); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 232, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_district); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 232, __pyx_L1_error)
     try {
       __pyx_t_7 = __pyx_v_self->__pyx___crakan.other_seats(__pyx_t_4, __pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(1, 229, __pyx_L1_error)
+      __PYX_ERR(1, 232, __pyx_L1_error)
     }
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 229, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 
-  /* "rakan.pyx":225
+  /* "rakan.pyx":228
  *             return self.__crakan.republican_seats(rid, district)
  * 
  *     def other_seats(self, rid=None, district=None):             # <<<<<<<<<<<<<<
@@ -5980,19 +6050,19 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_36other_seats(struct __pyx_obj_5rakan_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_39__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_39__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_41__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_41__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_38__reduce_cython__(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_40__reduce_cython__(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_38__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_40__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6034,19 +6104,19 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_38__reduce_cython__(CYTHON_UNUSED stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5rakan_7PyRakan_41__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_5rakan_7PyRakan_41__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5rakan_7PyRakan_43__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_5rakan_7PyRakan_43__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5rakan_7PyRakan_40__setstate_cython__(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5rakan_7PyRakan_42__setstate_cython__(((struct __pyx_obj_5rakan_PyRakan *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5rakan_7PyRakan_40__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5rakan_7PyRakan_42__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5rakan_PyRakan *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6841,21 +6911,22 @@ static PyObject *__pyx_getprop_5rakan_7PyRakan__checked_changes(PyObject *o, CYT
 
 static PyMethodDef __pyx_methods_5rakan_PyRakan[] = {
   {"_reset", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_5_reset, METH_VARARGS|METH_KEYWORDS, 0},
-  {"add_precinct", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_13add_precinct, METH_VARARGS|METH_KEYWORDS, 0},
-  {"set_neighbors", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_15set_neighbors, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_neighbors", (PyCFunction)__pyx_pw_5rakan_7PyRakan_17get_neighbors, METH_O, 0},
-  {"get_diff_district_neighbors", (PyCFunction)__pyx_pw_5rakan_7PyRakan_19get_diff_district_neighbors, METH_O, 0},
-  {"are_connected", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_21are_connected, METH_VARARGS|METH_KEYWORDS, 0},
-  {"is_valid", (PyCFunction)__pyx_pw_5rakan_7PyRakan_23is_valid, METH_NOARGS, 0},
-  {"propose_random_move", (PyCFunction)__pyx_pw_5rakan_7PyRakan_25propose_random_move, METH_NOARGS, 0},
-  {"move_precinct", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_27move_precinct, METH_VARARGS|METH_KEYWORDS, 0},
-  {"population_score", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_29population_score, METH_VARARGS|METH_KEYWORDS, 0},
-  {"compactness_score", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_31compactness_score, METH_VARARGS|METH_KEYWORDS, 0},
-  {"democrat_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_33democrat_seats, METH_VARARGS|METH_KEYWORDS, 0},
-  {"republican_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_35republican_seats, METH_VARARGS|METH_KEYWORDS, 0},
-  {"other_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_37other_seats, METH_VARARGS|METH_KEYWORDS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_5rakan_7PyRakan_39__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_5rakan_7PyRakan_41__setstate_cython__, METH_O, 0},
+  {"district_of", (PyCFunction)__pyx_pw_5rakan_7PyRakan_13district_of, METH_O, 0},
+  {"add_precinct", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_15add_precinct, METH_VARARGS|METH_KEYWORDS, 0},
+  {"set_neighbors", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_17set_neighbors, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_neighbors", (PyCFunction)__pyx_pw_5rakan_7PyRakan_19get_neighbors, METH_O, 0},
+  {"get_diff_district_neighbors", (PyCFunction)__pyx_pw_5rakan_7PyRakan_21get_diff_district_neighbors, METH_O, 0},
+  {"are_connected", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_23are_connected, METH_VARARGS|METH_KEYWORDS, 0},
+  {"is_valid", (PyCFunction)__pyx_pw_5rakan_7PyRakan_25is_valid, METH_NOARGS, 0},
+  {"propose_random_move", (PyCFunction)__pyx_pw_5rakan_7PyRakan_27propose_random_move, METH_NOARGS, 0},
+  {"move_precinct", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_29move_precinct, METH_VARARGS|METH_KEYWORDS, 0},
+  {"population_score", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_31population_score, METH_VARARGS|METH_KEYWORDS, 0},
+  {"compactness_score", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_33compactness_score, METH_VARARGS|METH_KEYWORDS, 0},
+  {"democrat_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_35democrat_seats, METH_VARARGS|METH_KEYWORDS, 0},
+  {"republican_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_37republican_seats, METH_VARARGS|METH_KEYWORDS, 0},
+  {"other_seats", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5rakan_7PyRakan_39other_seats, METH_VARARGS|METH_KEYWORDS, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5rakan_7PyRakan_41__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5rakan_7PyRakan_43__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 

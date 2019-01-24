@@ -487,19 +487,19 @@ namespace rakan {
 		for (int i = 0; i < (int)this->_atlas[rid]->neighbors.size()-1; i++){
 			int neighbor_rid = (*prcnct)->rid;
 			if (this->_atlas[neighbor_rid]->district == district){
-				score -= 1;
+				score -= 2;
 			}
 			if (this->_atlas[neighbor_rid]->district == this->_atlas[rid]->district){
-				score += 1;
+				score += 2;
 			}
 		std::advance(prcnct, 1);
 		}
 		int neighbor_rid = (*prcnct)->rid;
 		if (this->_atlas[neighbor_rid]->district == district){
-			score -= 1;
+			score -= 2;
 		}
 		if (this->_atlas[neighbor_rid]->district == this->_atlas[rid]->district){
-			score += 1;
+			score += 2;
 		}
 		return score;
 	}
