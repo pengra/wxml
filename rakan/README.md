@@ -36,3 +36,5 @@ Note the `networkx` file must contain the following properties:
     - `state` (string) the full state name (e.g. Washington)
     - `districts` (integer) the number of districts in this graph. Use `-1` if no districts assigned (`.dnx` files should always have districts).
     - `is_super` (integer value) describes whether this networkx file contains super precincts. Super precincts should be stored in the same graph, but should not be connected to the non-super precincts in any way. All nodes that are super precincts must be marked with the `is_super` property. If 0, then there are no super layers.
+    - `iterations` (integer value) describes the number of iterations this graph has gone through. Assumes value is 0 if not present.
+    - `move_history` (list of dictionaries) describes the move history of the saved file.
