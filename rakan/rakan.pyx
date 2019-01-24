@@ -149,6 +149,9 @@ cdef class PyRakan:
         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
         return py_precincts
 		
+    def district_of(self, precinct) -> int:
+        return self.__crakan.atlas()[precinct].district
+
     @property
     def districts(self) -> list:
         c_districts = self.__crakan.districts()
