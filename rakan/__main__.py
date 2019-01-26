@@ -1,4 +1,4 @@
-from rakan import BaseRakan
+from base import BaseRakan
 from progress.bar import IncrementalBar
 
 import time
@@ -38,17 +38,8 @@ Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
 """
 def build_rakan(nx_path):
-    graph = networkx.read_gpickle(nx_path)
-    print("=" * 80)
-    print("Adjust the Graph as you see fit. Results will be saved. Type 'pdb' to modify.")
-    print("=" * 80)
-    if input(">>> continue? <enter> or 'pdb' ") == 'pdb':
-        import pdb; pdb.set_trace()
-        networkx.write_gpickle(graph, nx_path)
-
-    r = Rakan()
+    r = Rakan(0, 0)
     r.read_nx(nx_path)
-
     return r
 
 if __name__ == "__main__":
@@ -78,7 +69,7 @@ b <value>
 l <path>
     Load a new .dnx file"""
     
-    # nx_path = "rakan/iowa.dnx"
+    nx_path = "rakan/iowa.dnx"
     # nx_path = "rakan/washington.dnx"
     # nx_path = "rakan/newwashington.dnx"
     # nx_path = "wa.140100.dnx"
