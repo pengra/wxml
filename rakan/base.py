@@ -9,6 +9,7 @@ import websockets
 import threading
 import networkx
 
+import random
 import json
 import time
 
@@ -146,20 +147,35 @@ class BaseRakan(PyRakan):
         self.iterations = self.nx_graph.graph.get('iterations', 0)
         self._move_history = self.nx_graph.graph.get('move_history', list())
 
-    # Scold the user for not implementing anything
-    def step(self, *args, **kwargs):
-        raise NotImplementedError("Not implemented by user!")
+    """
+    An example step
+    Argument can be passed in.
+
+    Arguments are completely arbritary and can be rewritten by the user.
+    """
+    def step(self):
+        precinct, district = self.propose_random_move()
+        prev_district = self.district_of(precinct)
+
+        try:
+            if self.score(precinct, district) < self.score():
+                self.move_precinct(precinct, district)
+                self.record_move(precinct, district, prev_district)
+                self.iterations += 1
+            elif random.random() < self.score_ratio(precinct, district):
+                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
+                self.move_precinct(precinct, district)
+                self.record_move(precinct, district, prev_district)
+                self.iterations += 1
+        except ValueError:
+            # Sometimes the proposed move severs the district
+            # Just try again
+            self.step()
 
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")
 
     def score(self, rid=None, district=None):
-        # alpha = -0.2
-        # beta = -1.2
-        # return score = math.exp(
-        #   (alpha * self.population_score(rid, district)) + 
-        #   (beta * self.compactness_score(rid, district))
-        # )
         raise NotImplementedError("Scoring algorithm not implemented!")
 
 
