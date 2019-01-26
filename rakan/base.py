@@ -148,7 +148,7 @@ class BaseRakan(PyRakan):
         self._move_history = self.nx_graph.graph.get('move_history', list())
 
     """
-    An example step
+    A Metropolis Hastings Algorithm Step.
     Argument can be passed in.
 
     Arguments are completely arbritary and can be rewritten by the user.
@@ -177,3 +177,7 @@ class BaseRakan(PyRakan):
 
     def score(self, rid=None, district=None):
         raise NotImplementedError("Scoring algorithm not implemented!")
+
+    def score_ratio(self, rid, district):
+        raise NotImplementedError("Scoring algorithm not implemented!")
+
