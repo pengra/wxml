@@ -1,4 +1,4 @@
-from base import BaseRakanWithServer, BaseRakan
+from rakan import BaseRakan
 from progress.bar import IncrementalBar
 
 import time
@@ -11,39 +11,15 @@ import socketserver
 
 class Rakan(BaseRakan):
 
-    ALPHA = 0.1 ** 14 # 10 ** -15 # Weight for population
-    BETA = 0.2 ** 1 #10 ** -2   # Weight for compactness
-
-    """
-    An example step
-    Argument can be passed in.
-
-    Arguments are completely arbritary and can be rewritten by the user.
-    """
-    def step(self, max_value=1, *more_positional_stuff, **wow_we_got_key_words_up_here):
-        precinct, district = self.propose_random_move()
-        prev_district = self.district_of(precinct)
-
-        try:
-            if self.score(precinct, district) < self.score():
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-                self.iterations += 1
-            elif random.random() < self.score_ratio(precinct, district):
-                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-                self.iterations += 1
-        except ValueError:
-            # Sometimes the proposed move severs the district
-            # Just try again
-            self.step()
+    ALPHA = 4 * (0.1 ** 9) # # 10 ** -15 # Weight for population
+    BETA = 0.08 # ** 10 #10 ** -2   # Weight for compactness
 
     """
     An example scoring algorithm.
     """
     def score(self, rid=None, district=None):
-        return math.exp(
+        # Linear to prevent overflow errors
+        return (
             (self.ALPHA * self.population_score(rid, district)) +
             (self.BETA * self.compactness_score(rid, district))
         )
@@ -57,7 +33,6 @@ class Rakan(BaseRakan):
             (self.BETA * (self.compactness_score() - self.compactness_score(rid, district)))
         )
 
-
 """
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
@@ -65,7 +40,6 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     graph = networkx.read_gpickle(nx_path)
     print("=" * 80)
-    print("Properties:", graph.graph)
     print("Adjust the Graph as you see fit. Results will be saved. Type 'pdb' to modify.")
     print("=" * 80)
     if input(">>> continue? <enter> or 'pdb' ") == 'pdb':
@@ -100,13 +74,15 @@ pdb
 a <value>
     Set a new Alpha value (population weight)
 b <value>
-    Set a new Beta value (compactness weight)"""
+    Set a new Beta value (compactness weight)
+l <path>
+    Load a new .dnx file"""
     
     # nx_path = "rakan/iowa.dnx"
     # nx_path = "rakan/washington.dnx"
     # nx_path = "rakan/newwashington.dnx"
     # nx_path = "wa.140100.dnx"
-    nx_path = "million.dnx"
+    # nx_path = "iowa2/save.dnx"
     
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
@@ -120,6 +96,10 @@ b <value>
         # quit
         elif response == 'q': 
             break
+        elif response.startswith('l '):
+            rakan = build_rakan(response.split(' ', 1)[1])
+            graph = rakan.nx_graph
+            rakan.is_valid()
         # help
         elif response == 'h':
             print(help_)
@@ -175,15 +155,19 @@ b <value>
             end = time.time()
             print("Walk time:", end - start, "seconds")
         # new weights
-        elif response.startswith('a '):
-            if response.split(' ', 1)[1] == 'n':
+        elif response.startswith('a'):
+            if len(response.split(' ')) == 1:
+                pass
+            elif response.split(' ', 1)[1] == 'n':
                 rakan.ALPHA = 0
             else:
                 rakan.ALPHA = 0.1 ** int(response.split(' ', 1)[1])
             print("Set new ALPHA value:", rakan.ALPHA)
         # new weights
-        elif response.startswith('b '):
-            if response.split(' ', 1)[1] == 'n':
+        elif response.startswith('b'):
+            if len(response.split(' ')) == 1:
+                pass
+            elif response.split(' ', 1)[1] == 'n':
                 rakan.BETA = 0
             else:
                 rakan.BETA = 0.1 ** int(response.split(' ', 1)[1])
