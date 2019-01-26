@@ -2,7 +2,7 @@ try:
     from rakan import PyRakan
 except ImportError:
     # py.test import
-    from .rakan.rakan import PyRakan
+    from rakan.rakan import PyRakan
 
 import asyncio
 import websockets
@@ -85,6 +85,7 @@ class BaseRakan(PyRakan):
         except FileExistsError:
             pass
         self.export(json_path=os.path.join(dir_path, "map.geojson"))
+        self.save(nx_path=os.path.join(dir_path, "save.dnx"))
         with open("rakan/template.htm") as handle:
             template = handle.read()
             with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
@@ -98,6 +99,10 @@ class BaseRakan(PyRakan):
                     '{"$SCP"$}', str(self.population_score())
                 ).replace(
                     '{"$SCC"$}', str(self.compactness_score())
+                ).replace(
+                    '{"$AL"$}', str(self.ALPHA)
+                ).replace(
+                    '{"$BE"$}', str(self.BETA)
                 ))
         with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
             handle.write(json.dumps(self.move_history))
@@ -123,6 +128,8 @@ class BaseRakan(PyRakan):
             "pscore": self.population_score(),
             "cscore": self.compactness_score(),
             "score": self.score(),
+            "alpha": self.ALPHA,
+            "beta": self.BETA,
             "index": self.iterations,
         })
         
