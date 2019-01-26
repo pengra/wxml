@@ -57,6 +57,8 @@
         Score: <span id="score">{"$SC"$}</span><br/>
         Population Score: <span id="pscore">{"$SCP"$}</span><br/>
         Compactness Score: <span id="cscore">{"$SCC"$}</span><br/>
+        Alpha weight: <span id="alpha">{"$AL"$}</span><br/>
+        Beta weight: <span id="beta">{"$BE"$}</span><br/>
     </p>
     Iterations: <input id='iterator' disabled onchange='updateInfo(this);' class='row' type='number' min='0' max='"{$IT$}"' step='1' value='"{$IT$}"' />
 </div>
@@ -76,6 +78,8 @@ var updateInfo = function(e) {
     $("#score").html(moves[e.value]['score']);
     $("#cscore").html(moves[e.value]['cscore']);
     $("#pscore").html(moves[e.value]['pscore']);
+    $("#alpha").html(moves[e.value]['alpha']);
+    $("#beta").html(moves[e.value]['beta']);
     if (e.value > lastIter) {
         for (var i = lastIter; i <= e.value; i++) {
             geojsonDump.features[moves[i].move[0]].properties.district = moves[i].move[1];
