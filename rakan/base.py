@@ -160,7 +160,7 @@ class BaseRakan(PyRakan):
         uniform_random_value = random.random()
 
         try:
-            if self.score(precinct, district) < score:
+            if self.score(precinct, district) <= score:
                 self.move_precinct(precinct, district)
                 self.record_move(precinct, district, prev_district)
                 self.iterations += 1
