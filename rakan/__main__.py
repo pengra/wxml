@@ -10,9 +10,9 @@ import socketserver
 import http.server
 from decimal import Decimal
 
-# nx_path = "rakan/iowa.dnx"
+nx_path = "rakan/iowa.dnx"
 # nx_path = "rakan/newwashington.dnx"
-nx_path = "washingtonrandom/save.dnx"
+# nx_path = "washingtonrandom/save.dnx"
 
 e = Decimal(math.e)
 
