@@ -2,6 +2,7 @@ from base import BaseRakan
 from servertools import save_current_scores
 from progress.bar import IncrementalBar
 
+import sys
 import time
 import math
 import networkx
@@ -10,9 +11,14 @@ import socketserver
 import http.server
 from decimal import Decimal
 
-nx_path = "rakan/iowa.dnx"
-# nx_path = "rakan/newwashington.dnx"
-# nx_path = "washingtonrandom/save.dnx"
+
+try:
+    nx_path = sys.argv[1]
+except:
+    nx_path = "rakan/iowa.dnx"
+    # nx_path = "iowa2/save.dnx"
+    # nx_path = "rakan/newwashington.dnx"
+    # nx_path = "washingtonrandom/save.dnx"
 
 e = Decimal(math.e)
 
@@ -81,7 +87,9 @@ a <value>
 b <value>
     Set a new Beta value (compactness weight)
 l <path>
-    Load a new .dnx file"""
+    Load a new .dnx file
+i <path>
+    Spawn a thread that saves the current map as an image to the path specified."""
 
     server = None
     
@@ -98,6 +106,11 @@ l <path>
             if server is None:
                 server = threading.Thread(target=(lambda: save_current_scores(rakan)))
                 server.start()
+        # image
+        elif response.startswith('i '):
+            image = threading.Thread(target=lambda: rakan.image(image_path=response.split(' ', 1)[1] + '.png'))
+            image.start()
+            print("Image thread started")
         # quit
         elif response == 'q': 
             break
@@ -158,7 +171,9 @@ l <path>
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
+                print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * rakan.ALPHA)
                 print("Comp Score: ", rakan.compactness_score())
+                print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * rakan.BETA)
         # walk
         elif response == 'w':
             start = time.time()

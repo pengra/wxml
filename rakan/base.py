@@ -8,6 +8,11 @@ import asyncio
 import websockets
 import threading
 import networkx
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+import geopandas as gpd
+
+from progress.bar import IncrementalBar
 
 import random
 import json
@@ -35,6 +40,35 @@ class BaseRakan(PyRakan):
         self.nx_graph.graph['iterations'] = self.iterations
         self.nx_graph.graph['move_history'] = self._move_history
         networkx.write_gpickle(self.nx_graph, nx_path)
+
+    """
+    Save the current rakan state to a image.
+    """
+    def image(self, image_path="img.png"):
+        fig, ax = plt.subplots(1)
+        for precinct in self.precincts:
+            xs = [coord[0] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
+            ys = [coord[1] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
+            ax.fill(xs, ys, color=[
+                "#001f3f", # Navy
+                "#3D9970", # Olive
+                "#FF851B", # Orange
+                "#85144b", # Maroon
+                "#AAAAAA", # Silver
+                "#0074D9", # Blue
+                "#2ECC40", # Green
+                "#FF4136", # Red
+                "#F012BE", # Fuchsia
+                "#111111", # Black
+                "#7FDBFF", # Aqua
+                "#FFDC00", # Yellow
+                "#B10DC9", # Purple
+                "#39CCCC", # Teal
+                "#01FF70", # Lime
+            ][precinct.district], linewidth=0.1)
+        plt.savefig(image_path, dpi=900)
+        plt.close(fig)
+
 
     """
     Save the current rakan state to a geojson file.
