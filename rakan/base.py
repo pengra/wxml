@@ -126,11 +126,11 @@ class BaseRakan(PyRakan):
         self._move_history.append({
             "prev": (rid, prev),
             "move": (rid, district),
-            "pscore": self.population_score(),
-            "cscore": self.compactness_score(),
-            "score": self.score(),
-            "alpha": self.ALPHA,
-            "beta": self.BETA,
+            "pscore": float(self.population_score()),
+            "cscore": float(self.compactness_score()),
+            "score": float(self.score()),
+            "alpha": float(self.ALPHA),
+            "beta": float(self.BETA),
             "index": self.iterations,
         })
         
@@ -156,17 +156,21 @@ class BaseRakan(PyRakan):
     def step(self):
         precinct, district = self.propose_random_move()
         prev_district = self.district_of(precinct)
+        score = self.score()
+        uniform_random_value = random.random()
 
         try:
-            if self.score(precinct, district) < self.score():
+            if self.score(precinct, district) < score:
                 self.move_precinct(precinct, district)
                 self.record_move(precinct, district, prev_district)
                 self.iterations += 1
-            elif random.random() < self.score_ratio(precinct, district):
+                return
+            ratio = score / self.score(precinct, district)
+            if uniform_random_value >= ratio:
                 # Sometimes propose_random_move severs districts, and move_precinct will catch that.
                 self.move_precinct(precinct, district)
                 self.record_move(precinct, district, prev_district)
-                self.iterations += 1
+            self.iterations += 1
         except ValueError:
             # Sometimes the proposed move severs the district
             # Just try again
