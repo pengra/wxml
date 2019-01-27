@@ -1,37 +1,44 @@
 from base import BaseRakan
+from servertools import save_current_scores
 from progress.bar import IncrementalBar
 
 import time
-import random
 import math
 import networkx
-
-import http.server
+import threading
 import socketserver
+import http.server
+from decimal import Decimal
+
+# nx_path = "rakan/iowa.dnx"
+# nx_path = "rakan/newwashington.dnx"
+nx_path = "washingtonrandom/save.dnx"
+
+e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
-    ALPHA = 4 * (0.1 ** 9) # # 10 ** -15 # Weight for population
-    BETA = 0.08 # ** 10 #10 ** -2   # Weight for compactness
+    ALPHA = Decimal(4 * (0.1 ** 11)) # # 10 ** -15 # Weight for population
+    BETA = Decimal(0.008) # ** 10 #10 ** -2   # Weight for compactness
 
     """
     An example scoring algorithm.
     """
     def score(self, rid=None, district=None):
         # Linear to prevent overflow errors
-        return (
-            (self.ALPHA * self.population_score(rid, district)) +
-            (self.BETA * self.compactness_score(rid, district))
+        return pow(e,
+            (self.ALPHA * Decimal(self.population_score(rid, district))) +
+            (self.BETA * Decimal(self.compactness_score(rid, district)))
         )
 
     """
     An example scoring ratio algorithm.
     """
     def score_ratio(self, rid, district):
-        return math.exp(
-            (self.ALPHA * (self.population_score() - self.population_score(rid, district))) +
-            (self.BETA * (self.compactness_score() - self.compactness_score(rid, district)))
-        )
+        return pow(e, (
+            (self.ALPHA * Decimal((self.population_score(rid, district) - self.population_score()))) +
+            (self.BETA * Decimal((self.compactness_score(rid, district) - self.compactness_score())))
+        ))
 
 """
 Example code to build a Rakan instance.
@@ -40,9 +47,14 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
+    server = threading.Thread(target=(lambda: save_current_scores(r)))
+    server.start()
+    assert r.score() != None
     return r
 
-if __name__ == "__main__":
+
+
+def routine():
     help_ = """
 h
     Show this help message
@@ -54,6 +66,8 @@ q
     Run that many iterations
 w
     Call user defined rakan.walk()
+p
+    Produce a server that Xayah can communicate to. (Already running)
 e <name>
     Export the current state as geojson int <name>.geojson.
 r <name>
@@ -68,25 +82,26 @@ b <value>
     Set a new Beta value (compactness weight)
 l <path>
     Load a new .dnx file"""
-    
-    nx_path = "rakan/iowa.dnx"
-    # nx_path = "rakan/washington.dnx"
-    # nx_path = "rakan/newwashington.dnx"
-    # nx_path = "wa.140100.dnx"
-    # nx_path = "iowa2/save.dnx"
+
+    server = None
     
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
     rakan.is_valid()
-    print("Rakan is live. 'h' for help \n")
+    print("Rakan is live. Type 'h' for help \n")
     while True:
         response = input(">>> ")
         # debug
         if response == 'pdb': 
             import pdb; pdb.set_trace()
+        elif response == 'p':
+            if server is None:
+                server = threading.Thread(target=(lambda: save_current_scores(rakan)))
+                server.start()
         # quit
         elif response == 'q': 
             break
+        # load a .dnx file
         elif response.startswith('l '):
             rakan = build_rakan(response.split(' ', 1)[1])
             graph = rakan.nx_graph
@@ -117,24 +132,29 @@ l <path>
             target = int(response)
             if target > 0:
                 bar = IncrementalBar("Walking {} steps".format(target), max=target)
-                old_score = rakan.score()
-                old_pop = rakan.population_score()
-                old_comp = rakan.compactness_score()
-                start = time.time()
-                for _ in range(target):
-                    bar.next()
-                    rakan.step()
-                end = time.time()
-                bar.finish()
-                new_score = rakan.score()
-                new_pop = rakan.population_score()
-                new_comp = rakan.compactness_score()
-                print("Average iterations / second:", target / (end - start))
-                print("Average seconds / iteration:", (end - start) / target)
-                print("Total time: ", end - start)
-                print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
-                print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
-                print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
+                try:
+                    old_score = rakan.score()
+                    old_pop = rakan.population_score()
+                    old_comp = rakan.compactness_score()
+                    start = time.time()
+                    for _ in range(target):
+                        bar.next()
+                        rakan.step()
+                    
+                except (Exception, KeyboardInterrupt):
+                    pass
+                finally:
+                    end = time.time()
+                    new_score = rakan.score()
+                    new_pop = rakan.population_score()
+                    new_comp = rakan.compactness_score()
+                    bar.finish()
+                    print("Average iterations / second:", target / (end - start))
+                    print("Average seconds / iteration:", (end - start) / target)
+                    print("Total time: ", end - start)
+                    print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
+                    print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
+                    print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -149,19 +169,21 @@ l <path>
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
                 pass
-            elif response.split(' ', 1)[1] == 'n':
-                rakan.ALPHA = 0
             else:
-                rakan.ALPHA = 0.1 ** int(response.split(' ', 1)[1])
+                try:
+                    rakan.ALPHA = Decimal(response.split(' ', 1)[1])
+                except:
+                    pass
             print("Set new ALPHA value:", rakan.ALPHA)
         # new weights
         elif response.startswith('b'):
             if len(response.split(' ')) == 1:
                 pass
-            elif response.split(' ', 1)[1] == 'n':
-                rakan.BETA = 0
             else:
-                rakan.BETA = 0.1 ** int(response.split(' ', 1)[1])
+                try:
+                    rakan.BETA = Decimal(response.split(' ', 1)[1])
+                except:
+                    pass
             print("Set new BETA value:", rakan.BETA)
         # one step
         elif response == '':
@@ -185,3 +207,7 @@ l <path>
             print("Unknown Command")
 
     print("Run complete.")
+
+
+if __name__ == "__main__":
+    routine()
