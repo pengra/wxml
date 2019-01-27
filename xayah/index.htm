@@ -13,7 +13,7 @@ var rdps = [];
 var sdps = []; 
 var chart = new CanvasJS.Chart("compactnessChart", {
 	title :{
-		text: "Compactness Score (Twice the Perimeter size)"
+		text: "Compactness Score (Perimeter)"
 	},
 	axisY: {
 		includeZero: false
@@ -26,7 +26,7 @@ var chart = new CanvasJS.Chart("compactnessChart", {
 
 var pchart = new CanvasJS.Chart("populationChart", {
 	title :{
-		text: "Population Score (Standard Deviation Squared)"
+		text: "Standard Deviation"
 	},
 	axisY: {
 		includeZero: false
@@ -63,11 +63,11 @@ var updateChart = function (count) {
             lastIteration = value.index;
             dps.push({
                 x: lastIteration,
-                y: (value.cscore)
+                y: (value.cscore / 2)
             })
             pdps.push({
                 x: lastIteration,
-                y: (value.pscore)
+                y: (Math.sqrt(value.pscore))
             })
 			rdps.push({
                 x: lastIteration,
