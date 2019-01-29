@@ -200,7 +200,7 @@ class BaseRakan(PyRakan):
                 self.iterations += 1
                 return
             ratio = score / self.score(precinct, district)
-            if uniform_random_value >= ratio:
+            if uniform_random_value <= ratio:
                 # Sometimes propose_random_move severs districts, and move_precinct will catch that.
                 self.move_precinct(precinct, district)
                 self.record_move(precinct, district, prev_district)
