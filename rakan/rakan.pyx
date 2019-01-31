@@ -207,6 +207,12 @@ cdef class PyRakan:
         else:
             return self.__crakan.population_score(rid, district)
 			
+    def total_boundary_length(self, rid=None, district=None):
+        if rid is None and district is None:
+            return self.__crakan.total_boundary_length()
+        else:
+            return self.__crakan.total_boundary_length(rid, district)
+			
     def compactness_score(self, rid=None, district=None):
         if rid is None and district is None:
             return self.__crakan.compactness_score()

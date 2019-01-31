@@ -45,6 +45,7 @@ namespace rakan {
             this->_d_edges += 2; // because two edges are established
             this->_tree[rid1].first.push_back(rid2);
             this->_tree[rid2].first.push_back(rid1);
+			
         } else { // create an edge of two precincts in the same district
             this->_s_edges += 2; // because two edges are established
             this->_tree[rid1].second.push_back(rid2);
@@ -122,6 +123,7 @@ namespace rakan {
             node2->second.push_back(rid1);
             this->_d_edges -= 2;
             this->_s_edges += 2;
+			
         
         } else if (node_second_pos != node->second.end()) {
             // is rid2 in rid1's same district neighbor list? yes.
