@@ -10,7 +10,6 @@ import threading
 import socketserver
 import http.server
 import random as rand
-from time import time
 from decimal import Decimal
 
 
@@ -53,6 +52,17 @@ class Rakan(BaseRakan):
     """
     def precinct_in_same_district(self, rid1, rid2):
         return self.precincts[rid1].district == self.precincts[rid2].district
+
+
+    """
+    Old report system that does not use a webserver
+    """
+    def oldreport(self, path_name):
+        geojson = self.export(json_path=None)
+        with open("rakan/oldtemplate.html") as handle:
+            template = handle.read()
+            with open(path_name, "w") as w_handle:
+                w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
 
 """
 Example code to build a Rakan instance.
@@ -226,11 +236,23 @@ i <path>
             print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
             print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
         # ??
-        elif response == 't':
-            rand.seed(time())
-            rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
-            result = rakan.precinct_in_same_district(rid1, rid2)
-            print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
+        elif response == 'test':
+            # random precincts
+            # rand.seed(time.time())
+            # rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
+            rid1 = 82
+            rid2 = 48
+            target = 1000
+            rakan.ALPHA = Decimal(1e-10)
+            rakan.BETA = Decimal(0.8)
+            for i in range(0, 1):
+                bar = IncrementalBar("Walking {} steps".format(target), max=target)
+                for _ in range(target):
+                    bar.next()
+                    rakan.step();
+                result = rakan.precinct_in_same_district(rid1, rid2)
+                print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
+                rakan.oldreport("./newiteration/{}.html".format(i))
         else:
             print("Unknown Command")
 
