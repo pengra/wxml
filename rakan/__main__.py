@@ -9,6 +9,8 @@ import networkx
 import threading
 import socketserver
 import http.server
+import random as rand
+from time import time
 from decimal import Decimal
 
 
@@ -45,6 +47,12 @@ class Rakan(BaseRakan):
             (self.ALPHA * Decimal((self.population_score(rid, district) - self.population_score()))) +
             (self.BETA * Decimal((self.compactness_score(rid, district) - self.compactness_score())))
         ))
+
+    """
+    A statistical test to check two random precincts are in the same district
+    """
+    def precinct_in_same_district(self, rid1, rid2):
+        return self.precincts[rid1].district == self.precincts[rid2].district
 
 """
 Example code to build a Rakan instance.
@@ -92,7 +100,7 @@ i <path>
     Spawn a thread that saves the current map as an image to the path specified."""
 
     server = None
-    
+
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
     rakan.is_valid()
@@ -100,7 +108,7 @@ i <path>
     while True:
         response = input(">>> ")
         # debug
-        if response == 'pdb': 
+        if response == 'pdb':
             import pdb; pdb.set_trace()
         elif response == 'p':
             if server is None:
@@ -112,7 +120,7 @@ i <path>
             image.start()
             print("Image thread started")
         # quit
-        elif response == 'q': 
+        elif response == 'q':
             break
         # load a .dnx file
         elif response.startswith('l '):
@@ -153,7 +161,7 @@ i <path>
                     for _ in range(target):
                         bar.next()
                         rakan.step()
-                    
+
                 except (Exception, KeyboardInterrupt):
                     pass
                 finally:
@@ -218,6 +226,11 @@ i <path>
             print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
             print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
         # ??
+        elif response == 't':
+            rand.seed(time())
+            rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
+            result = rakan.precinct_in_same_district(rid1, rid2)
+            print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
         else:
             print("Unknown Command")
 
