@@ -24,9 +24,28 @@ e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
-    ALPHA = Decimal(4 * (0.1 ** 11)) # # 10 ** -15 # Weight for population
-    BETA = Decimal(0.008) # ** 10 #10 ** -2   # Weight for compactness
+    ALPHA = Decimal(4 * (0.1 ** 10)) # # 10 ** -15 # Weight for population
+    BETA = Decimal(0.009) # ** 10 #10 ** -2   # Weight for compactness
 
+    """
+    Example Walk
+    """
+    def walk(self):
+        five_billion = 5000000000
+        ten_thousand = 10000
+        for i, alpha in enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]):
+            for j, beta in enumerate([0.8, 1.0, 1.2, 1.4]):
+                self.ALPHA = Decimal(alpha)
+                self.BETA = Decimal(beta)
+                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
+                for k in range(five_billion):
+                    self.step()
+                    if k % ten_thousand == 0:
+                        self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
+                        self.write_array("output/iowa_report.txt")
+                    bar.next()
+                bar.finish()
+            
     """
     An example scoring algorithm.
     """
@@ -53,9 +72,9 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
-    server = threading.Thread(target=(lambda: save_current_scores(r)))
-    server.start()
-    assert r.score() != None
+    # server = threading.Thread(target=(lambda: save_current_scores(r)))
+    # server.start()
+    # assert r.score() != None
     return r
 
 
