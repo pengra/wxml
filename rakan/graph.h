@@ -37,7 +37,7 @@ namespace rakan {
 		int democrat_votes;
 		int republican_votes;
 		int other_votes;
-		int border;
+		int border=0;
 		
 		std::list<int> precincts;
 		District();
@@ -90,8 +90,10 @@ namespace rakan {
         // scoring
         double population_score();
         double population_score(int rid, int district);
-        int compactness_score();
-        int compactness_score(int rid, int district);
+        int total_boundary_length();
+        int total_boundary_length(int rid, int district);
+		double compactness_score();
+        double compactness_score(int rid, int district);
         int democrat_seats();
         int democrat_seats(int rid, int district);
         int republican_seats();
