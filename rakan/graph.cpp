@@ -801,8 +801,12 @@ void Rakan::step()
     std::pair<int, int> move = this->propose_random_move();
     try
     {
+        double uniform = rand();
+        double score = this->score();
+        double proposed_score = this->score(move.first, move.second);
+        std::cout << "uniform: " << uniform << ", score: " << score << ", proposed score: " << proposed_score << std::endl;
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (rand() <= this->score() / this->score(move.first, move.second))
+        if (uniform <= (score / proposed_score))
         {
             this->move_precinct(move.first, move.second);
         }
@@ -821,8 +825,7 @@ double Rakan::score()
 {
     return std::exp(
         (this->alpha * this->population_score()) +
-        (this->beta * this->compactness_score())
-    );
+        (this->beta * this->compactness_score()));
 }
 
 // Score of a proposed move.
@@ -830,8 +833,7 @@ double Rakan::score(int rid, int district)
 {
     return std::exp(
         (this->alpha * this->population_score(rid, district)) +
-        (this->beta * this->compactness_score(rid, district))
-    );
+        (this->beta * this->compactness_score(rid, district)));
 }
 
 } // namespace rakan
