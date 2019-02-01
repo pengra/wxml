@@ -61,7 +61,7 @@ namespace rakan {
         Districts _districts; // track districts of each precinct
         
         // Tools for random distribution
-        std::uniform_int_distribution<double> distribution = std::uniform_int_distribution<double>(0.0, 1.0); 
+        std::uniform_real_distribution<double> distribution = std::uniform_real_distribution<double>(0.0, 1.0); 
         std::default_random_engine generator;
 
     public:    
