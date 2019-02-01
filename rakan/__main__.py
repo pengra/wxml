@@ -24,9 +24,6 @@ e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
-    ALPHA = Decimal(4 * (0.1 ** 10)) # # 10 ** -15 # Weight for population
-    BETA = Decimal(0.009) # ** 10 #10 ** -2   # Weight for compactness
-
     """
     Example Walk
     """
