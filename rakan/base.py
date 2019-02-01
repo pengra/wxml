@@ -25,7 +25,6 @@ class BaseRakan(PyRakan):
     Basic Rakan format. Use as a template.
     Use for production code.
     """
-    iterations = 0 # iterations rakan has gone through
     super_layer = 0 # super precinct layer
     nx_graph = None # the graph object
     _move_history = [] # the set of moves unreported to xayah
@@ -46,6 +45,7 @@ class BaseRakan(PyRakan):
     """
     def image(self, image_path="img.png"):
         fig, ax = plt.subplots(1)
+        bar = IncrementalBar("Creating Image", max=len(self.precincts))
         for precinct in self.precincts:
             xs = [coord[0] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
             ys = [coord[1] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
@@ -66,8 +66,10 @@ class BaseRakan(PyRakan):
                 "#39CCCC", # Teal
                 "#01FF70", # Lime
             ][precinct.district], linewidth=0.1)
+            bar.next()
         plt.savefig(image_path, dpi=900)
         plt.close(fig)
+        bar.finish()
 
 
     """
@@ -111,16 +113,28 @@ class BaseRakan(PyRakan):
             return geojson
 
     """
+    """
+    def write_array(self, file_path="report.txt"):
+        mode = 'a' if os.path.isfile(file_path) else 'w'
+        with open(file_path, mode) as handle:
+            handle.write(json.dumps(
+                [_.district for _ in self.precincts]
+            ))
+            handle.write("\n")
+
+    """
     Generate a mapjsgl page.
     Used for analyzing how the districts have crawled around.
     """
-    def report(self, dir_path="save"):
+    def report(self, dir_path="save", include_json=True, include_export=True, include_save=True):
         try:
             os.mkdir(dir_path)
         except FileExistsError:
             pass
-        self.export(json_path=os.path.join(dir_path, "map.geojson"))
-        self.save(nx_path=os.path.join(dir_path, "save.dnx"))
+        if include_export:
+            self.export(json_path=os.path.join(dir_path, "map.geojson"))
+        if include_save:
+            self.save(nx_path=os.path.join(dir_path, "save.dnx"))
         with open("rakan/template.htm") as handle:
             template = handle.read()
             with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
@@ -139,8 +153,9 @@ class BaseRakan(PyRakan):
                 ).replace(
                     '{"$BE"$}', str(self.BETA)
                 ))
-        with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
-            handle.write(json.dumps(self.move_history))
+        if include_json:
+            with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
+                handle.write(json.dumps(self.move_history))
 
     @property
     def move_history(self):
@@ -178,44 +193,9 @@ class BaseRakan(PyRakan):
             self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
-        self.iterations = self.nx_graph.graph.get('iterations', 0)
+        self._iterations = self.nx_graph.graph.get('iterations', 0)
         self._move_history = self.nx_graph.graph.get('move_history', list())
-
-    """
-    A Metropolis Hastings Algorithm Step.
-    Argument can be passed in.
-
-    Arguments are completely arbritary and can be rewritten by the user.
-    """
-    def step(self):
-        precinct, district = self.propose_random_move()
-        prev_district = self.district_of(precinct)
-        score = self.score()
-        uniform_random_value = random.random()
-
-        try:
-            if self.score(precinct, district) <= score:
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-                self.iterations += 1
-                return
-            ratio = score / self.score(precinct, district)
-            if uniform_random_value <= ratio:
-                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-            self.iterations += 1
-        except ValueError:
-            # Sometimes the proposed move severs the district
-            # Just try again
-            self.step()
 
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")
-
-    def score(self, rid=None, district=None):
-        raise NotImplementedError("Scoring algorithm not implemented!")
-
-    def score_ratio(self, rid, district):
-        raise NotImplementedError("Scoring algorithm not implemented!")
 
