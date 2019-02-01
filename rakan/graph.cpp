@@ -45,7 +45,7 @@ Rakan::Rakan(int size, int districts)
     this->_atlas.reserve(size);
     this->_edges = DynamicBoundary(size);
     this->_districts = Districts(districts);
-
+    
     // Spawn Districts
     for (int i = 0; i < districts; i++)
     {
@@ -329,33 +329,27 @@ bool Rakan::_destroys_district(int rid)
 void Rakan::move_precinct(int rid, int district)
 {
 
-    auto rid_exists = std::async([](int rid, unsigned int atlas_size) {
-        return rid < 0 || rid >= (int)atlas_size;
-    },
-                                 rid, this->_atlas.size());
+    auto is_valid = std::async(&Rakan::is_valid, this);
+    auto is_legal_new_district = std::async(&Rakan::_is_legal_new_district, this, rid, district);
+    auto severs_neighbors = std::async(&Rakan::_severs_neighbors, this, rid);
 
-    auto district_exists = std::async([](int district, unsigned int district_size) {
-        return district < 0 || district >= (int)district_size;
-    },
-                                 district, this->_districts.size());
-
-    if (rid_exists.get())
+    if (rid < 0 || rid >= (int)this->_atlas.size())
     {
         throw std::invalid_argument("Illegal Move (Reason: No such rid)");
     }
-    else if (district_exists.get())
+    else if (district < 0 || district >= (int)this->_districts.size())
     {
         throw std::invalid_argument("Invalid Move (Reason: No such district)");
     }
-    else if (!this->is_valid())
+    else if (!is_valid.get())
     {
         throw std::logic_error("Cannot make move when graph is invalid");
     }
-    else if (!this->_is_legal_new_district(rid, district))
+    else if (!is_legal_new_district.get())
     {
         throw std::invalid_argument("Illegal Move (Reason: No neighbors have this district)");
     }
-    else if (this->_severs_neighbors(rid))
+    else if (severs_neighbors.get())
     {
         throw std::invalid_argument("Illegal Move (Reason: Severs the neighboring district(s))");
     }
