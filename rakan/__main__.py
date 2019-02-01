@@ -38,7 +38,7 @@ class Rakan(BaseRakan):
         )
 
     """
-    An example scoring ratio algorithm.
+    Example Walk. This is the primary method for defining "runs" discussed at meetings.
     """
     def score_ratio(self, rid, district):
         return pow(e, (
@@ -53,11 +53,7 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
-    server = threading.Thread(target=(lambda: save_current_scores(r)))
-    server.start()
-    assert r.score() != None
     return r
-
 
 
 def routine():
@@ -89,14 +85,15 @@ b <value>
 l <path>
     Load a new .dnx file
 i <path>
-    Spawn a thread that saves the current map as an image to the path specified."""
-
+    Spawn a thread that saves the current map as an image to the path specified.
+"""
     server = None
     
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph
     rakan.is_valid()
     print("Rakan is live. Type 'h' for help \n")
+
     while True:
         response = input(">>> ")
         # debug
@@ -168,12 +165,26 @@ i <path>
                     print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
                     print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
                     print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
+                    
+                    populations = [_.population for _ in rakan.districts]
+                    total = sum(populations)
+                    average = total / len(populations)
+                    absolute_deltas = [abs(_.population - average) for _ in populations]
+                    absolute_differences = sum(absolute_deltas) / average
+                    print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
                 print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * rakan.ALPHA)
                 print("Comp Score: ", rakan.compactness_score())
                 print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * rakan.BETA)
+                
+                populations = [_.population for _ in rakan.districts]
+                total = sum(populations)
+                average = total / len(populations)
+                absolute_deltas = [abs(_.population - average) for _ in populations]
+                absolute_differences = sum(absolute_deltas) / average
+                print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
         # walk
         elif response == 'w':
             start = time.time()
