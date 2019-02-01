@@ -31,10 +31,10 @@ class Rakan(BaseRakan):
     Example Walk
     """
     def walk(self):
-        five_billion = 5000000000
+        five_billion = 5000000000 // 100 # Shortened due to crash
         ten_thousand = 10000
-        for i, alpha in enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]):
-            for j, beta in enumerate([0.8, 1.0, 1.2, 1.4]):
+        for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
+            for j, beta in [(4, 0.08), (5, 0.008)]:
                 self.ALPHA = Decimal(alpha)
                 self.BETA = Decimal(beta)
                 bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
@@ -42,7 +42,7 @@ class Rakan(BaseRakan):
                     self.step()
                     if k % ten_thousand == 0:
                         self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
-                        self.write_array("output/iowa_report.txt")
+                        self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
                     bar.next()
                 bar.finish()
             

@@ -25,7 +25,6 @@ class BaseRakan(PyRakan):
     Basic Rakan format. Use as a template.
     Use for production code.
     """
-    iterations = 0 # iterations rakan has gone through
     super_layer = 0 # super precinct layer
     nx_graph = None # the graph object
     _move_history = [] # the set of moves unreported to xayah
@@ -197,58 +196,6 @@ class BaseRakan(PyRakan):
         self.iterations = self.nx_graph.graph.get('iterations', 0)
         self._move_history = self.nx_graph.graph.get('move_history', list())
 
-    def step(self):
-        precinct, district = self.propose_random_move()
-        score = self.score()
-        proposed_score = self.score(precinct, district)
-
-        try:
-            if proposed_score <= score:
-                self.move_precinct(precinct, district)
-            elif random.random() <= (score / proposed_score):
-                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
-                self.move_precinct(precinct, district)
-            self.iterations += 1
-        except ValueError:
-            # Sometimes the proposed move severs the district
-            # Just try again
-            self.step()
-
-    """
-    A Metropolis Hastings Algorithm Step.
-    Argument can be passed in.
-
-    Arguments are completely arbritary and can be rewritten by the user.
-    """
-    def long_step(self):
-        precinct, district = self.propose_random_move()
-        prev_district = self.district_of(precinct)
-        score = self.score()
-        uniform_random_value = random.random()
-
-        try:
-            if self.score(precinct, district) <= score:
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-                self.iterations += 1
-                return
-            ratio = score / self.score(precinct, district)
-            if uniform_random_value <= ratio:
-                # Sometimes propose_random_move severs districts, and move_precinct will catch that.
-                self.move_precinct(precinct, district)
-                self.record_move(precinct, district, prev_district)
-            self.iterations += 1
-        except ValueError:
-            # Sometimes the proposed move severs the district
-            # Just try again
-            self.step()
-
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")
-
-    def score(self, rid=None, district=None):
-        raise NotImplementedError("Scoring algorithm not implemented!")
-
-    def score_ratio(self, rid, district):
-        raise NotImplementedError("Scoring algorithm not implemented!")
 

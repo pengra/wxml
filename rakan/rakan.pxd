@@ -65,6 +65,9 @@ cdef extern from "graph.h" namespace "rakan":
         cvector[Precinct*] atlas() except +;
         DynamicBoundary edges() except +;
 
+        # == Statistics ==
+        long iterations;
+
         # == API for myself ==
         clist[int] _unchecked_changes
         clist[int] _checked_changes
@@ -96,6 +99,8 @@ cdef extern from "graph.h" namespace "rakan":
         int republican_seats(int rid, int district) except +
         int other_seats() except +
         int other_seats(int rid, int district) except +
+        double score() except +
+        double score(int rid, int district) except +
 
         # internal methods
         cset[cpair[int, int]] _checks_required(int rid) except + # a set of paris that need to be checked that require are_connected checks
@@ -105,3 +110,6 @@ cdef extern from "graph.h" namespace "rakan":
         void _update_district_boundary(int rid, int district) except + # update the dynamic boundary
         void _update_atlas(int rid, int district) except + # update the atlas
         void _update_districts(int rid, int district) except + # update district map
+
+        # step
+        void step() except +
