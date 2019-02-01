@@ -166,7 +166,7 @@ i <path>
                     populations = [_.population for _ in rakan.districts]
                     total = sum(populations)
                     average = total / len(populations)
-                    absolute_deltas = [abs(_.population - average) for _ in populations]
+                    absolute_deltas = [abs(_ - average) for _ in populations]
                     absolute_differences = sum(absolute_deltas) / average
                     print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
             else:
@@ -179,7 +179,7 @@ i <path>
                 populations = [_.population for _ in rakan.districts]
                 total = sum(populations)
                 average = total / len(populations)
-                absolute_deltas = [abs(_.population - average) for _ in populations]
+                absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
         # walk
