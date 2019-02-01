@@ -45,7 +45,7 @@ Rakan::Rakan(int size, int districts)
     this->_atlas.reserve(size);
     this->_edges = DynamicBoundary(size);
     this->_districts = Districts(districts);
-    
+
     // Spawn Districts
     for (int i = 0; i < districts; i++)
     {
@@ -803,10 +803,8 @@ void Rakan::step()
     std::pair<int, int> move = this->propose_random_move();
     try
     {
-        double score = this->score();
-        double proposed_score = this->score(move.first, move.second);
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (this->distribution(generator) <= (score / proposed_score))
+        if (this->alpha == this->beta == 0 || this->distribution(generator) <= (this->score() / this->score(move.first, move.second)))
         {
             this->move_precinct(move.first, move.second);
         }
