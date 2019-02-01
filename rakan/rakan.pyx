@@ -251,8 +251,16 @@ cdef class PyRakan:
     # == Statistics + Weights ==
 
     @property
-    def iterations(self):
+    def _iterations(self):
         return self.__crakan.iterations
+
+    @_iterations.setter
+    def _iterations(self, int value):
+        self.__crakan.iterations = value
+
+    @property
+    def iterations(self):
+        return self._iterations
 
     @property
     def ALPHA(self):

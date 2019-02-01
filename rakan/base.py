@@ -193,7 +193,7 @@ class BaseRakan(PyRakan):
             self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
-        self.iterations = self.nx_graph.graph.get('iterations', 0)
+        self._iterations = self.nx_graph.graph.get('iterations', 0)
         self._move_history = self.nx_graph.graph.get('move_history', list())
 
     def walk(self, *args, **kwargs):
