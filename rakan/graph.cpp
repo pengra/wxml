@@ -801,10 +801,9 @@ void Rakan::step()
     std::pair<int, int> move = this->propose_random_move();
     try
     {
-        double uniform = double(rand() % 10000000) / 10000000.0;
+        double uniform = double(rand() % 10000000000) / 10000000000.0;
         double score = this->score();
         double proposed_score = this->score(move.first, move.second);
-        std::cout << "uniform: " << uniform << ", ratio:" << score / proposed_score << ", score: " << score << ", proposed score: " << proposed_score << std::endl;
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
         if (uniform <= (score / proposed_score))
         {
