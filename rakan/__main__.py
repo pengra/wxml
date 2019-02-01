@@ -24,27 +24,24 @@ e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
-    ALPHA = Decimal(4 * (0.1 ** 11)) # # 10 ** -15 # Weight for population
-    BETA = Decimal(0.008) # ** 10 #10 ** -2   # Weight for compactness
-
     """
-    An example scoring algorithm.
+    Example Walk
     """
-    def score(self, rid=None, district=None):
-        # Linear to prevent overflow errors
-        return pow(e,
-            (self.ALPHA * Decimal(self.population_score(rid, district))) +
-            (self.BETA * Decimal(self.compactness_score(rid, district)))
-        )
-
-    """
-    An example scoring ratio algorithm.
-    """
-    def score_ratio(self, rid, district):
-        return pow(e, (
-            (self.ALPHA * Decimal((self.population_score(rid, district) - self.population_score()))) +
-            (self.BETA * Decimal((self.compactness_score(rid, district) - self.compactness_score())))
-        ))
+    def walk(self):
+        five_billion = 5000000000 // 100 # Shortened due to crash
+        ten_thousand = 10000
+        for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
+            for j, beta in [(4, 0.08), (5, 0.008)]:
+                self.ALPHA = Decimal(alpha)
+                self.BETA = Decimal(beta)
+                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
+                for k in range(five_billion):
+                    self.step()
+                    if k % ten_thousand == 0:
+                        self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
+                        self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
+                    bar.next()
+                bar.finish()
 
 """
 Example code to build a Rakan instance.
@@ -53,9 +50,9 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
-    server = threading.Thread(target=(lambda: save_current_scores(r)))
-    server.start()
-    assert r.score() != None
+    # server = threading.Thread(target=(lambda: save_current_scores(r)))
+    # server.start()
+    # assert r.score() != None
     return r
 
 

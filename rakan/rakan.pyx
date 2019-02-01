@@ -201,38 +201,79 @@ cdef class PyRakan:
     def move_precinct(self, int rid, int district):
         return self.__crakan.move_precinct(rid, district)
 		
-    def population_score(self, rid=None, district=None):
+    def population_score(self, rid=None, district=None) -> float:
         if rid is None and district is None:
             return self.__crakan.population_score()
         else:
             return self.__crakan.population_score(rid, district)
 			
-    def total_boundary_length(self, rid=None, district=None):
+    def total_boundary_length(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.total_boundary_length()
         else:
             return self.__crakan.total_boundary_length(rid, district)
 			
-    def compactness_score(self, rid=None, district=None):
+    def compactness_score(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.compactness_score()
         else:
             return self.__crakan.compactness_score(rid, district)
 
-    def democrat_seats(self, rid=None, district=None):
+    def democrat_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.democrat_seats()
         else:
             return self.__crakan.democrat_seats(rid, district)
 
-    def republican_seats(self, rid=None, district=None):
+    def republican_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.republican_seats()
         else:
             return self.__crakan.republican_seats(rid, district)
 			
-    def other_seats(self, rid=None, district=None):
+    def other_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.other_seats()
         else:
             return self.__crakan.other_seats(rid, district)
+
+    def score(self, rid=None, district=None) -> float:
+        if rid is None and district is None:
+            return self.__crakan.score()
+        else:
+            return self.__crakan.score(rid, district)
+
+    # == Stepping ==
+
+    def step(self):
+        self.__crakan.step()
+
+    # == Statistics + Weights ==
+
+    @property
+    def _iterations(self):
+        return self.__crakan.iterations
+
+    @_iterations.setter
+    def _iterations(self, int value):
+        self.__crakan.iterations = value
+
+    @property
+    def iterations(self):
+        return self._iterations
+
+    @property
+    def ALPHA(self):
+        return self.__crakan.alpha
+
+    @property
+    def BETA(self):
+        return self.__crakan.beta
+
+    @ALPHA.setter
+    def ALPHA(self, double value):
+        self.__crakan.alpha = value
+
+    @BETA.setter
+    def BETA(self, double value):
+        self.__crakan.beta = value

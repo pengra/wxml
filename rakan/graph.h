@@ -8,6 +8,8 @@
 #include <queue>
 #include <thread>
 #include <future>
+#include <math.h>
+#include <random>
 
 #include "dynamicboundary.h"
 
@@ -57,11 +59,20 @@ namespace rakan {
         Atlas _atlas; // atlas of the precincts, where index = rid
         DynamicBoundary _edges; // dynamic boundary helper
         Districts _districts; // track districts of each precinct
+        
+        // Tools for random distribution
+        std::uniform_real_distribution<double> distribution = std::uniform_real_distribution<double>(0.0, 1.0); 
+        std::default_random_engine generator;
 
     public:    
         // For rapid state management (for communication with the server)
         std::list<int> _unchecked_changes; 
         std::list<int> _checked_changes;
+
+        // Weights
+        double alpha = 0; // population weight
+        double beta = 0; // compactness weight
+        unsigned long int iterations = 0; // iterations so far
     
         Rakan(); // for python
         Rakan(int size, int districts);
@@ -110,6 +121,11 @@ namespace rakan {
         void _update_district_boundary(int rid, int district); // update the dynamic boundary
         void _update_atlas(int rid, int district); // update the atlas
         void _update_districts(int rid, int district); // update district map
+
+        // Hardened Step/Scoring Algorithms
+        void step();
+        double score();
+        double score(int rid, int district);
     };
 }
 
