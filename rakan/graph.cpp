@@ -18,7 +18,7 @@ namespace rakan
 // Simple Precinct Struct Constructors.
 Precinct::Precinct(int rid, int district)
     : rid(rid), district(district), area(0), democrat_votes(0), republican_votes(0), other_votes(0){};
-	
+
 Precinct::Precinct(int rid, int district, std::list<Precinct *> neighbors)
     : rid(rid), district(district), democrat_votes(0), republican_votes(0), other_votes(0), neighbors(neighbors){};
 
@@ -87,8 +87,7 @@ int Rakan::add_precinct(int district, int population)
     // update atlas
     this->_atlas.push_back(new Precinct(new_rid, district));
     this->_atlas[new_rid]->population = population; // Not defined in constructor because there could be more attributes.
-	
-	
+
     // update dynamic boundary
     this->_edges.add_node(new_rid);
 
@@ -132,10 +131,11 @@ void Rakan::set_neighbors(int rid1, int rid2)
 
     // update dynamic boundary, notes if the precincts are in the same district or not.
     this->_edges.add_edge(rid1, rid2, precinct1->district != precinct2->district);
-	if( precinct1->district != precinct2->district){
-		this->_districts[precinct1->district]->border +=1;
-		this->_districts[precinct2->district]->border +=1;
-	}
+    if (precinct1->district != precinct2->district)
+    {
+        this->_districts[precinct1->district]->border += 1;
+        this->_districts[precinct2->district]->border += 1;
+    }
 
     // add to _unchecked_changes. Only need to be done once. So check real quick.
     if (std::find(this->_unchecked_changes.begin(), this->_unchecked_changes.end(), rid1) == this->_unchecked_changes.end())
@@ -472,17 +472,17 @@ void Rakan::_update_district_boundary(int rid, int district)
     // In the dynamic boundary, update the fact that an rid is in a different district
     for (Precinct *neighbor : this->_atlas[rid]->neighbors)
     {
-		// update boundary lengths for the districts
-		int oldDistrict = this->_atlas[rid]->district;
-		if (neighbor->district == district)
-		{
-			this->_districts[district]->border -= 1;
-		}
-		if (neighbor->district == oldDistrict)
-		{
-			this->_districts[oldDistrict]->border += 1;
-		}
-		
+        // update boundary lengths for the districts
+        int oldDistrict = this->_atlas[rid]->district;
+        if (neighbor->district == district)
+        {
+            this->_districts[district]->border -= 1;
+        }
+        if (neighbor->district == oldDistrict)
+        {
+            this->_districts[oldDistrict]->border += 1;
+        }
+
         // Only toggle the edge if the neighbor is in this rid's old district
         // or if the neighbor is in the rid's new district.
         if (neighbor->district == district || neighbor->district == oldDistrict)
@@ -610,42 +610,44 @@ int Rakan::total_boundary_length(int rid, int district)
     return score;
 }
 
-double Rakan::compactness_score(){
-	double score = 0;
-	for (int i = 0; i < (int)this->_districts.size();i++)
-	{
-		int len = _districts[i]->border;
-		score +=  ((double) len*len)/_districts[i]->precincts.size();
-	}
-	return score;
+double Rakan::compactness_score()
+{
+    double score = 0;
+    for (int i = 0; i < (int)this->_districts.size(); i++)
+    {
+        int len = _districts[i]->border;
+        score += ((double)len * len) / _districts[i]->precincts.size();
+    }
+    return score;
 }
 
-double Rakan::compactness_score(int rid, int district){
-	double score = 0;
-	int oldDistrict = this->_atlas[rid]->district;
-	int lens[this->_districts.size()];
-	for (int i = 0; i < (int) this->_districts.size();i++)
-	{
-		lens[i]=this->_districts[i]->border;
-	}
-	for (Precinct *neighbor : this->_atlas[rid]->neighbors)
+double Rakan::compactness_score(int rid, int district)
+{
+    double score = 0;
+    int oldDistrict = this->_atlas[rid]->district;
+    int lens[this->_districts.size()];
+    for (int i = 0; i < (int)this->_districts.size(); i++)
     {
-		// update boundary lengths for the districts
-		if (neighbor->district == district)
-		{
-			lens[district] -= 1;
-		}
-		if (neighbor->district == oldDistrict)
-		{
-			lens[oldDistrict] += 1;
-		}	
+        lens[i] = this->_districts[i]->border;
     }
-	for (int i = 0; i < (int) this->_districts.size();i++)
-	{
-		int len = lens[i];
-		score +=  ((double) len*len)/_districts[i]->precincts.size();
-	}
-	return score;
+    for (Precinct *neighbor : this->_atlas[rid]->neighbors)
+    {
+        // update boundary lengths for the districts
+        if (neighbor->district == district)
+        {
+            lens[district] -= 1;
+        }
+        if (neighbor->district == oldDistrict)
+        {
+            lens[oldDistrict] += 1;
+        }
+    }
+    for (int i = 0; i < (int)this->_districts.size(); i++)
+    {
+        int len = lens[i];
+        score += ((double)len * len) / _districts[i]->precincts.size();
+    }
+    return score;
 }
 
 // Give the number of democratic seats in a simulated election
@@ -787,6 +789,49 @@ int Rakan::other_seats(int rid, int district)
         }
     }
     return seats;
+}
+
+// A Metropolis Hastings Algorithm Step.
+// Argument can be passed in.
+// Arguments are completely arbritary and can be rewritten by the user.
+
+// Example of a Python function hardened into C++
+void Rakan::step()
+{
+    std::pair<int, int> move = this->propose_random_move();
+    try
+    {
+        // Sometimes propose_random_move severs districts, and move_precinct will catch that.
+        if (rand() <= this->score() / this->score(move.first, move.second))
+        {
+            this->move_precinct(move.first, move.second);
+        }
+        this->iterations += 1;
+    }
+    catch (std::exception e)
+    {
+        // Sometimes the proposed move severs the district
+        // Just try again
+        this->step();
+    }
+}
+
+// Score
+double Rakan::score()
+{
+    return std::exp(
+        (this->alpha * this->population_score()) +
+        (this->beta * this->compactness_score())
+    );
+}
+
+// Score of a proposed move.
+double Rakan::score(int rid, int district)
+{
+    return std::exp(
+        (this->alpha * this->population_score(rid, district)) +
+        (this->beta * this->compactness_score(rid, district))
+    );
 }
 
 } // namespace rakan

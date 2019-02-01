@@ -8,6 +8,7 @@
 #include <queue>
 #include <thread>
 #include <future>
+#include <math.h>
 
 #include "dynamicboundary.h"
 
@@ -62,6 +63,11 @@ namespace rakan {
         // For rapid state management (for communication with the server)
         std::list<int> _unchecked_changes; 
         std::list<int> _checked_changes;
+
+        // Weights
+        double alpha = 0; // population weight
+        double beta = 0; // compactness weight
+        unsigned long int iterations = 0; // iterations so far
     
         Rakan(); // for python
         Rakan(int size, int districts);
@@ -110,6 +116,11 @@ namespace rakan {
         void _update_district_boundary(int rid, int district); // update the dynamic boundary
         void _update_atlas(int rid, int district); // update the atlas
         void _update_districts(int rid, int district); // update district map
+
+        // Hardened Step/Scoring Algorithms
+        void step();
+        double score();
+        double score(int rid, int district);
     };
 }
 
