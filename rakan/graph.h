@@ -9,6 +9,7 @@
 #include <thread>
 #include <future>
 #include <math.h>
+#include <random>
 
 #include "dynamicboundary.h"
 
@@ -58,6 +59,10 @@ namespace rakan {
         Atlas _atlas; // atlas of the precincts, where index = rid
         DynamicBoundary _edges; // dynamic boundary helper
         Districts _districts; // track districts of each precinct
+        
+        // Tools for random distribution
+        std::uniform_int_distribution<double> distribution = std::uniform_int_distribution<double>(0.0, 1.0); 
+        std::default_random_engine generator;
 
     public:    
         // For rapid state management (for communication with the server)
