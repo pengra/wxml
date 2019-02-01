@@ -328,9 +328,6 @@ bool Rakan::_destroys_district(int rid)
 // if the move is illegal, exceptions will be thrown
 void Rakan::move_precinct(int rid, int district)
 {
-
-    auto is_valid = std::async(&Rakan::is_valid, this);
-    auto is_legal_new_district = std::async(&Rakan::_is_legal_new_district, this, rid, district);
     auto severs_neighbors = std::async(&Rakan::_severs_neighbors, this, rid);
 
     if (rid < 0 || rid >= (int)this->_atlas.size())
@@ -341,11 +338,11 @@ void Rakan::move_precinct(int rid, int district)
     {
         throw std::invalid_argument("Invalid Move (Reason: No such district)");
     }
-    else if (!is_valid.get())
+    else if (!this->is_valid())
     {
         throw std::logic_error("Cannot make move when graph is invalid");
     }
-    else if (!is_legal_new_district.get())
+    else if (!this->_is_legal_new_district(rid, district))
     {
         throw std::invalid_argument("Illegal Move (Reason: No neighbors have this district)");
     }
@@ -809,7 +806,7 @@ void Rakan::step()
     try
     {
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (this->alpha == this->beta == 0 || this->distribution(this->generator) <= (this->score() / this->score(move.first, move.second)))
+        if (this->distribution(this->generator) <= (this->score() / this->score(move.first, move.second)))
         {
             this->move_precinct(move.first, move.second);
         }
