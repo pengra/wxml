@@ -328,8 +328,6 @@ bool Rakan::_destroys_district(int rid)
 // if the move is illegal, exceptions will be thrown
 void Rakan::move_precinct(int rid, int district)
 {
-    auto severs_neighbors = std::async(&Rakan::_severs_neighbors, this, rid);
-
     if (rid < 0 || rid >= (int)this->_atlas.size())
     {
         throw std::invalid_argument("Illegal Move (Reason: No such rid)");
@@ -346,7 +344,7 @@ void Rakan::move_precinct(int rid, int district)
     {
         throw std::invalid_argument("Illegal Move (Reason: No neighbors have this district)");
     }
-    else if (severs_neighbors.get())
+    else if (this->_severs_neighbors(rid))
     {
         throw std::invalid_argument("Illegal Move (Reason: Severs the neighboring district(s))");
     }
