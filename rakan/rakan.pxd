@@ -68,6 +68,10 @@ cdef extern from "graph.h" namespace "rakan":
         # == Statistics ==
         long iterations;
 
+        # == Weights ==
+        double alpha;
+        double beta;
+
         # == API for myself ==
         clist[int] _unchecked_changes
         clist[int] _checked_changes
