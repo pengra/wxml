@@ -42,25 +42,6 @@ class Rakan(BaseRakan):
                         self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
                     bar.next()
                 bar.finish()
-            
-    """
-    An example scoring algorithm.
-    """
-    def score(self, rid=None, district=None):
-        # Linear to prevent overflow errors
-        return pow(e,
-            (self.ALPHA * Decimal(self.population_score(rid, district))) +
-            (self.BETA * Decimal(self.compactness_score(rid, district)))
-        )
-
-    """
-    An example scoring ratio algorithm.
-    """
-    def score_ratio(self, rid, district):
-        return pow(e, (
-            (self.ALPHA * Decimal((self.population_score(rid, district) - self.population_score()))) +
-            (self.BETA * Decimal((self.compactness_score(rid, district) - self.compactness_score())))
-        ))
 
 """
 Example code to build a Rakan instance.
