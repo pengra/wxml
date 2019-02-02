@@ -16,11 +16,6 @@ try:
     nx_path = sys.argv[1]
 except:
     nx_path = "rakan/iowa.dnx"
-    # nx_path = "iowa2/save.dnx"
-    # nx_path = "rakan/newwashington.dnx"
-    # nx_path = "washingtonrandom/save.dnx"
-
-e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
