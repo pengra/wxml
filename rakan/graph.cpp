@@ -798,7 +798,8 @@ int Rakan::other_seats(int rid, int district)
 // Arguments are completely arbritary and can be rewritten by the user.
 
 // Example of a Python function hardened into C++
-void Rakan::step()
+// Returns true when a change in the map has been made
+bool Rakan::step()
 {
     std::pair<int, int> move = this->propose_random_move();
     try
@@ -807,14 +808,19 @@ void Rakan::step()
         if (this->distribution(this->generator) <= (this->score() / this->score(move.first, move.second)))
         {
             this->move_precinct(move.first, move.second);
+            this->_last_move = std::pair<int, int>(move.first, move.second);
+            this->iterations++;
+            return true;
+        } else {
+            this->iterations++;
+            return false;
         }
-        this->iterations += 1;
     }
     catch (std::exception e)
     {
         // Sometimes the proposed move severs the district
         // Just try again
-        this->step();
+        return this->step();
     }
 }
 

@@ -173,6 +173,10 @@ cdef class PyRakan:
     def _checked_changes(self) -> list:
         return self.__crakan._checked_changes
 
+    @property
+    def _last_move(self) -> tuple:
+        return self.__crakan._last_move
+
     # == API for construction ==
 
     def add_precinct(self, int district, int population = 0) -> int:
@@ -246,7 +250,7 @@ cdef class PyRakan:
     # == Stepping ==
 
     def step(self):
-        self.__crakan.step()
+        return self.__crakan.step()
 
     # == Statistics + Weights ==
 

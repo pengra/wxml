@@ -72,6 +72,9 @@ cdef extern from "graph.h" namespace "rakan":
         double alpha;
         double beta;
 
+        # == Last Move ==
+        cpair[int, int] _last_move;
+
         # == API for myself ==
         clist[int] _unchecked_changes
         clist[int] _checked_changes
@@ -116,4 +119,4 @@ cdef extern from "graph.h" namespace "rakan":
         void _update_districts(int rid, int district) except + # update district map
 
         # step
-        void step() except +
+        cbool step() except +
