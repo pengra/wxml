@@ -17,6 +17,7 @@ import geopandas as gpd
 from progress.bar import IncrementalBar
 from sys import getsizeof
 import requests
+import pickle
 import threading
 import random
 import json
@@ -46,9 +47,13 @@ class BaseRakan(PyRakan):
             self.notify_server()
 
     def notify_server(self):
-        _ = self._move_history[:]
+        copy = self._move_history[:]
         self._move_history = []
-        threading.Thread(target=lambda: requests.post(PENGRA_ENDPOINT, data="?")).start()
+        threading.Thread(target=lambda: requests.post(
+            PENGRA_ENDPOINT, files={
+                'file': ('events.pk3', pickle.dumps(copy))
+            }
+        )).start()
         # New request thread
 
     @property
