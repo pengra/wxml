@@ -1,4 +1,5 @@
 from base import BaseRakan
+from servertools import Event
 from servertools import save_current_scores
 from progress.bar import IncrementalBar
 
@@ -18,18 +19,6 @@ except:
     nx_path = "rakan/iowa.dnx"
 
 class Rakan(BaseRakan):
-
-    _history_seed = [] # the precincts
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._history_seed = self.precincts # Set the last _history_seed
-
-    def notify_server(self, mode):
-        assert mode in ['move', 'fail', 'weight']
-        print(len(self._move_history))
-        _ = self._move_history[:]
-        self._move_history = []
 
     """
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
@@ -92,6 +81,8 @@ i <path>
     Spawn a thread that saves the current map as an image to the path specified.
 pdb
     To enter PDB mode.
+m
+    To check memory consumption of Rakan
 """
     server = None
     
@@ -143,6 +134,13 @@ pdb
             finally:
                 httpd.server_close()
                 print()
+        # memory
+        elif response == 'm':
+            print("Rakan Memory Usage:")
+            print("C++ Representation Object: {:.2f} KB".format(getsizeof(rakan) / (1024)))
+            print("Python District Representation: {:.2f} KB".format(getsizeof(rakan.districts) / (1024)))
+            print("Python Precinct Representation: {:.2f} KB".format(getsizeof(rakan.precincts) / (1024)))
+            print("Move History: {:.2f} MB".format(sum([getsizeof(_) for _ in rakan._move_history]) / (1024 ** 2)))
         # run
         elif response.isnumeric():
             target = int(response)
@@ -187,7 +185,7 @@ pdb
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
 
                     history_size = min(len(rakan._move_history), target)
-                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history][-history_size:]) * 100) / history_size))
+                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
