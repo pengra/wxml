@@ -1,10 +1,10 @@
 try:
     from rakan import PyRakan
-    from servertools import Event
+    from servertools import Event, PENGRA_ENDPOINT
 except ImportError:
     # py.test import
     from rakan.rakan import PyRakan
-    from rakan.servertools import Event
+    from rakan.servertools import Event, PENGRA_ENDPOINT
 
 import asyncio
 import websockets
@@ -16,6 +16,8 @@ import geopandas as gpd
 
 from progress.bar import IncrementalBar
 from sys import getsizeof
+import requests
+import threading
 import random
 import json
 import time
@@ -28,7 +30,7 @@ class BaseRakan(PyRakan):
     """
     nx_graph = None # the graph object
     _move_history = [] # the set of moves unreported to xayah
-    max_size = 10 * (1024 ** 2) # 10 Megabytes 
+    max_size = 100000 # 100k logs should be a sizeable bite for the server
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,12 +42,14 @@ class BaseRakan(PyRakan):
         else:
             self._move_history.append(Event('fail'))
         
-        if getsizeof(self._move_history) >= self.max_size:
+        if len(self._move_history) >= self.max_size:
             self.notify_server()
 
     def notify_server(self):
         _ = self._move_history[:]
         self._move_history = []
+        threading.Thread(target=lambda: requests.post(PENGRA_ENDPOINT, data="?")).start()
+        # New request thread
 
     @property
     def ALPHA(self):
