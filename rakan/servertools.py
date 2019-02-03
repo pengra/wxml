@@ -4,6 +4,7 @@ import json
 HEADERS = b"HTTP/1.1 200 OK\nServer: Rakan\nConnection: close\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n"
 OUTPUT_LOCATION = "./rakan/values/"
 ADDRESS = '127.0.0.1:4200'
+PENGRA_ENDPOINT= 'https://wxml.pengra.io/api/'
 
 class Event(object):
 
