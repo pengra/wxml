@@ -10,7 +10,7 @@ import threading
 import socketserver
 import http.server
 from decimal import Decimal
-
+from sys import getsizeof
 
 try:
     nx_path = sys.argv[1]
@@ -18,6 +18,18 @@ except:
     nx_path = "rakan/iowa.dnx"
 
 class Rakan(BaseRakan):
+
+    _history_seed = [] # the precincts
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._history_seed = self.precincts # Set the last _history_seed
+
+    def notify_server(self, mode):
+        assert mode in ['move', 'fail', 'weight']
+        print(len(self._move_history))
+        _ = self._move_history[:]
+        self._move_history = []
 
     """
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
@@ -78,11 +90,13 @@ l <path>
     Load a new .dnx file
 i <path>
     Spawn a thread that saves the current map as an image to the path specified.
+pdb
+    To enter PDB mode.
 """
     server = None
     
     rakan = build_rakan(nx_path)
-    graph = rakan.nx_graph
+    graph = rakan.nx_graph # for pdb context
     rakan.is_valid()
     print("Rakan is live. Type 'h' for help \n")
 
@@ -159,17 +173,27 @@ i <path>
                     print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
                     
                     populations = [_.population for _ in rakan.districts]
-                    total = sum(populations)
-                    average = total / len(populations)
-                    absolute_deltas = [abs(_ - average) for _ in populations]
-                    absolute_differences = sum(absolute_deltas) / average
-                    print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+                    print("Population difference from ideal: {:.2f}%".format(absolute_population_differences * 100))
+
+                    nodes = [len(_) for _ in rakan.districts]
+                    total_nodes = len(rakan)
+                    average_nodes = total_nodes / len(rakan.districts)
+                    absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
+                    absolute_node_differences = sum(absolute_node_deltas) / average_nodes
+                    print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
+
+                    history_size = min(len(rakan._move_history), target)
+                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history][-history_size:]) * 100) / history_size))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
-                print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * rakan.ALPHA)
+                print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * Decimal(rakan.ALPHA))
                 print("Comp Score: ", rakan.compactness_score())
-                print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * rakan.BETA)
+                print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * Decimal(rakan.BETA))
                 
                 populations = [_.population for _ in rakan.districts]
                 total = sum(populations)
@@ -177,6 +201,8 @@ i <path>
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
+                history_size = len(rakan._move_history)
+                print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history]) * 100) / history_size))
         # walk
         elif response == 'w':
             start = time.time()
