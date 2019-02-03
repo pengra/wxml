@@ -1,8 +1,10 @@
 try:
     from rakan import PyRakan
+    from servertools import Event
 except ImportError:
     # py.test import
     from rakan.rakan import PyRakan
+    from rakan.servertools import Event
 
 import asyncio
 import websockets
@@ -28,14 +30,22 @@ class BaseRakan(PyRakan):
     _move_history = [] # the set of moves unreported to xayah
     max_size = 10 * (1024 ** 2) # 10 Megabytes 
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._move_history = Event('start', [_.district for _ in self.precincts])
+
     def step(self):
         if super().step():
-            self._move_history.append(self._last_move)
+            self._move_history.append(Event('move', self._last_move))
         else:
-            self._move_history.append(False)
+            self._move_history.append(Event('fail'))
         
         if getsizeof(self._move_history) >= self.max_size:
-            self.notify_server("move")
+            self.notify_server()
+
+    def notify_server(self):
+        _ = self._move_history[:]
+        self._move_history = []
 
     @property
     def ALPHA(self):
@@ -48,12 +58,12 @@ class BaseRakan(PyRakan):
     @ALPHA.setter
     def ALPHA(self, value: float):
         self._ALPHA = value
-        self._move_history.append(["alpha", value])
+        self._move_history.append(Event("weight", {'alpha': value, 'beta': value}))
 
     @BETA.setter
     def BETA(self, value: float):
         self._BETA = value
-        self._move_history.append(["beta", value])
+        self._move_history.append(Event("weight", {'alpha': value, 'beta': value}))
 
     """
     Save the current rakan state to a file.
