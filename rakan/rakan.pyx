@@ -80,11 +80,8 @@ cdef class PyDistrict:
     def __cinit__(self):
         self.__cdistrict = cDistrict()
 
-    #def __dealloc__(self):
-    #    del self.__cprecinct
-
-    #def __str__(self):
-    #    return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
+    def __len__(self):
+        return self.__cdistrict.precincts.size()
 
     @property
     def population(self):
@@ -267,17 +264,17 @@ cdef class PyRakan:
         return self._iterations
 
     @property
-    def ALPHA(self):
+    def _ALPHA(self):
         return self.__crakan.alpha
 
     @property
-    def BETA(self):
+    def _BETA(self):
         return self.__crakan.beta
 
-    @ALPHA.setter
-    def ALPHA(self, double value):
+    @_ALPHA.setter
+    def _ALPHA(self, double value):
         self.__crakan.alpha = value
 
-    @BETA.setter
-    def BETA(self, double value):
+    @_BETA.setter
+    def _BETA(self, double value):
         self.__crakan.beta = value

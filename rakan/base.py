@@ -13,11 +13,10 @@ from matplotlib.patches import Polygon
 import geopandas as gpd
 
 from progress.bar import IncrementalBar
-
+from sys import getsizeof
 import random
 import json
 import time
-
 import os
 
 class BaseRakan(PyRakan):
@@ -25,9 +24,36 @@ class BaseRakan(PyRakan):
     Basic Rakan format. Use as a template.
     Use for production code.
     """
-    super_layer = 0 # super precinct layer
     nx_graph = None # the graph object
     _move_history = [] # the set of moves unreported to xayah
+    max_size = 10 * (1024 ** 2) # 10 Megabytes 
+
+    def step(self):
+        if super().step():
+            self._move_history.append(self._last_move)
+        else:
+            self._move_history.append(False)
+        
+        if getsizeof(self._move_history) >= self.max_size:
+            self.notify_server("move")
+
+    @property
+    def ALPHA(self):
+        return self._ALPHA
+
+    @property
+    def BETA(self):
+        return self._BETA
+
+    @ALPHA.setter
+    def ALPHA(self, value: float):
+        self._ALPHA = value
+        self._move_history.append(["alpha", value])
+
+    @BETA.setter
+    def BETA(self, value: float):
+        self._BETA = value
+        self._move_history.append(["beta", value])
 
     """
     Save the current rakan state to a file.
