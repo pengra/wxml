@@ -184,7 +184,7 @@ m
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
 
-                    history_size = min(len(rakan._move_history), target)
+                    history_size = max(min(len(rakan._move_history), target), 1)
                     print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
             else:
                 print("Score: ", rakan.score())
