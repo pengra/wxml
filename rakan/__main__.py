@@ -10,6 +10,7 @@ import threading
 import socketserver
 import http.server
 import random as rand
+from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
 
 
@@ -55,7 +56,7 @@ class Rakan(BaseRakan):
 
 
     """
-    Old report system that does not use a webserver
+    Old report system. I don't like the websocket part of the new report system.
     """
     def oldreport(self, path_name):
         geojson = self.export(json_path=None)
@@ -63,6 +64,7 @@ class Rakan(BaseRakan):
             template = handle.read()
             with open(path_name, "w") as w_handle:
                 w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
+
 
 """
 Example code to build a Rakan instance.
@@ -242,17 +244,33 @@ i <path>
             # rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
             rid1 = 82
             rid2 = 48
-            target = 1000
+            target = 100000
             rakan.ALPHA = Decimal(1e-10)
             rakan.BETA = Decimal(0.8)
+            path_name = "./newiteration/"
+            final_result_report = []
+            rakan.oldreport("./newiteration/start.html")
             for i in range(0, 1):
                 bar = IncrementalBar("Walking {} steps".format(target), max=target)
                 for _ in range(target):
                     bar.next()
                     rakan.step();
-                result = rakan.precinct_in_same_district(rid1, rid2)
-                print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
-                rakan.oldreport("./newiteration/{}.html".format(i))
+                    result = rakan.precinct_in_same_district(rid1, rid2)
+                    final_result_report.append(result)
+                print("\nTested precincts {} and {}. Result: {}".format(rid1, rid2, result))
+                #if i%20 == 0:
+                #    rakan.oldreport("./newiteration/{}.html".format(i))
+
+            # print the result into a file
+            with open(path_name+"final_result_report.dat", "w+") as f:
+                f.write("ALPHA: {:.10f} BETA: {:.3f}\nrid1: {} rid2: {}\n".format(rakan.ALPHA, rakan.BETA, rid1, rid2))
+                for r in final_result_report:
+                    f.write(str(int(r))+"\n")
+            f.closed
+            rakan.oldreport("./newiteration/end.html")
+
+            # Use r_value_independence_test
+            print(r_value_independence_test(final_result_report, 10))
         else:
             print("Unknown Command")
 
