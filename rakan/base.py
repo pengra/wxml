@@ -238,7 +238,13 @@ class BaseRakan(PyRakan):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
         for node in sorted(self.nx_graph.nodes):
-            self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
+            self.add_precinct(
+                self.nx_graph.nodes[node]['dis'], 
+                self.nx_graph.nodes[node]['pop'],
+                self.nx_graph.nodes[node]['d_active'],
+                self.nx_graph.nodes[node]['r_active'],
+                self.nx_graph.nodes[node]['o_active'],
+            )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)

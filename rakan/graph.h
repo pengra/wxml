@@ -92,7 +92,7 @@ namespace rakan {
         // == API for the mathematicains ==
 
         // Construction of Rakan
-        int add_precinct(int district, int population); // add a precinct
+        int add_precinct(int district, int population, int d_pop, int r_pop, int o_pop); // add a precinct
         void set_neighbors(int rid1, int rid2); // set neighbors
         
         // Useful API for walking
