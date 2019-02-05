@@ -38,3 +38,13 @@ Note the `networkx` file must contain the following properties:
     - `is_super` (integer value) describes whether this networkx file contains super precincts. Super precincts should be stored in the same graph, but should not be connected to the non-super precincts in any way. All nodes that are super precincts must be marked with the `is_super` property. If 0, then there are no super layers.
     - `iterations` (integer value) describes the number of iterations this graph has gone through. Assumes value is 0 if not present.
     - `move_history` (list of dictionaries) describes the move history of the saved file.
+
+## Todo:
+
+- Harden scoring and step to c++
+- Set a "burn in" process
+- Spawn a thread that `requests.post` the map
+    - Runtime statistics too
+- Algorithm Scoring:
+    - 15/20/25 node network
+    - 2/3 districts

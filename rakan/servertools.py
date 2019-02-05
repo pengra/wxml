@@ -1,10 +1,18 @@
-OUTPUT_LOCATION = "./rakan/values/"
-ADDRESS = '127.0.0.1:4200'
-
 import socket
 import json
 
 HEADERS = b"HTTP/1.1 200 OK\nServer: Rakan\nConnection: close\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n"
+OUTPUT_LOCATION = "./rakan/values/"
+ADDRESS = '127.0.0.1:4200'
+PENGRA_ENDPOINT= 'https://wxml.pengra.io/api/'
+
+class Event(object):
+
+    def __init__(self, type, data=None):
+        assert type in ['start', 'move', 'fail', 'weight', 'burn start', 'burn end', 'anneal start', 'anneal end']
+        self.type = type
+        self.data = data
+
 
 def save_current_scores(rakan_instance):
     sock = socket.socket()

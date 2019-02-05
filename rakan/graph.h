@@ -8,6 +8,8 @@
 #include <queue>
 #include <thread>
 #include <future>
+#include <math.h>
+#include <random>
 
 #include "dynamicboundary.h"
 
@@ -37,7 +39,7 @@ namespace rakan {
 		int democrat_votes;
 		int republican_votes;
 		int other_votes;
-		int border;
+		int border=0;
 		
 		std::list<int> precincts;
 		District();
@@ -57,11 +59,26 @@ namespace rakan {
         Atlas _atlas; // atlas of the precincts, where index = rid
         DynamicBoundary _edges; // dynamic boundary helper
         Districts _districts; // track districts of each precinct
+        
+        // record the last move
+        
+
+        // Tools for random distribution
+        std::uniform_real_distribution<double> distribution = std::uniform_real_distribution<double>(0.0, 1.0); 
+        std::default_random_engine generator;
 
     public:    
+        // for tracking last move
+        std::pair<int, int> _last_move = std::pair<int, int>(-1, -1);
+
         // For rapid state management (for communication with the server)
         std::list<int> _unchecked_changes; 
         std::list<int> _checked_changes;
+
+        // Weights
+        double alpha = 0; // population weight
+        double beta = 0; // compactness weight
+        unsigned long int iterations = 0; // iterations so far
     
         Rakan(); // for python
         Rakan(int size, int districts);
@@ -90,8 +107,10 @@ namespace rakan {
         // scoring
         double population_score();
         double population_score(int rid, int district);
-        int compactness_score();
-        int compactness_score(int rid, int district);
+        int total_boundary_length();
+        int total_boundary_length(int rid, int district);
+		double compactness_score();
+        double compactness_score(int rid, int district);
         int democrat_seats();
         int democrat_seats(int rid, int district);
         int republican_seats();
@@ -108,6 +127,11 @@ namespace rakan {
         void _update_district_boundary(int rid, int district); // update the dynamic boundary
         void _update_atlas(int rid, int district); // update the atlas
         void _update_districts(int rid, int district); // update district map
+
+        // Hardened Step/Scoring Algorithms
+        bool step();
+        double score();
+        double score(int rid, int district);
     };
 }
 
