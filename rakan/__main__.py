@@ -16,7 +16,7 @@ from sys import getsizeof
 try:
     nx_path = sys.argv[1]
 except:
-    nx_path = "rakan/iowa.dnx"
+    nx_path = "iowa.dnx"
 
 class Rakan(BaseRakan):
 
