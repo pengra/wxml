@@ -4,10 +4,10 @@
 {
     "distutils": {
         "depends": [
-            "dynamicboundary.cpp",
-            "dynamicboundary.h",
-            "graph.cpp",
-            "graph.h"
+            "rakan/dynamicboundary.cpp",
+            "rakan/dynamicboundary.h",
+            "rakan/graph.cpp",
+            "rakan/graph.h"
         ],
         "extra_compile_args": [
             "-std=c++11"
@@ -16,12 +16,13 @@
             "-std=c++11"
         ],
         "include_dirs": [
-            "."
+            "rakan",
+            "./rakan"
         ],
         "language": "c++",
         "name": "rakan",
         "sources": [
-            "rakan.pyx"
+            "rakan/rakan.pyx"
         ]
     },
     "module_name": "rakan"
@@ -654,11 +655,11 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
+#include <list>
+#include <vector>
 #include <utility>
 #include <set>
 #include <map>
-#include <list>
-#include <vector>
 #include "dynamicboundary.cpp"
 #include "graph.cpp"
 #include "dynamicboundary.h"
@@ -871,7 +872,7 @@ static const char *__pyx_filename;
 
 static const char *__pyx_f[] = {
   "stringsource",
-  "rakan.pyx",
+  "rakan/rakan.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1290,6 +1291,10 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 static PyObject *__pyx_f_5rakan_10PyPrecinct_factory(rakan::Precinct __pyx_v_cprecinct); /* proto*/
 static PyObject *__pyx_f_5rakan_10PyDistrict_factory(rakan::District __pyx_v_cdistrict); /* proto*/
 
+/* Module declarations from 'libcpp.list' */
+
+/* Module declarations from 'libcpp.vector' */
+
 /* Module declarations from 'libcpp.utility' */
 
 /* Module declarations from 'libcpp.set' */
@@ -1298,11 +1303,9 @@ static PyObject *__pyx_f_5rakan_10PyDistrict_factory(rakan::District __pyx_v_cdi
 
 /* Module declarations from 'libcpp' */
 
-/* Module declarations from 'libcpp.list' */
-
-/* Module declarations from 'libcpp.vector' */
-
 /* Module declarations from 'libcpp.pair' */
+
+/* Module declarations from 'rakan.rakan' */
 
 /* Module declarations from 'rakan' */
 static PyTypeObject *__pyx_ptype_5rakan_PyPrecinct = 0;
