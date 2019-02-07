@@ -11,7 +11,6 @@ import threading
 import socketserver
 import http.server
 import random as rand
-from time import time
 from decimal import Decimal
 from sys import getsizeof
 
@@ -177,7 +176,7 @@ m
                     print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
                     print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
                     print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
-                    
+
                     populations = [_.population for _ in rakan.districts]
                     total_population = sum(populations)
                     average_population = total_population / len(populations)
@@ -200,7 +199,7 @@ m
                 print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * Decimal(rakan.ALPHA))
                 print("Comp Score: ", rakan.compactness_score())
                 print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * Decimal(rakan.BETA))
-                
+
                 populations = [_.population for _ in rakan.districts]
                 total = sum(populations)
                 average = total / len(populations)
