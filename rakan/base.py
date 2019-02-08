@@ -25,7 +25,7 @@ class BaseRakan(PyRakan):
     Use for production code.
     """
     nx_graph = None # the graph object
-    max_size = 10000 # 100k logs should be a sizeable bite for the server
+    max_size = 10000 # 10k logs should be a sizeable bite for the server
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,7 +57,8 @@ class BaseRakan(PyRakan):
             )
             self._id = response.json()['id']
         
-        print(requests.post(
+        # New request thread
+        threading.Thread(target=lambda: requests.post(
             PENGRA_ENDPOINT, data={
                 'mode': 'bulkevent',
                 'code': os.getenv('XAYAH_CODE', 'default_code'),
@@ -66,18 +67,9 @@ class BaseRakan(PyRakan):
             files={
                 'file': ('events.pk3', pickle.dumps(copy))
             }
-        ).json())
+        ).json()).start()
 
-        # threading.Thread(target=lambda: print(requests.post(
-        #     PENGRA_ENDPOINT, files={
-        #         'mode': 'bulkevent',
-        #         'code': os.getenv('XAYAH_CODE', 'default_code'),
-        #         'run': self._id,
-        #         'file': ('events.pk3', pickle.dumps(copy))
-        #     }
-        # ).text)).start()
-
-        # New request thread
+        
 
     @property
     def ALPHA(self):
