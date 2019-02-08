@@ -723,7 +723,7 @@ int Rakan::republican_seats()
         int d_votes = this->_districts[i]->democrat_votes;
         int r_votes = this->_districts[i]->republican_votes;
         int o_votes = this->_districts[i]->other_votes;
-        if (d_votes > r_votes && d_votes > o_votes)
+        if (r_votes > d_votes && r_votes > o_votes)
         {
             seats += 1;
         }
@@ -770,7 +770,7 @@ int Rakan::other_seats()
         int d_votes = this->_districts[i]->democrat_votes;
         int r_votes = this->_districts[i]->republican_votes;
         int o_votes = this->_districts[i]->other_votes;
-        if (d_votes > r_votes && d_votes > o_votes)
+        if (o_votes > r_votes && o_votes > d_votes)
         {
             seats += 1;
         }
