@@ -34,6 +34,7 @@ Rakan::Rakan()
     this->_atlas = Atlas();
     this->_edges = DynamicBoundary();
     this->_districts = Districts();
+    this->generator.seed(time(NULL));
 }
 
 // Rakan Class.
@@ -45,6 +46,7 @@ Rakan::Rakan(int size, int districts)
     this->_atlas.reserve(size);
     this->_edges = DynamicBoundary(size);
     this->_districts = Districts(districts);
+    this->generator.seed(time(NULL));
 
     // Spawn Districts
     for (int i = 0; i < districts; i++)

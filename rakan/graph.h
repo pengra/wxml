@@ -10,6 +10,7 @@
 #include <future>
 #include <math.h>
 #include <random>
+#include <time.h>
 
 #include "dynamicboundary.h"
 
