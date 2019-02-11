@@ -1,9 +1,4 @@
-try:
-    from rakan import PyRakan
-except ImportError:
-    # py.test import
-    from rakan.rakan import PyRakan
-
+from rakan import PyRakan
 import asyncio
 import websockets
 import threading
@@ -98,7 +93,7 @@ class BaseRakan(PyRakan):
                 }
             })
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
-        
+
         geojson = json.dumps({
             "type": "FeatureCollection",
             "features": features
@@ -167,7 +162,7 @@ class BaseRakan(PyRakan):
             "beta": float(self.BETA),
             "index": self.iterations,
         })
-        
+
     """
     Build rakan from a .dnx file.
     """
@@ -218,4 +213,3 @@ class BaseRakan(PyRakan):
 
     def score_ratio(self, rid, district):
         raise NotImplementedError("Scoring algorithm not implemented!")
-

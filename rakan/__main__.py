@@ -244,13 +244,15 @@ i <path>
             # rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
             rid1 = 82
             rid2 = 48
-            target = 100000
+            target = 1000
+            num_reports = 1
+            # Set ALPHA and BETA
             rakan.ALPHA = Decimal(1e-10)
             rakan.BETA = Decimal(0.8)
             path_name = "./newiteration/"
-            final_result_report = []
+            final_result_report = [] # the array that will have the sequence of 0's and 1's
             rakan.oldreport("./newiteration/start.html")
-            for i in range(0, 1):
+            for i in range(0, num_reports):
                 bar = IncrementalBar("Walking {} steps".format(target), max=target)
                 for _ in range(target):
                     bar.next()
@@ -258,8 +260,7 @@ i <path>
                     result = rakan.precinct_in_same_district(rid1, rid2)
                     final_result_report.append(result)
                 print("\nTested precincts {} and {}. Result: {}".format(rid1, rid2, result))
-                #if i%20 == 0:
-                #    rakan.oldreport("./newiteration/{}.html".format(i))
+                rakan.oldreport("./newiteration/{}.html".format(i))
 
             # print the result into a file
             with open(path_name+"final_result_report.dat", "w+") as f:

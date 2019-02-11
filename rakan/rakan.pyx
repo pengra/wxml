@@ -40,7 +40,7 @@ cdef class PyPrecinct:
     @property
     def district(self):
         return self.__cprecinct.district;
-        
+
     @district.setter
     def district(self, int value):
         self.__cprecinct.district = value
@@ -71,8 +71,8 @@ cdef class PyPrecinct:
         (<PyPrecinct>py_obj).__cprecinct = cprecinct
         return py_obj
 
-		
-		
+
+
 cdef class PyDistrict:
 
     cdef cDistrict __cdistrict
@@ -111,8 +111,8 @@ cdef class PyDistrict:
         py_obj = PyDistrict.__new__(PyDistrict)
         (<PyDistrict>py_obj).__cdistrict = cdistrict
         return py_obj
-		
-		
+
+
 
 cdef class PyRakan:
 
@@ -148,7 +148,7 @@ cdef class PyRakan:
         c_precincts = self.__crakan.atlas()
         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
         return py_precincts
-		
+
     def district_of(self, precinct) -> int:
         return self.__crakan.atlas()[precinct].district
 
@@ -168,7 +168,7 @@ cdef class PyRakan:
     @property
     def _unchecked_changes(self) -> list:
         return self.__crakan._unchecked_changes
-    
+
     @property
     def _checked_changes(self) -> list:
         return self.__crakan._checked_changes
@@ -200,13 +200,13 @@ cdef class PyRakan:
 
     def move_precinct(self, int rid, int district):
         return self.__crakan.move_precinct(rid, district)
-		
+
     def population_score(self, rid=None, district=None):
         if rid is None and district is None:
             return self.__crakan.population_score()
         else:
             return self.__crakan.population_score(rid, district)
-			
+
     def compactness_score(self, rid=None, district=None):
         if rid is None and district is None:
             return self.__crakan.compactness_score()
@@ -224,7 +224,7 @@ cdef class PyRakan:
             return self.__crakan.republican_seats()
         else:
             return self.__crakan.republican_seats(rid, district)
-			
+
     def other_seats(self, rid=None, district=None):
         if rid is None and district is None:
             return self.__crakan.other_seats()
