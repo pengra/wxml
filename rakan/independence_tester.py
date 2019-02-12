@@ -1,6 +1,7 @@
 import json
 import warnings
 import numpy
+import matplotlib.pyplot as plt
 from base import BaseRakan
 from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
@@ -66,8 +67,11 @@ Input:
     - rid2: the ID of the second precinct to be used in the test
 Output:
     - the step_size with the least correlation value
+Note:
+    - when the PRINT bool is True, it creates a graph
 '''
 def find_opt_stepsize(path_name, rid1, rid2):
+    step_to_corr = []
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     sequence = get_sequence_from_file(path_name, rid1, rid2)
     min_step = 1
@@ -80,11 +84,16 @@ def find_opt_stepsize(path_name, rid1, rid2):
             # skip this map/ sampling if r_value_independence fails
             continue
 
+        step_to_corr.append(v);
         if v < min_r_val:
             min_step = i
             min_r_val = v
+    if PRINT:
+        for index, corr in enumerate(step_to_corr):
+            print('{}: {}'.format(index, corr))
+        plt.plot(step_to_corr)
+        plt.savefig(path_name+'/step_size_to_corr.png')
     return min_step
-
 
 '''
 Description: This method determines whether the walk was independent or not
@@ -96,7 +105,13 @@ Output:
 def test(report_folder_name):
     min_step = find_opt_stepsize(report_folder_name, RID1, RID2)
     cor = indpendence_test_from_report_file("../hello", RID1, RID2, min_step)
-    if PRINT: print("Step Size: {}  Correlation: {}".format(min_step, v))
+    if PRINT: print("Step Size: {}  Correlation: {}".format(min_step, cor))
     return cor < TOLERANCE
 
-print(test("../hello"))
+
+try:
+    file_path = sys.argv[1]
+except:
+    file_path = "../hello"
+
+print(test(file_path))
