@@ -11,3 +11,7 @@ secrets*.*
 *.geojson
 *.ipynb
 *.png
+=*
+core
+output/*
+build/*

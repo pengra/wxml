@@ -65,6 +65,16 @@ cdef extern from "graph.h" namespace "rakan":
         cvector[Precinct*] atlas() except +;
         DynamicBoundary edges() except +;
 
+        # == Statistics ==
+        long iterations;
+
+        # == Weights ==
+        double alpha;
+        double beta;
+
+        # == Last Move ==
+        cpair[int, int] _last_move;
+
         # == API for myself ==
         clist[int] _unchecked_changes
         clist[int] _checked_changes
@@ -72,7 +82,7 @@ cdef extern from "graph.h" namespace "rakan":
         # == API for the mathematicains ==
 
         # Construction of Rakan
-        int add_precinct(int district, int population) except +
+        int add_precinct(int district, int population, int d_pop, int r_pop, int o_pop) except +
         void set_neighbors(int rid1, int rid2) except +
         
         # Useful API for walking
@@ -86,14 +96,18 @@ cdef extern from "graph.h" namespace "rakan":
         # scoring
         double population_score() except +
         double population_score(int rid, int district) except +
-        int compactness_score() except +
-        int compactness_score(int rid, int district) except +
+        double compactness_score() except +
+        double compactness_score(int rid, int district) except +
+        int total_boundary_length() except +
+        int total_boundary_length(int rid, int district) except +
         int democrat_seats() except +
         int democrat_seats(int rid, int district) except +
         int republican_seats() except +
         int republican_seats(int rid, int district) except +
         int other_seats() except +
         int other_seats(int rid, int district) except +
+        double score() except +
+        double score(int rid, int district) except +
 
         # internal methods
         cset[cpair[int, int]] _checks_required(int rid) except + # a set of paris that need to be checked that require are_connected checks
@@ -103,3 +117,6 @@ cdef extern from "graph.h" namespace "rakan":
         void _update_district_boundary(int rid, int district) except + # update the dynamic boundary
         void _update_atlas(int rid, int district) except + # update the atlas
         void _update_districts(int rid, int district) except + # update district map
+
+        # step
+        cbool step() except +
