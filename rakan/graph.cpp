@@ -34,6 +34,7 @@ Rakan::Rakan()
     this->_atlas = Atlas();
     this->_edges = DynamicBoundary();
     this->_districts = Districts();
+    this->generator.seed(time(NULL));
 }
 
 // Rakan Class.
@@ -45,7 +46,8 @@ Rakan::Rakan(int size, int districts)
     this->_atlas.reserve(size);
     this->_edges = DynamicBoundary(size);
     this->_districts = Districts(districts);
-    
+    this->generator.seed(time(NULL));
+
     // Spawn Districts
     for (int i = 0; i < districts; i++)
     {
@@ -76,12 +78,24 @@ DynamicBoundary Rakan::edges()
 // Each precinct is assigned an rid that will be used to reference
 // that precinct from now on. rids start at 0 and increment by one.
 // the return value of this method is the rid.
-int Rakan::add_precinct(int district, int population)
+int Rakan::add_precinct(int district, int population, int d_pop, int r_pop, int o_pop)
 {
     DISTRICT_CHECK(district);
     if (population < 0)
     {
         throw std::invalid_argument("Population is negative");
+    }
+    else if (d_pop < 0)
+    {
+        throw std::invalid_argument("Democratic Population is negative");
+    }
+    else if (r_pop < 0)
+    {
+        throw std::invalid_argument("Republican Population is negative");
+    }
+    else if (o_pop < 0)
+    {
+        throw std::invalid_argument("Other Population is negative");
     }
 
     int new_rid = this->_atlas.size();
@@ -89,6 +103,9 @@ int Rakan::add_precinct(int district, int population)
     // update atlas
     this->_atlas.push_back(new Precinct(new_rid, district));
     this->_atlas[new_rid]->population = population; // Not defined in constructor because there could be more attributes.
+    this->_atlas[new_rid]->democrat_votes = d_pop;
+    this->_atlas[new_rid]->republican_votes = r_pop;
+    this->_atlas[new_rid]->other_votes = o_pop;
 
     // update dynamic boundary
     this->_edges.add_node(new_rid);
@@ -708,7 +725,7 @@ int Rakan::republican_seats()
         int d_votes = this->_districts[i]->democrat_votes;
         int r_votes = this->_districts[i]->republican_votes;
         int o_votes = this->_districts[i]->other_votes;
-        if (d_votes > r_votes && d_votes > o_votes)
+        if (r_votes > d_votes && r_votes > o_votes)
         {
             seats += 1;
         }
@@ -755,7 +772,7 @@ int Rakan::other_seats()
         int d_votes = this->_districts[i]->democrat_votes;
         int r_votes = this->_districts[i]->republican_votes;
         int o_votes = this->_districts[i]->other_votes;
-        if (d_votes > r_votes && d_votes > o_votes)
+        if (o_votes > r_votes && o_votes > d_votes)
         {
             seats += 1;
         }
@@ -811,7 +828,9 @@ bool Rakan::step()
             this->_last_move = std::pair<int, int>(move.first, move.second);
             this->iterations++;
             return true;
-        } else {
+        }
+        else
+        {
             this->iterations++;
             return false;
         }

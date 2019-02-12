@@ -1,10 +1,5 @@
-try:
-    from rakan import PyRakan
-    from servertools import Event, PENGRA_ENDPOINT
-except ImportError:
-    # py.test import
-    from rakan.rakan import PyRakan
-    from rakan.servertools import Event, PENGRA_ENDPOINT
+from rakan import PyRakan
+from servertools import Event, PENGRA_ENDPOINT
 
 import asyncio
 import websockets
@@ -30,31 +25,51 @@ class BaseRakan(PyRakan):
     Use for production code.
     """
     nx_graph = None # the graph object
-    _move_history = [] # the set of moves unreported to xayah
-    max_size = 100000 # 100k logs should be a sizeable bite for the server
+    max_size = 10000 # 10k logs should be a sizeable bite for the server
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._move_history = Event('start', [_.district for _ in self.precincts])
+        self._id = None
+        self._move_history = [Event('seed', self)] # the set of moves unreported to xayah
 
     def step(self):
         if super().step():
-            self._move_history.append(Event('move', self._last_move))
+            self._move_history.append(Event('move', self))
         else:
-            self._move_history.append(Event('fail'))
+            self._move_history.append(Event('fail', self))
         
         if len(self._move_history) >= self.max_size:
             self.notify_server()
 
     def notify_server(self):
-        copy = self._move_history[:]
-        self._move_history = []
+        copy = [_.json for _ in self._move_history]
+        self._move_history = [Event('seed', self)]
+        # If haven't been reported yet, request run id
+        if self._id is None:
+            # Lock current thread until complete.
+            response = requests.post(
+                PENGRA_ENDPOINT, data={
+                    'mode': 'createrun',
+                    'code': os.getenv('XAYAH_CODE', 'default_code'),
+                    'state': self.nx_graph.graph['fips'],
+                    'districts': self.nx_graph.graph['districts'],
+                }
+            )
+            self._id = response.json()['id']
+        
+        # New request thread
         threading.Thread(target=lambda: requests.post(
-            PENGRA_ENDPOINT, files={
+            PENGRA_ENDPOINT, data={
+                'mode': 'bulkevent',
+                'code': os.getenv('XAYAH_CODE', 'default_code'),
+                'run': self._id,
+            },
+            files={
                 'file': ('events.pk3', pickle.dumps(copy))
             }
-        )).start()
-        # New request thread
+        ).json()).start()
+
+        
 
     @property
     def ALPHA(self):
@@ -67,12 +82,12 @@ class BaseRakan(PyRakan):
     @ALPHA.setter
     def ALPHA(self, value: float):
         self._ALPHA = value
-        self._move_history.append(Event("weight", {'alpha': value, 'beta': value}))
+        self._move_history.append(Event("weight", self))
 
     @BETA.setter
     def BETA(self, value: float):
         self._BETA = value
-        self._move_history.append(Event("weight", {'alpha': value, 'beta': value}))
+        self._move_history.append(Event("weight", self))
 
     """
     Save the current rakan state to a file.
@@ -82,7 +97,6 @@ class BaseRakan(PyRakan):
         for precinct in self.precincts:
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         self.nx_graph.graph['iterations'] = self.iterations
-        self.nx_graph.graph['move_history'] = self._move_history
         networkx.write_gpickle(self.nx_graph, nx_path)
 
     """
@@ -200,7 +214,7 @@ class BaseRakan(PyRakan):
                 ))
         if include_json:
             with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
-                handle.write(json.dumps(self.move_history))
+                handle.write(json.dumps([_.json for _ in self.move_history]))
 
     @property
     def move_history(self):
@@ -209,25 +223,6 @@ class BaseRakan(PyRakan):
         """
         return self._move_history
 
-    def record_move(self, rid, district, prev):
-        """
-        Record the move by rid and district.
-        Does not verify if the move plugged in is valid, nor if it actually happened.
-
-        This method should only be called after move_precinct with the same parameters
-        succesfully executes.
-        """
-        self._move_history.append({
-            "prev": (rid, prev),
-            "move": (rid, district),
-            "pscore": float(self.population_score()),
-            "cscore": float(self.compactness_score()),
-            "score": float(self.score()),
-            "alpha": float(self.ALPHA),
-            "beta": float(self.BETA),
-            "index": self.iterations,
-        })
-        
     """
     Build rakan from a .dnx file.
     """
@@ -235,11 +230,17 @@ class BaseRakan(PyRakan):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
         for node in sorted(self.nx_graph.nodes):
-            self.add_precinct(self.nx_graph.nodes[node]['dis'], self.nx_graph.nodes[node]['pop'])
+            self.add_precinct(
+                self.nx_graph.nodes[node]['dis'], 
+                self.nx_graph.nodes[node]['pop'],
+                self.nx_graph.nodes[node]['d_active'],
+                self.nx_graph.nodes[node]['r_active'],
+                self.nx_graph.nodes[node]['o_active'],
+            )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
-        self._move_history = self.nx_graph.graph.get('move_history', list())
+        self._move_history = [Event('seed', self)]
 
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")

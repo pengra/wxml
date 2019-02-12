@@ -4,9 +4,9 @@ from cython.operator import dereference, preincrement, address
 from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
-from rakan cimport Precinct as cPrecinct
-from rakan cimport District as cDistrict
-from rakan cimport Rakan as cRakan
+from rakan.rakan cimport Precinct as cPrecinct
+from rakan.rakan cimport District as cDistrict
+from rakan.rakan cimport Rakan as cRakan
 
 
 
@@ -176,8 +176,14 @@ cdef class PyRakan:
 
     # == API for construction ==
 
-    def add_precinct(self, int district, int population = 0) -> int:
-        return self.__crakan.add_precinct(district, population)
+    def add_precinct(self, 
+        int district, 
+        int population = 0,
+        int d_pop = 0,
+        int r_pop = 0,
+        int o_pop = 0,
+    ) -> int:
+        return self.__crakan.add_precinct(district, population, d_pop, r_pop, o_pop)
 
     def set_neighbors(self, int rid1, int rid2):
         return self.__crakan.set_neighbors(rid1, rid2)

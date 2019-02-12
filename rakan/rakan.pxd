@@ -82,7 +82,7 @@ cdef extern from "graph.h" namespace "rakan":
         # == API for the mathematicains ==
 
         # Construction of Rakan
-        int add_precinct(int district, int population) except +
+        int add_precinct(int district, int population, int d_pop, int r_pop, int o_pop) except +
         void set_neighbors(int rid1, int rid2) except +
         
         # Useful API for walking

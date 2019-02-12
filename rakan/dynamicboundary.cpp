@@ -9,12 +9,14 @@ namespace rakan {
     // Build a false tree
     DynamicBoundary::DynamicBoundary(int size) {
         this->_tree = false_tree(size);
+        srand(time(NULL));
     }
 
     // Build a false tree with default size
     // Javastyle'd defaults because I'm bad at coding
     DynamicBoundary::DynamicBoundary() {
         this->_tree = false_tree();
+        srand(time(NULL));
     }
 
     // add a node to the tree (no edges are added in this step)
