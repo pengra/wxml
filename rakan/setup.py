@@ -4,7 +4,7 @@ from Cython.Build import cythonize
 extensions = [
     Extension(
         "rakan",
-        ["rakan/rakan.pyx"],
+        ["rakan.pyx"],
         language="c++",
         extra_compile_args=["-std=c++11"],
         extra_link_args=["-std=c++11"]

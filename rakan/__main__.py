@@ -13,6 +13,7 @@ import http.server
 import random as rand
 from decimal import Decimal
 from sys import getsizeof
+# from independence_tester import test
 
 try:
     nx_path = sys.argv[1]
@@ -39,13 +40,6 @@ class Rakan(BaseRakan):
                         self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
                     bar.next()
                 bar.finish()
-
-    """
-    A statistical test to check two random precincts are in the same district
-    """
-    def precinct_in_same_district(self, rid1, rid2):
-        return self.precincts[rid1].district == self.precincts[rid2].district
-
 
     """
     Old report system. I don't like the websocket part of the new report system.
@@ -263,6 +257,21 @@ m
             print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
             print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
             print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
+        elif response.startswith('t '):
+            options = response.split(' ', 3) # t (file name) (rid1) (rid2)
+            result = False
+            if len(options) == 2:
+                result = test(option[1])
+            elif len(options) == 4:
+                result = test(option[1], option[2], option[3])
+            else:
+                print("Invalid set of inputs")
+                continue;
+
+            if result:
+                print("The sequence from the file {} is independent".format(option[1]))
+            else:
+                print("The sequence from the file {} is NOT independent".format(option[1]))
         # ??
         else:
             print("Unknown Command")

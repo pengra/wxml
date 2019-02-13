@@ -242,5 +242,11 @@ class BaseRakan(PyRakan):
         self._iterations = self.nx_graph.graph.get('iterations', 0)
         self._move_history = [Event('seed', self)]
 
+    """
+    A statistical test to check two random precincts are in the same district
+    """
+    def precinct_in_same_district(self, rid1, rid2):
+        return self.precincts[rid1].district == self.precincts[rid2].district
+
     def walk(self, *args, **kwargs):
         raise NotImplementedError("Not implemented by user!")

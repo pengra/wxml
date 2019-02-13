@@ -2,7 +2,7 @@ import json
 import warnings
 import numpy
 import matplotlib.pyplot as plt
-from base import BaseRakan
+from base import BaseRakan as TestRakan
 from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
 
@@ -10,14 +10,6 @@ TOLERANCE = 0.1 # tolerance to determine whether the sequence was independent
 RID1 = 82 # Chosen b/c they are in the middle of the IOWA map
 RID2 = 48 # Chosen b/c they are in the middle of the IOWA map
 PRINT = False # Boolean to print the stepsize and correlation value
-
-class Rakan(BaseRakan):
-    """
-    A statistical test to check two specified precincts are in the same district
-    """
-    def precinct_in_same_district(self, rid1, rid2):
-        return self.precincts[rid1].district == self.precincts[rid2].district
-
 
 '''
 Description: This method creates the sequence from the walk specified by 'path_name'
@@ -32,7 +24,7 @@ def get_sequence_from_file(path_name, rid1, rid2):
     final_result_report = []
 
     # Create Rakan
-    rakan = Rakan(0,0)
+    rakan = TestRakan(0,0)
     rakan.read_nx(path_name+"/save.dnx")
     moves = json.load(open(path_name+"/moves.json"))
 
@@ -69,6 +61,7 @@ Output:
     - the step_size with the least correlation value
 Note:
     - when the PRINT bool is True, it creates a graph
+    - it tries all the possible stepsizes. Could be optimized further
 '''
 def find_opt_stepsize(path_name, rid1, rid2):
     step_to_corr = []
@@ -102,16 +95,8 @@ Input:
 Output:
     - True or False
 '''
-def test(report_folder_name):
-    min_step = find_opt_stepsize(report_folder_name, RID1, RID2)
-    cor = indpendence_test_from_report_file("../hello", RID1, RID2, min_step)
+def test(report_folder_name, rid1=RID1, rid2=RID2):
+    min_step = find_opt_stepsize(report_folder_name, rid1, rid2)
+    cor = indpendence_test_from_report_file("../hello", rid1, rid2, min_step)
     if PRINT: print("Step Size: {}  Correlation: {}".format(min_step, cor))
     return cor < TOLERANCE
-
-
-try:
-    file_path = sys.argv[1]
-except:
-    file_path = "../hello"
-
-print(test(file_path))
