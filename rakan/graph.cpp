@@ -325,12 +325,14 @@ bool Rakan::is_valid()
 // all edges involving two different districted precincts are equally likely to be proposed
 // Move proposed as pair integers, where the first integer is the rid
 // and the second integer is the district number to convert it to.
-std::pair<int, int> Rakan::propose_random_move()
+std::vector<int> Rakan::propose_random_move()
 {
     // Get a random pair of districts that are adjacent but in different districts
     std::pair<int, int> random_rids = this->_edges.get_random_district_edge();
     // Get the district of the second value and propose to move the first precinct into that district.
-    return std::pair<int, int>(random_rids.first, this->_atlas[random_rids.second]->district);
+    std::vector<int> result(3);
+    result = {random_rids.first, this->_atlas[random_rids.first]->district, this->_atlas[random_rids.second]->district};
+    return result;
 }
 
 // Check that the district isn't being deleted.
@@ -818,14 +820,16 @@ int Rakan::other_seats(int rid, int district)
 // Returns true when a change in the map has been made
 bool Rakan::step()
 {
-    std::pair<int, int> move = this->propose_random_move();
+    std::vector<int> move = this->propose_random_move();
+    int rid = move.at(0);
+    int new_district = move.at(2);
     try
     {
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (this->distribution(this->generator) <= (this->score() / this->score(move.first, move.second)))
+        if (this->distribution(this->generator) <= (this->score() / this->score(rid, new_district)))
         {
-            this->move_precinct(move.first, move.second);
-            this->_last_move = std::pair<int, int>(move.first, move.second);
+            this->move_precinct(rid, new_district);
+            this->_last_move = std::vector<int>(move);
             this->iterations++;
             return true;
         }

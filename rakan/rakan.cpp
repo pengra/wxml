@@ -15,6 +15,9 @@
         "extra_link_args": [
             "-std=c++11"
         ],
+        "include_dirs": [
+            "."
+        ],
         "language": "c++",
         "name": "rakan",
         "sources": [
@@ -1301,8 +1304,6 @@ static PyObject *__pyx_f_5rakan_10PyDistrict_factory(rakan::District __pyx_v_cdi
 
 /* Module declarations from 'libcpp.pair' */
 
-/* Module declarations from 'rakan.rakan' */
-
 /* Module declarations from 'rakan' */
 static PyTypeObject *__pyx_ptype_5rakan_PyPrecinct = 0;
 static PyTypeObject *__pyx_ptype_5rakan_PyDistrict = 0;
@@ -1310,7 +1311,7 @@ static PyTypeObject *__pyx_ptype_5rakan_PyRakan = 0;
 static PyObject *__pyx_convert_list_to_py_int(std::list<int>  const &); /*proto*/
 static PyObject *__pyx_convert_pair_to_py_std_3a__3a_list_3c_int_3e_______std_3a__3a_list_3c_int_3e___(std::pair<std::list<int> ,std::list<int> >  const &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_std_3a__3a_list_3c_int_3e____2c_std_3a__3a_list_3c_int_3e____3e___(const std::vector<std::pair<std::list<int> ,std::list<int> > >  &); /*proto*/
-static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &); /*proto*/
+static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &); /*proto*/
 static PyObject *__pyx_convert_map_to_py_int____std_3a__3a_list_3c_int_3e___(std::map<int,std::list<int> >  const &); /*proto*/
 #define __Pyx_MODULE_NAME "rakan"
 extern int __pyx_module_is_main_rakan;
@@ -4438,7 +4439,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_16_checked_changes___get__(struct __py
 /* "rakan.pyx":174
  * 
  *     @property
- *     def _last_move(self) -> tuple:             # <<<<<<<<<<<<<<
+ *     def _last_move(self) -> list:             # <<<<<<<<<<<<<<
  *         return self.__crakan._last_move
  * 
  */
@@ -4464,13 +4465,13 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_10_last_move___get__(struct __pyx_obj_
 
   /* "rakan.pyx":175
  *     @property
- *     def _last_move(self) -> tuple:
+ *     def _last_move(self) -> list:
  *         return self.__crakan._last_move             # <<<<<<<<<<<<<<
  * 
  *     # == API for construction ==
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_pair_to_py_int____int(__pyx_v_self->__pyx___crakan._last_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 175, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_int(__pyx_v_self->__pyx___crakan._last_move); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4479,7 +4480,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_10_last_move___get__(struct __pyx_obj_
   /* "rakan.pyx":174
  * 
  *     @property
- *     def _last_move(self) -> tuple:             # <<<<<<<<<<<<<<
+ *     def _last_move(self) -> list:             # <<<<<<<<<<<<<<
  *         return self.__crakan._last_move
  * 
  */
@@ -5101,7 +5102,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_24is_valid(struct __pyx_obj_5rakan_PyR
  *     def is_valid(self) -> bool:
  *         return self.__crakan.is_valid()             # <<<<<<<<<<<<<<
  * 
- *     def propose_random_move(self) -> tuple:
+ *     def propose_random_move(self) -> list:
  */
   __Pyx_XDECREF(__pyx_r);
   try {
@@ -5138,7 +5139,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_24is_valid(struct __pyx_obj_5rakan_PyR
 /* "rakan.pyx":205
  *         return self.__crakan.is_valid()
  * 
- *     def propose_random_move(self) -> tuple:             # <<<<<<<<<<<<<<
+ *     def propose_random_move(self) -> list:             # <<<<<<<<<<<<<<
  *         return self.__crakan.propose_random_move()
  * 
  */
@@ -5159,13 +5160,13 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_27propose_random_move(PyObject *__pyx_
 static PyObject *__pyx_pf_5rakan_7PyRakan_26propose_random_move(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  std::pair<int,int>  __pyx_t_1;
+  std::vector<int>  __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("propose_random_move", 0);
 
   /* "rakan.pyx":206
  * 
- *     def propose_random_move(self) -> tuple:
+ *     def propose_random_move(self) -> list:
  *         return self.__crakan.propose_random_move()             # <<<<<<<<<<<<<<
  * 
  *     def move_precinct(self, int rid, int district):
@@ -5177,9 +5178,9 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_26propose_random_move(struct __pyx_obj
     __Pyx_CppExn2PyErr();
     __PYX_ERR(1, 206, __pyx_L1_error)
   }
-  __pyx_t_2 = __pyx_convert_pair_to_py_int____int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 206, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyTuple_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 206, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(1, 206, __pyx_L1_error)
   __pyx_r = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
   goto __pyx_L0;
@@ -5187,7 +5188,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_26propose_random_move(struct __pyx_obj
   /* "rakan.pyx":205
  *         return self.__crakan.is_valid()
  * 
- *     def propose_random_move(self) -> tuple:             # <<<<<<<<<<<<<<
+ *     def propose_random_move(self) -> list:             # <<<<<<<<<<<<<<
  *         return self.__crakan.propose_random_move()
  * 
  */
@@ -7398,60 +7399,53 @@ static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_std_3a__3a_list_3
   return __pyx_r;
 }
 
-/* "pair.to_py":158
- * 
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
- *     return p.first, p.second
- * 
- */
-
-static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &__pyx_v_p) {
+static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &__pyx_v_v) {
+  size_t __pyx_v_i;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("__pyx_convert_pair_to_py_int____int", 0);
+  size_t __pyx_t_2;
+  size_t __pyx_t_3;
+  size_t __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  __Pyx_RefNannySetupContext("__pyx_convert_vector_to_py_int", 0);
 
-  /* "pair.to_py":159
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):
- *     return p.first, p.second             # <<<<<<<<<<<<<<
+  /* "vector.to_py":61
+ * @cname("__pyx_convert_vector_to_py_int")
+ * cdef object __pyx_convert_vector_to_py_int(vector[X]& v):
+ *     return [v[i] for i in range(v.size())]             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_p.first); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_p.second); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_2 = __pyx_v_v.size();
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+    __pyx_t_5 = __Pyx_PyInt_From_int((__pyx_v_v[__pyx_v_i])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
+  __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
-  __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pair.to_py":158
+  /* "vector.to_py":60
  * 
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
- *     return p.first, p.second
+ * @cname("__pyx_convert_vector_to_py_int")
+ * cdef object __pyx_convert_vector_to_py_int(vector[X]& v):             # <<<<<<<<<<<<<<
+ *     return [v[i] for i in range(v.size())]
  * 
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("pair.to_py.__pyx_convert_pair_to_py_int____int", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("vector.to_py.__pyx_convert_vector_to_py_int", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);

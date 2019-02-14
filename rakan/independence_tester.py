@@ -9,7 +9,7 @@ from decimal import Decimal
 TOLERANCE = 0.1 # tolerance to determine whether the sequence was independent
 RID1 = 82 # Chosen b/c they are in the middle of the IOWA map
 RID2 = 48 # Chosen b/c they are in the middle of the IOWA map
-PRINT = False # Boolean to print the stepsize and correlation value
+PRINT = True # Boolean to print the stepsize and correlation value
 
 '''
 Description: This method creates the sequence from the walk specified by 'path_name'
@@ -32,11 +32,10 @@ def get_sequence_from_file(path_name, rid1, rid2):
     # iterate through all moves (Going backwards)
     for i in range(len(moves) - 1, 1, -1):
         move_obj = moves[i]
-        if move_obj[0] == "fail":
+        if move_obj[0] == "fail" or move_obj[0] == "weight":
             continue
-        precinct_id, new_district_id = moves[i][-1]
-        print(str(precinct_id) + " : " + str(rakan.get_neighbors(precinct_id)))
-        rakan.move_precinct(precinct_id, new_district_id)
+        precinct_id, old_district_id, new_district_id = moves[i][-1]
+        rakan.move_precinct(precinct_id, old_district_id)
         final_result_report = [rakan.precinct_in_same_district(rid1, rid2)]+final_result_report;
     return final_result_report
 
@@ -77,22 +76,26 @@ def find_opt_stepsize(path_name, rid1, rid2):
     sequence = get_sequence_from_file(path_name, rid1, rid2)
     min_step = 1
     min_r_val = 1
+    print(sequence)
     for i in range(1,len(sequence) - 1):
         v = 1
         try:
             v = abs(r_value_independence_test(sequence, i))
+            print("{} : {}".format(i, v))
         except Exception:
             # skip this map/ sampling if r_value_independence fails
             continue
 
         step_to_corr.append(v);
+
         if v < min_r_val:
             min_step = i
             min_r_val = v
     if PRINT:
-        for index, corr in enumerate(step_to_corr):
-            print('{}: {}'.format(index, corr))
         plt.plot(step_to_corr)
+        plt.xlabel('Step Size (N)')
+        plt.ylabel('Correlation')
+        plt.title('Correlation Between N Steps Removed Independence Test Results')
         plt.savefig(path_name+'/step_size_to_corr.png')
     return min_step
 

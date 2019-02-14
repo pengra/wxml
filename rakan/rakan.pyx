@@ -171,7 +171,7 @@ cdef class PyRakan:
         return self.__crakan._checked_changes
 
     @property
-    def _last_move(self) -> tuple:
+    def _last_move(self) -> list:
         return self.__crakan._last_move
 
     # == API for construction ==
@@ -202,7 +202,7 @@ cdef class PyRakan:
     def is_valid(self) -> bool:
         return self.__crakan.is_valid()
 
-    def propose_random_move(self) -> tuple:
+    def propose_random_move(self) -> list:
         return self.__crakan.propose_random_move()
 
     def move_precinct(self, int rid, int district):

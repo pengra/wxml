@@ -73,7 +73,7 @@ cdef extern from "graph.h" namespace "rakan":
         double beta;
 
         # == Last Move ==
-        cpair[int, int] _last_move;
+        cvector[int] _last_move;
 
         # == API for myself ==
         clist[int] _unchecked_changes
@@ -90,7 +90,7 @@ cdef extern from "graph.h" namespace "rakan":
         cmap[int, clist[int]] get_diff_district_neighbors(int rid) except + # given an rid, get a map of {different districts: [rids]}
         cbool are_connected(int rid1, int rid2, int black_listed_rid) except + # A dual breadth first serach to determine connectivity via the same district will not use the black_listed rid as part of path
         cbool is_valid() except + # is the graph still valid?
-        cpair[int, int] propose_random_move() except + # propose a random move in the form of rid, new district
+        cvector[int] propose_random_move() except + # propose a random move in the form of rid, new district
         void move_precinct(int rid, int district) except + # move the specified rid to the new district
 
         # scoring

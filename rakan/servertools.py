@@ -17,7 +17,7 @@ class Event(object):
             self.data = [_.district for _ in rakan_instance.precincts]
         elif self.type == 'move':
             self.data = rakan_instance._last_move
-        
+
         self.weights = {
             "alpha": rakan_instance.ALPHA,
             "beta": rakan_instance.BETA,
@@ -29,7 +29,7 @@ class Event(object):
             "republican_seats": rakan_instance.republican_seats(),
             "other_seats": rakan_instance.other_seats(),
         }
-    
+
     @property
     def json(self):
         return [self.type, self.scores, self.weights, self.data]
@@ -38,7 +38,7 @@ class Event(object):
 def save_current_scores(rakan_instance):
     sock = socket.socket()
     sock.bind((ADDRESS.split(':')[0], int(ADDRESS.split(':')[1])))
-    
+
     while True:
         sock.listen(1)
         conn, address = sock.accept()
