@@ -30,9 +30,12 @@ def get_sequence_from_file(path_name, rid1, rid2):
 
     final_result_report = [rakan.precinct_in_same_district(rid1, rid2)]
     # iterate through all moves (Going backwards)
-    for i in range(len(moves) - 1, 0, -1):
+    for i in range(len(moves) - 1, 1, -1):
         move_obj = moves[i]
-        precinct_id, new_district_id = move_obj['prev']
+        if move_obj[0] == "fail":
+            continue
+        precinct_id, new_district_id = moves[i][-1]
+        print(str(precinct_id) + " : " + str(rakan.get_neighbors(precinct_id)))
         rakan.move_precinct(precinct_id, new_district_id)
         final_result_report = [rakan.precinct_in_same_district(rid1, rid2)]+final_result_report;
     return final_result_report
@@ -49,7 +52,12 @@ Output:
 '''
 def indpendence_test_from_report_file(path_name, rid1, rid2, step_size):
     sequence = get_sequence_from_file(path_name, rid1, rid2)
-    return r_value_independence_test(sequence, step_size)
+    try:
+        v = r_value_independence_test(sequence, step_size)
+        return v
+    except Exception as e:
+        if PRINT: print(e.message())
+        return -10 # Invalid input exception
 
 '''
 Description: This method finds the ideal step_size for the given sequence
@@ -97,6 +105,7 @@ Output:
 '''
 def test(report_folder_name, rid1=RID1, rid2=RID2):
     min_step = find_opt_stepsize(report_folder_name, rid1, rid2)
-    cor = indpendence_test_from_report_file("../hello", rid1, rid2, min_step)
+    cor = indpendence_test_from_report_file(report_folder_name, rid1, rid2, min_step)
+    if cor == -10: return False
     if PRINT: print("Step Size: {}  Correlation: {}".format(min_step, cor))
     return cor < TOLERANCE

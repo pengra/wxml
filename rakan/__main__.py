@@ -13,7 +13,7 @@ import http.server
 import random as rand
 from decimal import Decimal
 from sys import getsizeof
-# from independence_tester import test
+from independence_tester import test
 
 try:
     nx_path = sys.argv[1]
@@ -96,6 +96,9 @@ pdb
     To enter PDB mode.
 m
     To check memory consumption of Rakan
+
+t <file_name> <rid1 (optional)> <rid2 (optional)>
+    To check independence of the walk
 """
     server = None
 
@@ -261,17 +264,17 @@ m
             options = response.split(' ', 3) # t (file name) (rid1) (rid2)
             result = False
             if len(options) == 2:
-                result = test(option[1])
+                result = test(options[1])
             elif len(options) == 4:
-                result = test(option[1], option[2], option[3])
+                result = test(options[1], options[2], options[3])
             else:
                 print("Invalid set of inputs")
                 continue;
 
             if result:
-                print("The sequence from the file {} is independent".format(option[1]))
+                print("The sequence from the file {} is independent".format(options[1]))
             else:
-                print("The sequence from the file {} is NOT independent".format(option[1]))
+                print("The sequence from the file {} is NOT independent".format(options[1]))
         # ??
         else:
             print("Unknown Command")

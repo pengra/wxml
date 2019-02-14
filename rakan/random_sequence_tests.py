@@ -68,6 +68,8 @@ def chisquare_independence_test(sequence, step_size):
 # and an output close to 0 indicates that they are not.
 
 def r_value_independence_test(sequence, step_size):
+    if len(sequence) <= step_size:
+        raise Exception('Sequence length and step_size not compatible.') 
     v = []
     for i in range(len(sequence)-step_size):
         v.append([sequence[i], sequence[i+step_size]])
