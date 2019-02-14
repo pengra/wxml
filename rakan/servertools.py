@@ -1,39 +1,10 @@
+OUTPUT_LOCATION = "./rakan/values/"
+ADDRESS = '127.0.0.1:4200'
+
 import socket
 import json
 
 HEADERS = b"HTTP/1.1 200 OK\nServer: Rakan\nConnection: close\nContent-Type: application/json\nAccess-Control-Allow-Origin: *\n\n"
-OUTPUT_LOCATION = "./rakan/values/"
-ADDRESS = '127.0.0.1:4200'
-PENGRA_ENDPOINT= 'https://gis.pengra.io/api/'
-
-class Event(object):
-
-    def __init__(self, type, rakan_instance):
-        assert type in ['seed', 'move', 'fail', 'burn end', 'anneal start', 'anneal end']
-        self.type = type
-        self.data = None
-
-        if self.type == 'seed':
-            self.data = [_.district for _ in rakan_instance.precincts]
-        elif self.type == 'move':
-            self.data = rakan_instance._last_move
-        
-        self.weights = {
-            "alpha": rakan_instance.ALPHA,
-            "beta": rakan_instance.BETA,
-        }
-        self.scores = {
-            "compactness": rakan_instance.compactness_score(),
-            "population": rakan_instance.population_score(),
-            "democrat_seats": rakan_instance.democrat_seats(),
-            "republican_seats": rakan_instance.republican_seats(),
-            "other_seats": rakan_instance.other_seats(),
-        }
-    
-    @property
-    def json(self):
-        return [self.type, self.scores, self.weights, self.data]
-
 
 def save_current_scores(rakan_instance):
     sock = socket.socket()

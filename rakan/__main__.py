@@ -1,5 +1,4 @@
 from base import BaseRakan
-from servertools import Event
 from servertools import save_current_scores
 from progress.bar import IncrementalBar
 
@@ -12,37 +11,51 @@ import socketserver
 import http.server
 import random as rand
 from decimal import Decimal
-from sys import getsizeof
-# from independence_tester import test
+
 
 try:
     nx_path = sys.argv[1]
 except:
-    nx_path = "iowa.dnx"
+    nx_path = "rakan/iowa.dnx"
+    # nx_path = "iowa2/save.dnx"
+    # nx_path = "rakan/newwashington.dnx"
+    # nx_path = "washingtonrandom/save.dnx"
+
+e = Decimal(math.e)
 
 class Rakan(BaseRakan):
 
-    """
-    Example Walk. This is the primary method for defining "runs" discussed at meetings.
-    """
-    def walk(self):
-        five_billion = 5000000000 // 100 # Shortened due to crash
-        ten_thousand = 10000
-        for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
-            for j, beta in [(4, 0.08), (5, 0.008)]:
-                self.ALPHA = Decimal(alpha)
-                self.BETA = Decimal(beta)
-                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
-                for k in range(five_billion):
-                    self.step()
-                    if k % ten_thousand == 0:
-                        self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
-                        self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
-                    bar.next()
-                bar.finish()
+    ALPHA = Decimal(4 * (0.1 ** 11)) # # 10 ** -15 # Weight for population
+    BETA = Decimal(0.008) # ** 10 #10 ** -2   # Weight for compactness
 
     """
-    Old report system. I don't like the websocket part of the new report system.
+    An example scoring algorithm.
+    """
+    def score(self, rid=None, district=None):
+        # Linear to prevent overflow errors
+        return pow(e,
+            (self.ALPHA * Decimal(self.population_score(rid, district))) +
+            (self.BETA * Decimal(self.compactness_score(rid, district)))
+        )
+
+    """
+    An example scoring ratio algorithm.
+    """
+    def score_ratio(self, rid, district):
+        return pow(e, (
+            (self.ALPHA * Decimal((self.population_score(rid, district) - self.population_score()))) +
+            (self.BETA * Decimal((self.compactness_score(rid, district) - self.compactness_score())))
+        ))
+
+    """
+    A statistical test to check two random precincts are in the same district
+    """
+    def precinct_in_same_district(self, rid1, rid2):
+        return self.precincts[rid1].district == self.precincts[rid2].district
+
+
+    """
+    Old report system that does not use a webserver
     """
     def oldreport(self, path_name):
         geojson = self.export(json_path=None)
@@ -51,7 +64,6 @@ class Rakan(BaseRakan):
             with open(path_name, "w") as w_handle:
                 w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
 
-
 """
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
@@ -59,7 +71,11 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 def build_rakan(nx_path):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
+    server = threading.Thread(target=(lambda: save_current_scores(r)))
+    server.start()
+    assert r.score() != None
     return r
+
 
 
 def routine():
@@ -91,19 +107,14 @@ b <value>
 l <path>
     Load a new .dnx file
 i <path>
-    Spawn a thread that saves the current map as an image to the path specified.
-pdb
-    To enter PDB mode.
-m
-    To check memory consumption of Rakan
-"""
+    Spawn a thread that saves the current map as an image to the path specified."""
+
     server = None
 
     rakan = build_rakan(nx_path)
-    graph = rakan.nx_graph # for pdb context
+    graph = rakan.nx_graph
     rakan.is_valid()
     print("Rakan is live. Type 'h' for help \n")
-
     while True:
         response = input(">>> ")
         # debug
@@ -147,13 +158,6 @@ m
             finally:
                 httpd.server_close()
                 print()
-        # memory
-        elif response == 'm':
-            print("Rakan Memory Usage:")
-            print("C++ Representation Object: {:.2f} KB".format(getsizeof(rakan) / (1024)))
-            print("Python District Representation: {:.2f} KB".format(getsizeof(rakan.districts) / (1024)))
-            print("Python Precinct Representation: {:.2f} KB".format(getsizeof(rakan.precincts) / (1024)))
-            print("Move History: {:.2f} MB".format(sum([getsizeof(_) for _ in rakan._move_history]) / (1024 ** 2)))
         # run
         elif response.isnumeric():
             target = int(response)
@@ -182,38 +186,12 @@ m
                     print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
                     print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
                     print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
-
-                    populations = [_.population for _ in rakan.districts]
-                    total_population = sum(populations)
-                    average_population = total_population / len(populations)
-                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
-                    absolute_population_differences = sum(absolute_population_deltas) / average_population
-                    print("Population difference from ideal: {:.2f}%".format(absolute_population_differences * 100))
-
-                    nodes = [len(_) for _ in rakan.districts]
-                    total_nodes = len(rakan)
-                    average_nodes = total_nodes / len(rakan.districts)
-                    absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
-                    absolute_node_differences = sum(absolute_node_deltas) / average_nodes
-                    print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-
-                    history_size = max(min(len(rakan._move_history), target), 1)
-                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
-                print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * Decimal(rakan.ALPHA))
+                print("Pop Score (Weighted): ", Decimal(rakan.population_score()) * rakan.ALPHA)
                 print("Comp Score: ", rakan.compactness_score())
-                print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * Decimal(rakan.BETA))
-
-                populations = [_.population for _ in rakan.districts]
-                total = sum(populations)
-                average = total / len(populations)
-                absolute_deltas = [abs(_ - average) for _ in populations]
-                absolute_differences = sum(absolute_deltas) / average
-                print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                history_size = len(rakan._move_history)
-                print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history]) * 100) / history_size))
+                print("Comp Score (Weighted): ", Decimal(rakan.compactness_score()) * rakan.BETA)
         # walk
         elif response == 'w':
             start = time.time()
@@ -257,22 +235,24 @@ m
             print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
             print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
             print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
-        elif response.startswith('t '):
-            options = response.split(' ', 3) # t (file name) (rid1) (rid2)
-            result = False
-            if len(options) == 2:
-                result = test(option[1])
-            elif len(options) == 4:
-                result = test(option[1], option[2], option[3])
-            else:
-                print("Invalid set of inputs")
-                continue;
-
-            if result:
-                print("The sequence from the file {} is independent".format(option[1]))
-            else:
-                print("The sequence from the file {} is NOT independent".format(option[1]))
         # ??
+        elif response == 'test':
+            # random precincts
+            # rand.seed(time.time())
+            # rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
+            rid1 = 82
+            rid2 = 48
+            target = 1000
+            rakan.ALPHA = Decimal(1e-10)
+            rakan.BETA = Decimal(0.8)
+            for i in range(0, 1):
+                bar = IncrementalBar("Walking {} steps".format(target), max=target)
+                for _ in range(target):
+                    bar.next()
+                    rakan.step();
+                result = rakan.precinct_in_same_district(rid1, rid2)
+                print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
+                rakan.oldreport("./newiteration/{}.html".format(i))
         else:
             print("Unknown Command")
 
