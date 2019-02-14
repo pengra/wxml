@@ -74,4 +74,4 @@ def r_value_independence_test(sequence, step_size):
     v = np.array(v)
     x = v[:, 0]
     y = v[:, 1]
-    return np.corrcoef(x, y)[1, 0]
+    return np.corrcoef(x, y)[1,0]

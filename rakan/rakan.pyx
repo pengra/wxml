@@ -4,9 +4,9 @@ from cython.operator import dereference, preincrement, address
 from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
-from rakan cimport Precinct as cPrecinct
-from rakan cimport District as cDistrict
-from rakan cimport Rakan as cRakan
+from rakan.rakan cimport Precinct as cPrecinct
+from rakan.rakan cimport District as cDistrict
+from rakan.rakan cimport Rakan as cRakan
 
 
 
@@ -40,7 +40,7 @@ cdef class PyPrecinct:
     @property
     def district(self):
         return self.__cprecinct.district;
-        
+
     @district.setter
     def district(self, int value):
         self.__cprecinct.district = value
@@ -71,8 +71,8 @@ cdef class PyPrecinct:
         (<PyPrecinct>py_obj).__cprecinct = cprecinct
         return py_obj
 
-		
-		
+
+
 cdef class PyDistrict:
 
     cdef cDistrict __cdistrict
@@ -80,11 +80,8 @@ cdef class PyDistrict:
     def __cinit__(self):
         self.__cdistrict = cDistrict()
 
-    #def __dealloc__(self):
-    #    del self.__cprecinct
-
-    #def __str__(self):
-    #    return "<Rakan Precinct rid={} district={}>".format(self.__cprecinct.rid, self.__cprecinct.district)
+    def __len__(self):
+        return self.__cdistrict.precincts.size()
 
     @property
     def population(self):
@@ -111,8 +108,8 @@ cdef class PyDistrict:
         py_obj = PyDistrict.__new__(PyDistrict)
         (<PyDistrict>py_obj).__cdistrict = cdistrict
         return py_obj
-		
-		
+
+
 
 cdef class PyRakan:
 
@@ -148,7 +145,7 @@ cdef class PyRakan:
         c_precincts = self.__crakan.atlas()
         py_precincts = [PyPrecinct.factory(dereference(_)) for _ in c_precincts]
         return py_precincts
-		
+
     def district_of(self, precinct) -> int:
         return self.__crakan.atlas()[precinct].district
 
@@ -168,15 +165,25 @@ cdef class PyRakan:
     @property
     def _unchecked_changes(self) -> list:
         return self.__crakan._unchecked_changes
-    
+
     @property
     def _checked_changes(self) -> list:
         return self.__crakan._checked_changes
 
+    @property
+    def _last_move(self) -> tuple:
+        return self.__crakan._last_move
+
     # == API for construction ==
 
-    def add_precinct(self, int district, int population = 0) -> int:
-        return self.__crakan.add_precinct(district, population)
+    def add_precinct(self,
+        int district,
+        int population = 0,
+        int d_pop = 0,
+        int r_pop = 0,
+        int o_pop = 0,
+    ) -> int:
+        return self.__crakan.add_precinct(district, population, d_pop, r_pop, o_pop)
 
     def set_neighbors(self, int rid1, int rid2):
         return self.__crakan.set_neighbors(rid1, rid2)
@@ -200,33 +207,80 @@ cdef class PyRakan:
 
     def move_precinct(self, int rid, int district):
         return self.__crakan.move_precinct(rid, district)
-		
-    def population_score(self, rid=None, district=None):
+
+    def population_score(self, rid=None, district=None) -> float:
         if rid is None and district is None:
             return self.__crakan.population_score()
         else:
             return self.__crakan.population_score(rid, district)
-			
-    def compactness_score(self, rid=None, district=None):
+
+    def total_boundary_length(self, rid=None, district=None) -> int:
+        if rid is None and district is None:
+            return self.__crakan.total_boundary_length()
+        else:
+            return self.__crakan.total_boundary_length(rid, district)
+
+    def compactness_score(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.compactness_score()
         else:
             return self.__crakan.compactness_score(rid, district)
 
-    def democrat_seats(self, rid=None, district=None):
+    def democrat_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.democrat_seats()
         else:
             return self.__crakan.democrat_seats(rid, district)
 
-    def republican_seats(self, rid=None, district=None):
+    def republican_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.republican_seats()
         else:
             return self.__crakan.republican_seats(rid, district)
-			
-    def other_seats(self, rid=None, district=None):
+
+    def other_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.other_seats()
         else:
             return self.__crakan.other_seats(rid, district)
+
+    def score(self, rid=None, district=None) -> float:
+        if rid is None and district is None:
+            return self.__crakan.score()
+        else:
+            return self.__crakan.score(rid, district)
+
+    # == Stepping ==
+
+    def step(self):
+        return self.__crakan.step()
+
+    # == Statistics + Weights ==
+
+    @property
+    def _iterations(self):
+        return self.__crakan.iterations
+
+    @_iterations.setter
+    def _iterations(self, int value):
+        self.__crakan.iterations = value
+
+    @property
+    def iterations(self):
+        return self._iterations
+
+    @property
+    def _ALPHA(self):
+        return self.__crakan.alpha
+
+    @property
+    def _BETA(self):
+        return self.__crakan.beta
+
+    @_ALPHA.setter
+    def _ALPHA(self, double value):
+        self.__crakan.alpha = value
+
+    @_BETA.setter
+    def _BETA(self, double value):
+        self.__crakan.beta = value
