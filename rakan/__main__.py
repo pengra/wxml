@@ -41,17 +41,6 @@ class Rakan(BaseRakan):
                     bar.next()
                 bar.finish()
 
-    """
-    Old report system. I don't like the websocket part of the new report system.
-    """
-    def oldreport(self, path_name):
-        geojson = self.export(json_path=None)
-        with open("rakan/oldtemplate.html") as handle:
-            template = handle.read()
-            with open(path_name, "w") as w_handle:
-                w_handle.write(template.replace('{"$DA":"TA$"}', geojson))
-
-
 """
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.

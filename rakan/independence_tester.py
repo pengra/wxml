@@ -78,14 +78,10 @@ def find_opt_stepsize(path_name, rid1, rid2):
     min_r_val = 1
     print(sequence)
     for i in range(1,len(sequence) - 1):
-        v = 1
-        try:
-            v = abs(r_value_independence_test(sequence, i))
-            print("{} : {}".format(i, v))
-        except Exception:
-            # skip this map/ sampling if r_value_independence fails
-            continue
-
+        if numpy.cov(sequence) == 0:
+            step_to_corr.append(numpy.nan);
+            continue;
+        v = abs(r_value_independence_test(sequence, i))
         step_to_corr.append(v);
 
         if v < min_r_val:
