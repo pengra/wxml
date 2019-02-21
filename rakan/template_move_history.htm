@@ -192,7 +192,7 @@ map.on('load', function () {
         });
 
         document.getElementById("iterator").disabled = false;
-        
+
         slider.addEventListener('input', function(e) {
             map.setPaintProperty('precincts', 'raster-opacity', parseInt(e.target.value, 10) / 100);
             sliderValue.textContent = e.target.value + '%';
