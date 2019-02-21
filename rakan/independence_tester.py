@@ -1,14 +1,16 @@
 import json
 import warnings
 import numpy
+import math
 import matplotlib.pyplot as plt
 from base import BaseRakan as TestRakan
+from random_sequence_tests import chisquare_independence_test
 from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
 
 TOLERANCE = 0.1 # tolerance to determine whether the sequence was independent
-RID1 = 82 # Chosen b/c they are in the middle of the IOWA map
-RID2 = 48 # Chosen b/c they are in the middle of the IOWA map
+RID1 = 18 # Chosen b/c they are in the middle of the IOWA map
+RID2 = 82 # Chosen b/c they are in the middle of the IOWA map
 PRINT = True # Boolean to print the stepsize and correlation value
 
 '''
@@ -52,6 +54,7 @@ Output:
 def indpendence_test_from_report_file(path_name, rid1, rid2, step_size):
     sequence = get_sequence_from_file(path_name, rid1, rid2)
     try:
+        #v = chisquare_independence_test(sequence, step_size)
         v = r_value_independence_test(sequence, step_size)
         return v
     except Exception as e:
@@ -77,11 +80,12 @@ def find_opt_stepsize(path_name, rid1, rid2):
     min_step = 1
     min_r_val = 1
     print(sequence)
-    for i in range(1,len(sequence) - 1):
+    for i in range(1,round(len(sequence)/2)):
         if numpy.cov(sequence) == 0:
             step_to_corr.append(numpy.nan);
             continue;
         v = abs(r_value_independence_test(sequence, i))
+        #v = abs(chisquare_independence_test(sequence, i))
         step_to_corr.append(v);
 
         if v < min_r_val:
