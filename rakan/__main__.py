@@ -145,7 +145,6 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
             print("C++ Representation Object: {:.2f} KB".format(getsizeof(rakan) / (1024)))
             print("Python District Representation: {:.2f} KB".format(getsizeof(rakan.districts) / (1024)))
             print("Python Precinct Representation: {:.2f} KB".format(getsizeof(rakan.precincts) / (1024)))
-            print("Move History: {:.2f} MB".format(sum([getsizeof(_) for _ in rakan._move_history]) / (1024 ** 2)))
         # run
         elif response.isnumeric():
             target = int(response)
@@ -188,9 +187,7 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
                     absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-
-                    history_size = max(min(len(rakan._move_history), target), 1)
-                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
+                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -204,14 +201,15 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                history_size = len(rakan._move_history)
-                print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history]) * 100) / history_size))
+                print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
         # walk
         elif response == 'w':
             start = time.time()
             rakan.walk()
             end = time.time()
             print("Walk time:", end - start, "seconds")
+        elif response == 'x':
+            print("Xayah Tasks:", len(rakan._xayah.queue))
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
