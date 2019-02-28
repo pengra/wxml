@@ -4,9 +4,9 @@ from cython.operator import dereference, preincrement, address
 from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
-from rakan cimport Precinct as cPrecinct
-from rakan cimport District as cDistrict
-from rakan cimport Rakan as cRakan
+from rakan.rakan cimport Precinct as cPrecinct
+from rakan.rakan cimport District as cDistrict
+from rakan.rakan cimport Rakan as cRakan
 
 
 

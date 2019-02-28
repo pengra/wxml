@@ -25,7 +25,7 @@ class BaseRakan(PyRakan):
     Use for production code.
     """
     nx_graph = None # the graph object
-    max_size = 10000 # 10k logs should be a sizeable bite for the server
+    max_size = 1000 # 10k logs should be a sizeable bite for the server
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,8 +68,6 @@ class BaseRakan(PyRakan):
                 'file': ('events.pk3', pickle.dumps(copy))
             }
         ).json()).start()
-
-
 
     @property
     def ALPHA(self):
