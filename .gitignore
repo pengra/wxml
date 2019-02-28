@@ -15,3 +15,5 @@ secrets*.*
 core
 output/*
 build/*
+*.xyh
+*.xyh-journal
