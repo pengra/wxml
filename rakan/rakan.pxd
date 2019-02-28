@@ -101,10 +101,13 @@ cdef extern from "graph.h" namespace "rakan":
         int total_boundary_length() except +
         int total_boundary_length(int rid, int district) except +
         int democrat_seats() except +
+        double democrat_proportion(int district) except +
         int democrat_seats(int rid, int district) except +
         int republican_seats() except +
+        double republican_proportion(int district) except +
         int republican_seats(int rid, int district) except +
         int other_seats() except +
+        double other_proportion(int district) except +
         int other_seats(int rid, int district) except +
         double score() except +
         double score(int rid, int district) except +
