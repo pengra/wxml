@@ -113,10 +113,13 @@ namespace rakan {
 		double compactness_score();
         double compactness_score(int rid, int district);
         int democrat_seats();
+		double democrat_proportion(int district);
         int democrat_seats(int rid, int district);
         int republican_seats();
+		double republican_proportion(int district);
         int republican_seats(int rid, int district);
         int other_seats();
+		double other_proportion(int district);
         int other_seats(int rid, int district);
 
         // internal methods
