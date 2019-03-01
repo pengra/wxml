@@ -1,6 +1,5 @@
 from rakan import PyRakan
 from xayah import Xayah
-from servertools import Event, PENGRA_ENDPOINT
 
 import asyncio
 import websockets
