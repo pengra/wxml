@@ -1,6 +1,4 @@
 from base import BaseRakan
-from servertools import Event
-from servertools import save_current_scores
 from progress.bar import IncrementalBar
 
 import sys
@@ -112,7 +110,11 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
             print("Image thread started")
         # quit
         elif response == 'q':
-            break
+            if len(rakan._xayah.queue) > 0:
+                print("Quit averted because Xayah is still working")
+                print("Ctrl + C to force quit anyways")
+            else:
+                break
         # load a .dnx file
         elif response.startswith('l '):
             rakan = build_rakan(response.split(' ', 1)[1])
@@ -209,7 +211,9 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
             end = time.time()
             print("Walk time:", end - start, "seconds")
         elif response == 'x':
-            print("Xayah Tasks:", len(rakan._xayah.queue))
+            print('Xayah Iterations:', rakan._xayah.iterations)
+            print('Rakan Iterations:', rakan.iterations)
+            print("Xayah Behind by {} iterations".format(len(rakan._xayah.queue)))
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
