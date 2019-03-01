@@ -7,12 +7,21 @@ import matplotlib.pyplot as plt
 
 class Xayah(object):
 
-    def __init__(self, filename):
+    def __init__(self, filename, threaded=True):
         if not filename.endswith('.xyh'):
             filename += '.xyh'
         self.filename = filename
         self.queue = deque()
-        Thread(target=self.worker).start()
+        if threaded:
+            Thread(target=self.worker).start()
+        else:
+            self._conn = sqlite3.connect(self.filename)
+            self._cur = self._conn.cursor()
+            self._iterations = self.select('count(*)')[0]
+            self._moves = self.select('count(*)', where='action_=0')[0]
+
+    def last(self):
+        return self.select("*", iteration=self._iterations)[2:-3]
 
     def worker(self):
         self._conn = sqlite3.connect(self.filename)
@@ -39,10 +48,12 @@ class Xayah(object):
         self.queue.append(('do_seed', rakan))
 
     def select(self, columns, iteration=None, many=False, where=''):
+        if columns != '*':
+            columns = "({})".format(columns)
         if isinstance(iteration, int):
-            self._cur.execute('SELECT ({columns}) FROM history WHERE iteration={iteration} {where};'.format(columns=columns, iteration=iteration, where=where))
-        where = ' WHERE ' + where if where else where
-        self._cur.execute('SELECT ({columns}) FROM history{where};'.format(columns=columns, where=where))
+            self._cur.execute('SELECT {columns} FROM history WHERE iteration={iteration} {where};'.format(columns=columns, iteration=iteration, where=where))
+        where = 'WHERE ' + where if where else where
+        self._cur.execute('SELECT {columns} FROM history {where};'.format(columns=columns, where=where))
         if many:
             return self._cur.fetchall()
         return self._cur.fetchone()
@@ -63,7 +74,7 @@ class Xayah(object):
         return self.select('raw_pop_score', iteration)
 
     def get_district(self, precinct, iteration=None):
-        return self.select('precinct_{}'.format(precinct), iteration)
+        return self.select('precinct_{}'.format(precinct), iteration, many=(iteration is None))
 
     def move(self, **rakan):
         self.queue.append(('do_move', rakan))
@@ -83,9 +94,11 @@ class Xayah(object):
             self._cur.execute('CREATE TABLE history (iteration INTEGER, action_ INTEGER, {}, alpha REAL, beta REAL, raw_pop_score REAL, raw_comp_score REAL, score REAL);'.format(precinct_table))
             self._conn.commit()
             self.do_move(**rakan)
+            return False
         except sqlite3.OperationalError: # sqlite3.DatabaseError as e: # which one? # table already exists exception.
             self._iterations = self.select('count(*)')[0]
             self._moves = self.select('count(*)', where='action_=0')[0]
+            return True
 
     def do_move(self, **rakan):  # ACTION CODE = 0
         self._iterations += 1
@@ -135,18 +148,30 @@ class Xayah(object):
 
     # GRAPH EXPORTS
 
-    def export_graph_chisquared(self, start, end, step, rid1, rid2):
-        if (end < start):
-            raise ValueError("End must come after Start")
-        elif (start < -1 or start > self.iterations):
-            raise ValueError("Invalid Start value")
-        elif (end < -1 or end > self.iterations):
-            raise ValueError("Invalid end value")
-        elif (step < -1 or step > (end - start)):
-            raise ValueError("Invalid step value")
+    """
+    start = the index where to begin the test
+    end = the index where to end the test
+    step_start = the starting stepsize
+    step_end = the ending stepsize
+    """
+    def export_graph_chisquared(self, start, end, step_start, step_end, points, rid1, rid2):
+        if end == None:
+            end = self.iterations - 1
+        if step_end == None:
+            step_end = end // 2
 
-        x = list(range(start, end, step))
-        values = [self.get_district(i, rid1) == self.get_district(i, rid2) for i in range(0, self.iterations)]
+        step_size = (step_end - start) // points
+
+        if (start < -1 or start >= end):
+            raise ValueError("Invalid Start value")
+        elif (end < -1 or end >= self.iterations):
+            raise ValueError("Invalid end value")
+
+        precinct1_districts = self.get_district(rid1)
+        precinct2_districts = self.get_district(rid2)
+
+        x = list(range(step_start, step_end, step_size))
+        values = [int(precinct1_districts[i] == precinct2_districts[i]) for i in range(start, end)]
         y = [chisquare_independence_test(values, i) for i in x]
         plt.plot(x, y)
         plt.savefig('chisquared.png')
@@ -255,6 +280,7 @@ class Xayah(object):
 
 
 if __name__ == "__main__":
-    x =  Xayah("save.xyh")
-    x.export_graph_rvalue(99, 101, 100, 82, 48)
+    x =  Xayah("save.xyh", threaded=False)
+    x.do_seed(precincts=[])
+    x.export_graph_chisquared(1, None, 10, None, 300, 82, 48)
     # x.export_graph_chisquared(100, 101, 1, 82, 48)
