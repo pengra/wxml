@@ -57,6 +57,7 @@ def build_rakan(nx_path, xyh_path="save.xyh"):
     
     networkx.write_gpickle(g, '~tmp.rxy')
     r.read_nx('~tmp.rxy')
+    r._iterations = x._iterations
     g = r.nx_graph
 
     return r
