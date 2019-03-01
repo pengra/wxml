@@ -99,10 +99,6 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
         # debug
         if response == 'pdb':
             import pdb; pdb.set_trace()
-        elif response == 'p':
-            if server is None:
-                server = threading.Thread(target=(lambda: save_current_scores(rakan)))
-                server.start()
         # image
         elif response.startswith('i '):
             image = threading.Thread(target=lambda: rakan.image(image_path=response.split(' ', 1)[1] + '.png'))
