@@ -1,4 +1,5 @@
 from base import BaseRakan
+from xayah import Xayah
 from progress.bar import IncrementalBar
 
 import sys
@@ -43,9 +44,21 @@ class Rakan(BaseRakan):
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
 """
-def build_rakan(nx_path):
+def build_rakan(nx_path, xyh_path="save.xyh"):
     r = Rakan(0, 0)
+    x = Xayah(xyh_path, threaded=False)
+    last_row = x.last()
+    precincts = last_row[:-2]
     r.read_nx(nx_path)
+    g = r.nx_graph
+
+    for precinct, district in enumerate(precincts):
+        g.nodes[precinct]['dis'] = district
+    
+    networkx.write_gpickle(g, '~tmp.rxy')
+    r.read_nx('~tmp.rxy')
+    g = r.nx_graph
+
     return r
 
 
