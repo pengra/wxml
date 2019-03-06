@@ -1,9 +1,14 @@
-import sqlite3
+import pickle
 from collections import deque
 from threading import Thread
 import time
+import os
 from random_sequence_tests import chisquare_independence_test, r_value_independence_test
 import matplotlib.pyplot as plt
+
+META_LENGTH = 10
+ITERATION, ACTION, ALPHA, BETA, RAW_POP, RAW_COMP, SCORE, D_WIN, R_WIN, O_WIN = range(
+    META_LENGTH)
 
 
 class Xayah(object):
@@ -12,147 +17,121 @@ class Xayah(object):
         if not filename.endswith('.xyh'):
             filename += '.xyh'
         self.filename = filename
-        self.queue = deque()
-        if threaded:
-            Thread(target=self.worker).start()
+        if os.path.isfile(filename):
+            with open(filename, 'rb') as handle:
+                payload = pickle.loads(handle.read())
         else:
-            self._conn = sqlite3.connect(self.filename)
-            self._cur = self._conn.cursor()
-            try:
-                self._iterations = self.select('count(*)')[0]
-                self._moves = self.select('count(*)', where='action_=0')[0]
-            except sqlite3.OperationalError:
-                self._iterations = 0
-                self._moves = 0
+            payload = {
+                'events': deque(),
+                'iterations': 0,
+                'moves': 0
+            }
+
+        self._iterations = payload['iterations']
+        self._moves = payload['moves']
+        self._events = payload['events']
+
+    def save(self):
+        with open(self.filename, 'wb') as handle:
+            handle.write(pickle.dumps({
+                'events': self._events,
+                'iterations': self._iterations,
+                'moves': self._moves
+            }))
 
     def last(self):
-        return self.select("*", iteration=self._iterations)[2:-6]
+        try:
+            return self._events[-1][META_LENGTH:]
+        except IndexError:
+            raise IndexError("Event list is empty")
 
-    def worker(self):
-        self._conn = sqlite3.connect(self.filename)
-        self._cur = self._conn.cursor()
-        while True:
-            if len(self.queue) > 0:
-                task_type, params = self.queue.popleft()
-                getattr(self, task_type)(**params)
-            else:
-                time.sleep(0.1)
+    def select(self, columns, iterations=(-1,)):
+        # ({iteration}, 0, {alpha}, {beta}, {raw_pop}, {raw_comp}, {score}, {d_win}, {r_win}, {o_win}, {precincts})
+        for iteration in iterations:
+            yield [self._events[iteration][col] for col in columns]
 
-    def do(self, *args, **kwargs):
-        success = False
-        while not success:
-            try:
-                self._cur.execute(*args, **kwargs)
-                self._conn.commit()
-                success = True
-            except (sqlite3.DatabaseError, sqlite3.OperationalError) as e:
-                print(args, kwargs)
-                print(e)
-                time.sleep(0.1)
+    def get_score(self, iterations=(-1, )):
+        yield from self.select([SCORE], iterations)
+
+    def get_alpha(self, iterations=(-1, )):
+        yield from self.select([ALPHA], iterations)
+
+    def get_beta(self, iterations=(-1, )):
+        yield from self.select([BETA], iterations)
+
+    def get_compactness(self, iterations=(-1, )):
+        yield from self.select([RAW_COMP], iterations)
+
+    def get_population(self, iterations=(-1, )):
+        yield from self.select([RAW_POP], iterations)
+
+    def get_district(self, precincts, iterations=(-1, )):
+        for iteration in iterations:
+            yield [self._events[iteration][precinct + META_LENGTH] for precinct in precincts]
 
     def seed(self, **rakan):
-        self.queue.append(('do_seed', rakan))
-
-    def select(self, columns, iteration=None, many=False, where='', range_=None):
-        if isinstance(iteration, int):
-            self._cur.execute('SELECT {columns} FROM history WHERE iteration={iteration} {where};'.format(
-                columns=columns, iteration=iteration, where=where))
-        where = 'WHERE ' + where if where else where
-        self._cur.execute('SELECT {columns} FROM history {where};'.format(
-            columns=columns, where=where))
-        if many:
-            return self._cur.fetchall()
-        return self._cur.fetchone()
-
-    def get_score(self, iteration=None):
-        return self.select('score', iteration)
-
-    def get_alpha(self, iteration=None):
-        return self.select('alpha', iteration)
-
-    def get_beta(self, iteration=None):
-        return self.select('beta', iteration)
-
-    def get_compactness(self, iteration=None):
-        return self.select('raw_comp_score', iteration)
-
-    def get_population(self, iteration=None):
-        return self.select('raw_pop_score', iteration)
-
-    def get_district(self, precinct, iteration=None):
-        return self.select('precinct_{}'.format(precinct), iteration, many=(iteration is None))
+        self._events.append((
+            self.iterations,
+            -1,
+            rakan['ALPHA'],
+            rakan['BETA'],
+            rakan['population_score'],
+            rakan['compactness_score'],
+            rakan['score'],
+            rakan['d_win'],
+            rakan['r_win'],
+            rakan['o_win'],
+            *[_.district for _ in rakan['precincts']]
+        ))
 
     def move(self, **rakan):
-        self.queue.append(('do_move', rakan))
-
-    def fail(self, **rakan):
-        self.queue.append(('do_fail', rakan))
-
-    def weight(self, **rakan):
-        self.queue.append(('do_weight', rakan))
-
-    def do_seed(self, **rakan):
-        self._iterations = 0
-        self._moves = 0
-        precinct_table = ", ".join(['precinct_{} INTEGER'.format(
-            precinct_id) for precinct_id in range(len(rakan['precincts']))])
-        try:
-            self._cur.execute(
-                'CREATE TABLE history (iteration INTEGER, action_ INTEGER, {}, alpha REAL, beta REAL, raw_pop_score REAL, raw_comp_score REAL, score REAL, d_win INTEGER, r_win INTEGER, o_win INTEGER);'.format(precinct_table))
-            self._conn.commit()
-            self.do_move(**rakan)
-            return False
-        # sqlite3.DatabaseError as e: # which one? # table already exists exception.
-        except sqlite3.OperationalError:
-            self._iterations = self.select('count(*)')[0]
-            self._moves = self.select('count(*)', where='action_=0')[0]
-            return True
-
-    def do_move(self, **rakan):  # ACTION CODE = 0
+        # ({iteration}, 0, {alpha}, {beta}, {raw_pop}, {raw_comp}, {score}, {d_win}, {r_win}, {o_win}, {precincts})
         self._iterations += 1
         self._moves += 1
-        if rakan['score'] == 'inf':
-            rakan['score'] = 'infinity'
-        self.do('INSERT INTO history VALUES ({iteration}, 0, {precincts}, {alpha}, {beta}, {raw_pop}, {raw_comp}, {score}, {d_win}, {r_win}, {o_win});'.format(
-            iteration=self.iterations,
-            precincts=", ".join([str(_.district) for _ in rakan['precincts']]),
-            alpha=rakan['ALPHA'],
-            beta=rakan['BETA'],
-            raw_pop=rakan['population_score'],
-            raw_comp=rakan['compactness_score'],
-            score=rakan['score'],
-            d_win=rakan['d_win'],
-            r_win=rakan['r_win'],
-            o_win=rakan['o_win'],
+        self._events.append((
+            self.iterations,
+            0,
+            rakan['ALPHA'],
+            rakan['BETA'],
+            rakan['population_score'],
+            rakan['compactness_score'],
+            rakan['score'],
+            rakan['d_win'],
+            rakan['r_win'],
+            rakan['o_win'],
+            *[_.district for _ in rakan['precincts']]
         ))
 
-    def do_fail(self, **rakan):  # ACTION CODE = 1
+    def fail(self, **rakan):
         self._iterations += 1
-        self.do('INSERT INTO history VALUES ({iteration}, 1, {precincts}, {alpha}, {beta}, {raw_pop}, {raw_comp}, {score}, {d_win}, {r_win}, {o_win});'.format(
-            iteration=self.iterations,
-            precincts=", ".join([str(_.district) for _ in rakan['precincts']]),
-            alpha=rakan['ALPHA'],
-            beta=rakan['BETA'],
-            raw_pop=rakan['population_score'],
-            raw_comp=rakan['compactness_score'],
-            score=rakan['score'],
-            d_win=rakan['d_win'],
-            r_win=rakan['r_win'],
-            o_win=rakan['o_win'],
+        self._moves += 1
+        self._events.append((
+            self.iterations,
+            1,
+            rakan['ALPHA'],
+            rakan['BETA'],
+            rakan['population_score'],
+            rakan['compactness_score'],
+            rakan['score'],
+            rakan['d_win'],
+            rakan['r_win'],
+            rakan['o_win'],
+            *[_.district for _ in rakan['precincts']]
         ))
 
-    def do_weight(self, **rakan):  # ACTION CODE = 2
-        self.do('INSERT INTO history VALUES ({iteration}, 2, {precincts}, {alpha}, {beta}, {raw_pop}, {raw_comp}, {score}, {d_win}, {r_win}, {o_win});'.format(
-            iteration=self.iterations,
-            precincts=", ".join([str(_.district) for _ in rakan['precincts']]),
-            alpha=rakan['ALPHA'],
-            beta=rakan['BETA'],
-            raw_pop=rakan['population_score'],
-            raw_comp=rakan['compactness_score'],
-            score=rakan['score'],
-            d_win=rakan['d_win'],
-            r_win=rakan['r_win'],
-            o_win=rakan['o_win'],
+    def weight(self, **rakan):
+        self._events.append((
+            self.iterations,
+            2,
+            rakan['ALPHA'],
+            rakan['BETA'],
+            rakan['population_score'],
+            rakan['compactness_score'],
+            rakan['score'],
+            rakan['d_win'],
+            rakan['r_win'],
+            rakan['o_win'],
+            *[_.district for _ in rakan['precincts']]
         ))
 
     def __getitem__(self, key):
@@ -187,12 +166,17 @@ class Xayah(object):
         elif (end < -1 or end >= self.iterations):
             raise ValueError("Invalid end value")
 
-        precinct1_districts = self.get_district(rid1)
-        precinct2_districts = self.get_district(rid2)
+        districts = self.get_district([rid1, rid2])
 
         x = list(range(step_start, step_end, step_size))
-        values = [int(precinct1_districts[i] == precinct2_districts[i])
-                  for i in range(start, end)]
+        values = []
+        for _ in range(start, end):
+            try:
+                a, b = next(districts)
+            except StopIteration:
+                break
+            values.append(int(a == b))
+
         y = [chisquare_independence_test(values, i) for i in x]
         plt.plot(x, y)
         plt.savefig('chisquared.png')
@@ -205,12 +189,17 @@ class Xayah(object):
 
         step_size = (step_end - start) // points
 
-        precinct1_districts = self.get_district(rid1)
-        precinct2_districts = self.get_district(rid2)
+        districts = self.get_district([rid1, rid2], range(self.iterations))
 
         x = list(range(step_start, step_end, step_size))
-        values = [int(precinct1_districts[i] == precinct2_districts[i])
-                  for i in range(start, end)]
+        values = []
+        for _ in range(start, end):
+            try:
+                a, b = next(districts)
+            except StopIteration:
+                break
+            values.append(int(a == b))
+
         y = [r_value_independence_test(values, i) for i in x]
         plt.plot(x, y)
         plt.savefig('rvalue.png')
@@ -218,18 +207,17 @@ class Xayah(object):
     def export_graph_movement_2d(self, start, end, step):
         if end is None:
             end = self.iterations - 1
-        
+
         precincts_count = len(self.last())
-        precincts = self.select(", ".join(["precinct_{}".format(p) for p in range(precincts_count - 2)]), many=True, where="iteration BETWEEN {} AND {}".format(start, end))
-        
+
         midway = precincts_count // 2
-        
+
         reduced_dimension_x = []
         reduced_dimension_y = []
 
         for i in range(start, end, step):
-            x = sum(precincts[i][:midway])
-            y = sum(precincts[i][midway:])
+            x = sum(self._events[i][META_LENGTH:midway])
+            y = sum(self._events[i][midway + META_LENGTH:])
             reduced_dimension_x.append(x)
             reduced_dimension_y.append(y)
 
@@ -323,8 +311,8 @@ class Xayah(object):
 
 
 if __name__ == "__main__":
-    x = Xayah("save.xyh", threaded=False)
+    x = Xayah("save.xyh")
     # x.export_graph_chisquared(1, None, 100, None, 300, 82, 48)
-    # x.export_graph_rvalue(1, None, 100, None, 300, 82, 48)
-    x.export_graph_movement_2d(0, None, 10)
+    x.export_graph_rvalue(1, 10000, 1, None, 40, 82, 48)
+    # x.export_graph_movement_2d(0, None, 10)
     # x.export_graph_chisquared(100, 101, 1, 82, 48)

@@ -27,21 +27,24 @@ class BaseRakan(PyRakan):
     """
     nx_graph = None  # the graph object
     max_size = 1000  # 10k logs should be a sizeable bite for the server
+    step_size = 1    # Which steps to record
+    auto_save = 1000
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._id = None
         self._xayah = Xayah("save.xyh")  # the set of moves unreported to xayah
-        self._step_size = 1
 
     def step(self):
         result = super().step()
-        if self.iterations % self._step_size == 0 and result:
+        if self.iterations % self.step_size == 0 and result:
             self._xayah.move(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-            ), compactness_score=self.compactness_score(), score=self.score())
+            ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
         else:
             self._xayah.fail(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-            ), compactness_score=self.compactness_score(), score=self.score())
+            ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
+        if self.iterations % self.auto_save == 0:
+            threading.Thread(target=self._xayah.save()).start()
 
     @property
     def ALPHA(self):
@@ -55,13 +58,13 @@ class BaseRakan(PyRakan):
     def ALPHA(self, value: float):
         self._ALPHA = value
         self._xayah.weight(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score())
+        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
 
     @BETA.setter
     def BETA(self, value: float):
         self._BETA = value
         self._xayah.weight(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score())
+        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
 
     """
     Save the current rakan state to a file.
@@ -222,7 +225,7 @@ class BaseRakan(PyRakan):
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
         self._xayah.seed(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score())
+        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
 
     """
     A statistical test to check two random precincts are in the same district
