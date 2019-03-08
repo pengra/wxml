@@ -182,6 +182,9 @@ class Xayah(object):
         plt.savefig('chisquared.png')
 
     def export_graph_rvalue(self, start, end, step_start, step_end, points, rid1, rid2):
+
+        confidence = 0.05
+
         if end == None:
             end = self.iterations - 1
         if step_end == None:
@@ -201,6 +204,9 @@ class Xayah(object):
             values.append(int(a == b))
 
         y = [r_value_independence_test(values, i) for i in x]
+        for index, value in enumerate(y):
+            if value < confidence:
+                print(index, x[index])
         plt.plot(x, y)
         plt.savefig('rvalue.png')
 
@@ -235,6 +241,9 @@ class Xayah(object):
             raise ValueError("Invalid step value")
 
     def export_graph_scores(self, start, end, step):
+        if end is None:
+            end = self.iterations - 1
+        
         if (end < start):
             raise ValueError("End must come after Start")
         elif (start < -1 or start > self.iterations):
@@ -245,11 +254,14 @@ class Xayah(object):
             raise ValueError("Invalid step value")
 
         x = list(range(start, end, step))
-        y = [self.get_score(i) for i in x]
+        y = list(self.get_score(range(start, end, step)))
         plt.plot(x, y)
         plt.savefig('scores.png')
 
     def export_graph_alpha(self, start, end, step):
+        if end is None:
+            end = self.iterations - 1
+
         if (end < start):
             raise ValueError("End must come after Start")
         elif (start < -1 or start > self.iterations):
@@ -260,11 +272,14 @@ class Xayah(object):
             raise ValueError("Invalid step value")
 
         x = list(range(start, end, step))
-        y = [self.get_alpha(i) for i in x]
+        y = list(self.get_alpha(range(start, end, step)))
         plt.plot(x, y)
         plt.savefig('alpha.png')
 
     def export_graph_beta(self, start, end, step):
+        if end is None:
+            end = self.iterations - 1
+
         if (end < start):
             raise ValueError("End must come after Start")
         elif (start < -1 or start > self.iterations):
@@ -275,7 +290,7 @@ class Xayah(object):
             raise ValueError("Invalid step value")
 
         x = list(range(start, end, step))
-        y = [self.get_beta(i) for i in x]
+        y = list(self.get_beta(range(start, end, step)))
         plt.plot(x, y)
         plt.savefig('beta.png')
 
@@ -313,6 +328,9 @@ class Xayah(object):
 if __name__ == "__main__":
     x = Xayah("save.xyh")
     # x.export_graph_chisquared(1, None, 100, None, 300, 82, 48)
-    x.export_graph_rvalue(1, 10000, 1, None, 40, 82, 48)
+    x.export_graph_rvalue(46620, None, 1, None, 1000, 82, 48)
+    # params = (30000, None, 10)
+    # x.export_graph_scores(*params)
+    # x.export_graph_alpha(*params)
     # x.export_graph_movement_2d(0, None, 10)
     # x.export_graph_chisquared(100, 101, 1, 82, 48)
