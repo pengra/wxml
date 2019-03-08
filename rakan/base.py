@@ -177,7 +177,7 @@ class BaseRakan(PyRakan):
             self.export(json_path=os.path.join(dir_path, "map.geojson"))
         if include_save:
             self.save(nx_path=os.path.join(dir_path, "save.dnx"))
-        with open("rakan/template_move_history.htm") as handle:
+        with open("rakan/template.htm") as handle:
             template = handle.read()
             with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
                 w_handle.write(template.replace(
@@ -204,7 +204,8 @@ class BaseRakan(PyRakan):
         """
         Read only accessor to latest moves
         """
-        return list(self._xayah)
+        return []
+        #return list(self._xayah)
 
     """
     Build rakan from a .dnx file.

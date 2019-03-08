@@ -54,7 +54,7 @@ def build_rakan(nx_path, xyh_path="save.xyh"):
 
         for precinct, district in enumerate(precincts):
             g.nodes[precinct]['dis'] = district
-        
+
         networkx.write_gpickle(g, '~tmp')
         r.read_nx('~tmp')
         r._iterations = x._iterations
