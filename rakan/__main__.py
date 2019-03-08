@@ -71,7 +71,7 @@ class Rakan(BaseRakan):
         # Score converges after <2745 iterations
 
         phase3_independence = 3295
-        phase3_iterations = 10
+        phase3_iterations = 30
 
         self.ALPHA = Decimal(5e-8)
         self.BETA = Decimal(0.3)
@@ -81,21 +81,8 @@ class Rakan(BaseRakan):
             if i % phase2_independence == 0:
                 self.image("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
-
-
-        # Phase 3: 
-
-        # for i, alpha in enumerate([1e-10]): # 1e-7
-        #     for j, beta in enumerate([0.2]): # 0.2
-        #         self.ALPHA = Decimal(alpha)
-        #         self.BETA = Decimal(beta)
-        #         bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=one_million)
-        #         for k in range(one_million):
-        #             self.step()
-        #             if k % independence_rate == 0:
-        #                 self.image("output/iowa." + str(alpha) + "." + str(beta) + "." + str(k) + '.png')
-        #             bar.next()
-        #         bar.finish()
+        # RINSE REPEAT
+        
 
 """
 Example code to build a Rakan instance.
