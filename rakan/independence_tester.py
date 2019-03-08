@@ -31,6 +31,8 @@ Input:
 Output:
     - sequence of 0's and 1's
 '''
+
+
 def get_sequence_from_file(path_name, rid1, rid2):
     final_result_report = []
     # array to sequence
@@ -46,7 +48,7 @@ def get_sequence_from_file(path_name, rid1, rid2):
 
 
     # Create Rakan
-    rakan = TestRakan(0,0)
+    rakan = TestRakan(0, 0)
     rakan.read_nx(path_name+"/save.dnx")
     moves = json.load(open(path_name+"/moves.json"))
 
@@ -58,8 +60,10 @@ def get_sequence_from_file(path_name, rid1, rid2):
             continue
         precinct_id, old_district_id, new_district_id = moves[i][-1]
         rakan.move_precinct(precinct_id, old_district_id)
-        final_result_report = [rakan.precinct_in_same_district(rid1, rid2)]+final_result_report;
+        final_result_report = [rakan.precinct_in_same_district(
+            rid1, rid2)]+final_result_report
     return final_result_report
+
 
 '''
 Description: This method tests the independence of the walk given report path_name
@@ -96,6 +100,8 @@ Note:
     - when the PRINT bool is True, it creates a graph
     - it tries all the possible stepsizes. Could be optimized further
 '''
+
+
 def find_opt_stepsize(path_name, rid1, rid2):
     r_val_results = []
     chi_squared_results = []
@@ -149,6 +155,7 @@ def find_opt_stepsize(path_name, rid1, rid2):
         plt.close();
     return [min_step_r, max_step_chi]
 
+
 '''
 Description: This method determines whether the walk was independent or not
 Input:
@@ -156,6 +163,8 @@ Input:
 Output:
     - True or False
 '''
+
+
 def test(report_folder_name, rid1=RID1, rid2=RID2):
     min_step = find_opt_stepsize(report_folder_name, rid1, rid2)
     r_val = indpendence_test_from_report_file(report_folder_name, rid1, rid2, min_step[0], True)

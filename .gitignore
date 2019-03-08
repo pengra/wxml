@@ -15,5 +15,6 @@ secrets*.*
 core
 output/*
 build/*
-20_z_iteration/
+*.xyh
+*.xyh-journal
 *.txt

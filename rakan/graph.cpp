@@ -688,6 +688,17 @@ int Rakan::democrat_seats()
     return seats;
 }
 
+
+// Get the proportion of democrat votes in a district
+double Rakan::democrat_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+		
+    return ((double) d_votes)/(d_votes+r_votes+o_votes);
+}
+
 // Give the number of democratic seats in a simulated election
 // after a proposed move
 int Rakan::democrat_seats(int rid, int district)
@@ -735,6 +746,16 @@ int Rakan::republican_seats()
     return seats;
 }
 
+// Get the proportion of democrat votes in a district
+double Rakan::republican_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+		
+    return ((double) r_votes)/(d_votes+r_votes+o_votes);
+}
+
 // Give the number of republican seats in a simulated election
 // after a proposed move
 int Rakan::republican_seats(int rid, int district)
@@ -780,6 +801,16 @@ int Rakan::other_seats()
         }
     }
     return seats;
+}
+
+// Get the proportion of other votes in a district
+double Rakan::other_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+		
+    return ((double) o_votes)/(d_votes+r_votes+o_votes);
 }
 
 // Give the number of other seats in a simulated election

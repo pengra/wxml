@@ -4,9 +4,9 @@ from cython.operator import dereference, preincrement, address
 from libcpp.list cimport list as clist
 from libcpp.vector cimport vector as cvector
 
-from rakan cimport Precinct as cPrecinct
-from rakan cimport District as cDistrict
-from rakan cimport Rakan as cRakan
+from rakan.rakan cimport Precinct as cPrecinct
+from rakan.rakan cimport District as cDistrict
+from rakan.rakan cimport Rakan as cRakan
 
 
 
@@ -231,19 +231,28 @@ cdef class PyRakan:
             return self.__crakan.democrat_seats()
         else:
             return self.__crakan.democrat_seats(rid, district)
-
+    
+    def democrat_proportion(self, district):
+        return self.__crakan.democrat_proportion(district)
+    
     def republican_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.republican_seats()
         else:
             return self.__crakan.republican_seats(rid, district)
-
+    
+    def republican_proportion(self, district):
+        return self.__crakan.republican_proportion(district)
+    
     def other_seats(self, rid=None, district=None) -> int:
         if rid is None and district is None:
             return self.__crakan.other_seats()
         else:
             return self.__crakan.other_seats(rid, district)
-
+    
+    def other_proportion(self, district):
+        return self.__crakan.other_proportion(district)
+    
     def score(self, rid=None, district=None) -> float:
         if rid is None and district is None:
             return self.__crakan.score()

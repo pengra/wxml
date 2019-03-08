@@ -1,6 +1,5 @@
 from base import BaseRakan
-from servertools import Event
-from servertools import save_current_scores
+from xayah import Xayah
 from progress.bar import IncrementalBar
 
 import sys
@@ -26,18 +25,17 @@ class Rakan(BaseRakan):
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
     """
     def walk(self):
-        five_billion = 5000000000 // 100 # Shortened due to crash
+        one_million = 1000000 # Shortened due to crash
         ten_thousand = 10000
         for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
             for j, beta in [(4, 0.08), (5, 0.008)]:
                 self.ALPHA = Decimal(alpha)
                 self.BETA = Decimal(beta)
-                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
-                for k in range(five_billion):
+                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=one_million)
+                for k in range(one_million):
                     self.step()
                     if k % ten_thousand == 0:
-                        self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
-                        self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
+                        self.image("output/iowa." + str(alpha) + "." + str(beta) + "." + str(k))
                     bar.next()
                 bar.finish()
 
@@ -45,9 +43,25 @@ class Rakan(BaseRakan):
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
 """
-def build_rakan(nx_path):
+def build_rakan(nx_path, xyh_path="save.xyh"):
     r = Rakan(0, 0)
-    r.read_nx(nx_path)
+    x = Xayah(xyh_path, threaded=False)
+    try:
+        last_row = x.last()
+        precincts = last_row
+        r.read_nx(nx_path)
+        g = r.nx_graph
+
+        for precinct, district in enumerate(precincts):
+            g.nodes[precinct]['dis'] = district
+        
+        networkx.write_gpickle(g, '~tmp')
+        r.read_nx('~tmp')
+        r._iterations = x._iterations
+        g = r.nx_graph
+    except IndexError:
+        r.read_nx(nx_path)
+
     return r
 
 
@@ -63,8 +77,6 @@ q
     Run that many iterations
 w
     Call user defined rakan.walk()
-p
-    Produce a server that Xayah can communicate to. (Already running)
 e <name>
     Export the current state as geojson int <name>.geojson.
 r <name>
@@ -85,9 +97,10 @@ pdb
     To enter PDB mode.
 m
     To check memory consumption of Rakan
-
 t <file_name> <rid1 (optional)> <rid2 (optional)>
     To check independence of the walk
+x
+    Save previous walk for loading
 """
     server = None
 
@@ -101,10 +114,6 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
         # debug
         if response == 'pdb':
             import pdb; pdb.set_trace()
-        elif response == 'p':
-            if server is None:
-                server = threading.Thread(target=(lambda: save_current_scores(rakan)))
-                server.start()
         # image
         elif response.startswith('i '):
             image = threading.Thread(target=lambda: rakan.image(image_path=response.split(' ', 1)[1] + '.png'))
@@ -145,7 +154,6 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
             print("C++ Representation Object: {:.2f} KB".format(getsizeof(rakan) / (1024)))
             print("Python District Representation: {:.2f} KB".format(getsizeof(rakan.districts) / (1024)))
             print("Python Precinct Representation: {:.2f} KB".format(getsizeof(rakan.precincts) / (1024)))
-            print("Move History: {:.2f} MB".format(sum([getsizeof(_) for _ in rakan._move_history]) / (1024 ** 2)))
         # run
         elif response.isnumeric():
             target = int(response)
@@ -188,9 +196,10 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
                     absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-
-                    history_size = max(min(len(rakan._move_history), target), 1)
-                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
+                    try:
+                        print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
+                    except ZeroDivisionError:
+                        pass
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -204,14 +213,21 @@ t <file_name> <rid1 (optional)> <rid2 (optional)>
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                history_size = len(rakan._move_history)
-                print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history]) * 100) / history_size))
+                try:
+                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
+                except ZeroDivisionError:
+                    pass
         # walk
         elif response == 'w':
             start = time.time()
             rakan.walk()
             end = time.time()
             print("Walk time:", end - start, "seconds")
+        elif response == 'x':
+            print('Xayah Iterations:', rakan._xayah.iterations)
+            print('Rakan Iterations:', rakan.iterations)
+            print("Xayah save behind by {} iterations".format(len(rakan._xayah._events)))
+            threading.Thread(target=rakan._xayah.save()).start()
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
