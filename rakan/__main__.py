@@ -25,19 +25,77 @@ class Rakan(BaseRakan):
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
     """
     def walk(self):
-        one_million = 1000000 # Shortened due to crash
-        ten_thousand = 10000
-        for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
-            for j, beta in [(4, 0.08), (5, 0.008)]:
-                self.ALPHA = Decimal(alpha)
-                self.BETA = Decimal(beta)
-                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=one_million)
-                for k in range(one_million):
-                    self.step()
-                    if k % ten_thousand == 0:
-                        self.image("output/iowa." + str(alpha) + "." + str(beta) + "." + str(k))
-                    bar.next()
-                bar.finish()
+        one_million = 10 ** 6
+        random_independence = 148
+        random_maps = 10
+
+        self.ALPHA = Decimal(0)
+        self.BETA = Decimal(0)
+
+        # Get some distance from the seed map
+        for i in range(random_independence * random_maps): 
+            self.step()
+            if i % random_independence == 0:
+                self.image("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        # Phase 1: Gets us to ~74% from ideal
+        # Score converges after ~30 iterations
+
+        phase1_independence = 1177
+        phase1_iterations = 10
+
+        self.ALPHA = Decimal(1e-10)
+        self.BETA = Decimal(0.2)
+
+        for i in range(phase1_independence * phase1_iterations):
+            self.step()
+            if i % phase1_independence == 0:
+                self.image("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+        
+        # Phase 2: Gets us to ~13-30% from ideal
+        # Score converges after ~150 iterations
+
+        phase2_independence = 2745
+        phase2_iterations = 10
+
+        self.ALPHA = Decimal(1e-9)
+        self.BETA = Decimal(0.2)
+
+        for i in range(phase2_independence * phase2_iterations):
+            self.step()
+            if i % phase2_independence == 0:
+                self.image("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        
+        # Phase 3: Gets us ~0.5-3% from ideal
+        # Score converges after <2745 iterations
+
+        phase3_independence = 3295
+        phase3_iterations = 10
+
+        self.ALPHA = Decimal(5e-8)
+        self.BETA = Decimal(0.3)
+
+        for i in range(phase2_independence * phase2_iterations):
+            self.step()
+            if i % phase2_independence == 0:
+                self.image("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+
+
+        # Phase 3: 
+
+        # for i, alpha in enumerate([1e-10]): # 1e-7
+        #     for j, beta in enumerate([0.2]): # 0.2
+        #         self.ALPHA = Decimal(alpha)
+        #         self.BETA = Decimal(beta)
+        #         bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=one_million)
+        #         for k in range(one_million):
+        #             self.step()
+        #             if k % independence_rate == 0:
+        #                 self.image("output/iowa." + str(alpha) + "." + str(beta) + "." + str(k) + '.png')
+        #             bar.next()
+        #         bar.finish()
 
 """
 Example code to build a Rakan instance.
@@ -88,19 +146,43 @@ pdb
 a <value>
     Set a new Alpha value (population weight)
 b <value>
-    Set a new Beta value (compactness weight)
+    Set a new Beta value (compactnpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
 l <path>
     Load a new .dnx file
 i <path>
-    Spawn a thread that saves the current map as an image to the path specified.
+    Spawn a thread that saves the populations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_populationge to the path specified.
 pdb
     To enter PDB mode.
 m
-    To check memory consumption of Rakan
-t <file_name> <rid1 (optional)> <rid2 (optional)>
-    To check independence of the walk
+    To check memory consumption ofpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+t <file_name> <rid1 (optional)> <rpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+    To check independence of the wpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
 x
-    Save previous walk for loading
+    Save previous walk for loadingpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
 """
     server = None
 
@@ -274,7 +356,7 @@ x
                 result = test(options[1], options[2], options[3])
             else:
                 print("Invalid set of inputs")
-                continue;
+                continue
 
             if result:
                 print("The sequence from the file {} is independent".format(options[1]))
