@@ -26,7 +26,7 @@ class BaseRakan(PyRakan):
     Use for production code.
     """
     nx_graph = None  # the graph object
-    max_size = 1000  # 10k logs should be a sizeable bite for the server
+    max_size = 10000  # 10k logs should be a sizeable bite for the server
     step_size = 1    # Which steps to record
     auto_save = 100000
     
@@ -178,7 +178,7 @@ class BaseRakan(PyRakan):
             self.export(json_path=os.path.join(dir_path, "map.geojson"))
         if include_save:
             self.save(nx_path=os.path.join(dir_path, "save.dnx"))
-        with open("rakan/template.htm") as handle:
+        with open("rakan/template_move_history.htm") as handle:
             template = handle.read()
             with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
                 w_handle.write(template.replace(
@@ -210,7 +210,6 @@ class BaseRakan(PyRakan):
     """
     Build rakan from a .dnx file.
     """
-
     def read_nx(self, nx_path):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
@@ -231,7 +230,6 @@ class BaseRakan(PyRakan):
     """
     A statistical test to check two random precincts are in the same district
     """
-
     def precinct_in_same_district(self, rid1, rid2):
         return self.precincts[rid1].district == self.precincts[rid2].district
 
