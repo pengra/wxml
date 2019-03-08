@@ -28,7 +28,8 @@ class BaseRakan(PyRakan):
     nx_graph = None  # the graph object
     max_size = 10000  # 10k logs should be a sizeable bite for the server
     step_size = 1    # Which steps to record
-    auto_save = 1000
+    auto_save = 100000
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
