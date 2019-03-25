@@ -2,6 +2,8 @@
 
 An interesting Gerrymanering analysis tool by the UW WXML team. Circa 2018.
 
+Full documentation: https://wxml.pengra.io
+
 ## Pre-requisite Setup
 
 - Rakan prereqs:
@@ -12,7 +14,9 @@ An interesting Gerrymanering analysis tool by the UW WXML team. Circa 2018.
 
 ## Rakan Compilation Code
 
-Run: `python setup.py build_ext`
+Run: `./run.sh`
+A very simple interactive terminal will be available.
+Type `h` for help.
 
 ## Launch Xayah code
 

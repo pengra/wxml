@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+window.onload = function () {
+
+var address = "http://127.0.0.1:4200"
+var lastIteration = -1;
+
+var dps = []; // dataPoints
+var pdps = [];
+var rdps = [];
+var sdps = []; 
+var chart = new CanvasJS.Chart("compactnessChart", {
+	title :{
+		text: "Compactness Score (Perimeter)"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: dps
+	}]
+});
+
+var pchart = new CanvasJS.Chart("populationChart", {
+	title :{
+		text: "Standard Deviation"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: pdps
+	}]
+});
+
+var rchart = new CanvasJS.Chart("realScore", {
+	title :{
+		text: "Overall Score"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: rdps
+	}]
+});
+
+var xVal = 0;
+var yVal = 100; 
+var updateInterval = 200;
+var dataLength = 500; // number of dataPoints visible at any point
+
+var updateChart = function (count) {
+    fetch(address).then(function (data) {
+        return data.json();
+    }).then(function(value) {
+        if (value.index > lastIteration) {
+            lastIteration = value.index;
+            dps.push({
+                x: lastIteration,
+                y: (value.cscore / 2)
+            })
+            pdps.push({
+                x: lastIteration,
+                y: (Math.sqrt(value.pscore))
+            })
+			rdps.push({
+                x: lastIteration,
+                y: value.score
+            })
+            if (dps.length > dataLength) {
+		        dps.shift();
+                pdps.shift();
+				rdps.shift();
+	        }
+	        chart.render();
+            pchart.render();
+			rchart.render();
+        }
+    }).catch((error) => console.log(error))
+};
+
+updateChart(dataLength);
+setInterval(function(){updateChart()}, updateInterval);
+
+}
+</script>
+<style>
+	#timeToRender {
+		position:absolute; 
+		top: 10px; 
+		font-size: 20px; 
+		font-weight: bold; 
+		background-color: #d85757;
+		padding: 0px 4px;
+		color: #ffffff;
+	}
+</style>
+</head>
+<body>
+<div id="compactnessChart" style="height: 370px; width: 100%;"></div>
+<div id="populationChart" style="height: 370px; width: 100%;"></div>
+<div id="realScore" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+</body>
+</html>

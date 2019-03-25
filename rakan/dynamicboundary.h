@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include <time.h>
 
 namespace rakan {
     
@@ -13,17 +14,17 @@ namespace rakan {
     typedef std::vector<false_node> false_tree;
 
     class DynamicBoundary {
-    public: // for python
+    public: // usually should be private, but made public for python
         false_tree _tree;
-        int _d_edges = 0;
-        int _s_edges = 0;
-        int _nodes = 0;
+        int _d_edges = 0; // the number of edges between precincts in different districts
+        int _s_edges = 0; // the number of edges between precincts in the same district
+        int _nodes = 0; // the number of nodes
     public:
         // Constructing the tree
         DynamicBoundary();
-        DynamicBoundary(int size);
-        void add_node(int rid);
-        void add_edge(int rid1, int rid2, bool diff); // add an edge
+        DynamicBoundary(int size); // Size being the number of nodes
+        void add_node(int rid); // add a node
+        void add_edge(int rid1, int rid2, bool diff); // add an edge, diff being true if they're in different districts
 
         // walk methods that might be used
         std::pair<int, int> get_random_district_edge(); // return a pair of rids
