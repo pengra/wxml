@@ -19,3 +19,4 @@ build/*
 *.xyh-journal
 *.txt
 *~tmp*
+~tmp
