@@ -15,21 +15,21 @@ cdef extern from "dynamicboundary.h" namespace "rakan":
     # DO NOT USE UNLESS IF YOU KNOW WHAT YOU'RE DOING
     cdef cppclass DynamicBoundary:
         cvector[cpair[clist[int], clist[int]]] _tree
-        cpair[int, int] get_district_edge(int index) except +;
-        int _d_edges;
-        int _s_edges;
-        int _nodes;
+        cpair[int, int] get_district_edge(int index) except +
+        int _d_edges
+        int _s_edges
+        int _nodes
 
         # Construction
-        void add_node(int) except +;
-        void add_edge(int, int, bool) except +;
+        void add_node(int) except +
+        void add_edge(int, int, bool) except +
 
-        cpair[int, int] get_random_district_edge() except +;
-        cpair[int, int] get_district_edge(int) except +;
-        void toggle_edge(int, int) except +;
+        cpair[int, int] get_random_district_edge() except +
+        cpair[int, int] get_district_edge(int) except +
+        void toggle_edge(int, int) except +
 
-        int edge_count() except +;
-        int node_count() except +;
+        int edge_count() except +
+        int node_count() except +
 
 cdef extern from "graph.h" namespace "rakan":
     cdef cppclass Precinct:
@@ -61,23 +61,22 @@ cdef extern from "graph.h" namespace "rakan":
         Rakan(int size, int district) except +
 
         # == API for debugging in python ==
-        cvector[District*] districts() except +;
-        cvector[Precinct*] atlas() except +;
-        DynamicBoundary edges() except +;
+        cvector[District*] districts() except +
+        cvector[Precinct*] atlas() except +
+        DynamicBoundary edges() except +
 
         # == Statistics ==
-        long iterations;
+        long iterations
 
         # == Weights ==
-        double alpha;
-        double beta;
+        double alpha
+        double beta
 
         # == Last Move ==
-        cvector[int] _last_move;
+        cvector[int] _last_move
 
         # == API for myself ==
         clist[int] _unchecked_changes
-        clist[int] _checked_changes
 
         # == API for the mathematicains ==
 
