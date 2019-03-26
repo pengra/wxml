@@ -8,4 +8,3 @@ rm -r rakan/rakan.cpp
 touch rakan/rakan.pyx
 touch rakan/rakan.pxd
 python setup.py build_ext
-python rakan/
