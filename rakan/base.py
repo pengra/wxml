@@ -1,9 +1,9 @@
 try:
     from rakan.rakan import PyRakan
-    library_mode = True
+    JUPYTER_MODE = True
 except ImportError:
     from rakan import PyRakan
-    library_mode = False
+    JUPYTER_MODE = False
 
 import asyncio
 import websockets
@@ -25,10 +25,12 @@ import os
 
 
 class Rakan(PyRakan):
-    """
-    Use for production code.
-    """
-    nx_graph = None  # the graph object
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)        
+        self.nx_graph = None
+        self._moves = 0
+        self.move_history = []
 
     """
     Save the current rakan state to a file.
@@ -39,6 +41,11 @@ class Rakan(PyRakan):
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         self.nx_graph.graph['iterations'] = self.iterations
         networkx.write_gpickle(self.nx_graph, nx_path)
+
+    def step(self):	
+        if super().step():
+            self._moves += 1
+            self.move_history.append(self._last_move)
 
     """
     Show rakan's current state. Specify an image_path to save the image to file.
@@ -157,7 +164,7 @@ class Rakan(PyRakan):
                 ))
         if include_json:
             with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
-                handle.write(json.dumps([_.json for _ in self.move_history]))
+                handle.write(json.dumps(self.move_history))
 
     """
     Build rakan from a .dnx file.
