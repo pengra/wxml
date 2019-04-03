@@ -6,7 +6,7 @@ import math
 import networkx
 import matplotlib.pyplot as plt
 import csv;
-from base import BaseRakan as TestRakan
+from base import Rakan as TestRakan
 from random_sequence_tests import chisquare_independence_test
 from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
