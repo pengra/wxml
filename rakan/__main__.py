@@ -248,10 +248,6 @@ x
                     absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-                    try:
-                        print("Rejection rate of last {} moves: {:.2f}%".format(rakan.iterations, 100 - (100 * rakan._moves / rakan.iterations)))
-                    except ZeroDivisionError:
-                        pass
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -265,10 +261,6 @@ x
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                try:
-                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan.iterations, 100 - (100 * rakan._moves / rakan.iterations)))
-                except ZeroDivisionError:
-                    pass
         # walk
         elif response == 'w':
             start = time.time()
