@@ -135,6 +135,7 @@ namespace rakan {
         bool step();
         double score();
         double score(int rid, int district);
+        double score_ratio(int rid, int district); // Calculate Score Ratio
     };
 }
 
