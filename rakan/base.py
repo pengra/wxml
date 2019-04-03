@@ -1,4 +1,9 @@
-from rakan.rakan import PyRakan
+try:
+    from rakan.rakan import PyRakan
+    library_mode = True
+except ImportError:
+    from rakan import PyRakan
+    library_mode = False
 
 import asyncio
 import websockets
