@@ -6,7 +6,7 @@ import math
 import networkx
 import matplotlib.pyplot as plt
 import csv;
-from base import BaseRakan as TestRakan
+from base import Rakan as TestRakan
 from random_sequence_tests import chisquare_independence_test
 from random_sequence_tests import r_value_independence_test
 from decimal import Decimal
@@ -38,13 +38,13 @@ def get_sequence_from_file(path_name, rid1, rid2):
     # array to sequence
     if path_name.endswith(".txt"):
         sequence = []
-        file = open(path_name, 'r');
+        file = open(path_name, 'r')
         for line in file:
-            map = re.split('\[|\]|,| ', line)
+            map = re.split(r'\[|\]|,| ', line)
             rid1_district = map[rid1]
             rid2_district = map[rid2]
             sequence.append(int(rid1_district == rid2_district))
-        return sequence;
+        return sequence
 
 
     # Create Rakan

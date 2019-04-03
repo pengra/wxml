@@ -1,5 +1,4 @@
-from base import BaseRakan
-from xayah import Xayah
+from base import Rakan as BaseRakan
 from progress.bar import IncrementalBar
 
 import sys
@@ -90,23 +89,7 @@ Read a networkx graph and sends it off to Xayah upon its connection.
 """
 def build_rakan(nx_path, xyh_path="save.xyh"):
     r = Rakan(0, 0)
-    x = Xayah(xyh_path, threaded=False)
-    try:
-        last_row = x.last()
-        precincts = last_row
-        r.read_nx(nx_path)
-        g = r.nx_graph
-
-        for precinct, district in enumerate(precincts):
-            g.nodes[precinct]['dis'] = district
-
-        networkx.write_gpickle(g, '~tmp')
-        r.read_nx('~tmp')
-        r._iterations = x._iterations
-        g = r.nx_graph
-    except IndexError:
-        r.read_nx(nx_path)
-
+    r.read_nx(nx_path)
     return r
 
 
@@ -265,10 +248,6 @@ x
                     absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-                    try:
-                        print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
-                    except ZeroDivisionError:
-                        pass
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -282,10 +261,6 @@ x
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                try:
-                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
-                except ZeroDivisionError:
-                    pass
         # walk
         elif response == 'w':
             start = time.time()
@@ -293,10 +268,10 @@ x
             end = time.time()
             print("Walk time:", end - start, "seconds")
         elif response == 'x':
-            print('Xayah Iterations:', rakan._xayah.iterations)
+            print('Xayah Iterations:', rakan.iterations)
             print('Rakan Iterations:', rakan.iterations)
-            print("Xayah save behind by {} iterations".format(len(rakan._xayah._events)))
-            threading.Thread(target=rakan._xayah.save()).start()
+            print("Xayah save behind by {} iterations".format(len(rakan._events)))
+            threading.Thread(target=rakan.save()).start()
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:

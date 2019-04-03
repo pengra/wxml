@@ -9,7 +9,7 @@ secrets*.*
 *.html
 *.json
 *.geojson
-*.ipynb
+.ipynb_checkpoints/*
 *.png
 =*
 core

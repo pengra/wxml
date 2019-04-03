@@ -74,7 +74,6 @@ namespace rakan {
 
         // For rapid state management (for communication with the server)
         std::list<int> _unchecked_changes;
-        std::list<int> _checked_changes;
 
         // Weights
         double alpha = 0; // population weight

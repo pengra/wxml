@@ -35,11 +35,11 @@ cdef class PyPrecinct:
 
     @property
     def rid(self):
-        return self.__cprecinct.rid;
+        return self.__cprecinct.rid
 
     @property
     def district(self):
-        return self.__cprecinct.district;
+        return self.__cprecinct.district
 
     @district.setter
     def district(self, int value):
@@ -167,10 +167,6 @@ cdef class PyRakan:
         return self.__crakan._unchecked_changes
 
     @property
-    def _checked_changes(self) -> list:
-        return self.__crakan._checked_changes
-
-    @property
     def _last_move(self) -> list:
         return self.__crakan._last_move
 
@@ -279,17 +275,17 @@ cdef class PyRakan:
         return self._iterations
 
     @property
-    def _ALPHA(self):
+    def ALPHA(self):
         return self.__crakan.alpha
 
     @property
-    def _BETA(self):
+    def BETA(self):
         return self.__crakan.beta
 
-    @_ALPHA.setter
-    def _ALPHA(self, double value):
+    @ALPHA.setter
+    def ALPHA(self, double value):
         self.__crakan.alpha = value
 
-    @_BETA.setter
-    def _BETA(self, double value):
+    @BETA.setter
+    def BETA(self, double value):
         self.__crakan.beta = value
