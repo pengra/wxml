@@ -249,7 +249,7 @@ x
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
                     try:
-                        print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
+                        print("Rejection rate of last {} moves: {:.2f}%".format(rakan.iterations, 100 - (100 * rakan._moves / rakan.iterations)))
                     except ZeroDivisionError:
                         pass
             else:
@@ -266,7 +266,7 @@ x
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
                 try:
-                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan._xayah.iterations, 100 - (100 * rakan._xayah._moves / rakan._xayah.iterations)))
+                    print("Rejection rate of last {} moves: {:.2f}%".format(rakan.iterations, 100 - (100 * rakan._moves / rakan.iterations)))
                 except ZeroDivisionError:
                     pass
         # walk
@@ -276,10 +276,10 @@ x
             end = time.time()
             print("Walk time:", end - start, "seconds")
         elif response == 'x':
-            print('Xayah Iterations:', rakan._xayah.iterations)
+            print('Xayah Iterations:', rakan.iterations)
             print('Rakan Iterations:', rakan.iterations)
-            print("Xayah save behind by {} iterations".format(len(rakan._xayah._events)))
-            threading.Thread(target=rakan._xayah.save()).start()
+            print("Xayah save behind by {} iterations".format(len(rakan._events)))
+            threading.Thread(target=rakan.save()).start()
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
