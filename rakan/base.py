@@ -29,8 +29,6 @@ class Rakan(PyRakan):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)        
         self.nx_graph = None
-        self._moves = 0
-        self.move_history = []
 
     """
     Save the current rakan state to a file.
@@ -42,10 +40,11 @@ class Rakan(PyRakan):
         self.nx_graph.graph['iterations'] = self.iterations
         networkx.write_gpickle(self.nx_graph, nx_path)
 
-    def step(self):	
-        if super().step():
-            self._moves += 1
-            self.move_history.append(self._last_move)
+    def export_csv(self, file_path="save.csv"):
+        """
+        Observes 
+        """
+        pass
 
     """
     Show rakan's current state. Specify an image_path to save the image to file.
