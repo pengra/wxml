@@ -857,7 +857,7 @@ bool Rakan::step()
     try
     {
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (this->distribution(this->generator) <= (this->score() / this->score(rid, new_district)))
+        if (this->distribution(this->generator) <= (this->score_ratio(rid, new_district)))
         {
             this->move_precinct(rid, new_district);
             this->_last_move = std::vector<int>(move);
@@ -892,6 +892,14 @@ double Rakan::score(int rid, int district)
     return std::exp(
         (this->alpha * this->population_score(rid, district)) +
         (this->beta * this->compactness_score(rid, district)));
+}
+
+double Rakan::score_ratio(int rid, int district)
+{
+    return std::exp(
+        (this->alpha * (this->population_score() - this->population_score(rid, district))) +
+        (this->beta * (this->compactness_score() - this->compactness_score(rid, district)))
+    );
 }
 
 } // namespace rakan
