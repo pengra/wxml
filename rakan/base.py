@@ -175,9 +175,9 @@ class Rakan(PyRakan):
             self.add_precinct(
                 int(self.nx_graph.nodes[node]['dis']),
                 int(self.nx_graph.nodes[node]['pop']),
-                int(self.nx_graph.nodes[node]['d_active']),
-                int(self.nx_graph.nodes[node]['r_active']),
-                int(self.nx_graph.nodes[node]['o_active']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
             )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
