@@ -123,6 +123,10 @@ cdef class PyRakan:
 
     def _reset(self, int size, int districts):
         self.__crakan = cRakan(size, districts)
+        self._move_history = []
+        self._weight_changes = []
+        self._moves = 0
+        self._iterations = 0
 
     def __dealloc__(self):
         pass
@@ -258,9 +262,17 @@ cdef class PyRakan:
     # == Stepping ==
 
     def step(self):
-        return self.__crakan.step()
+        moved = self.__crakan.step()
+        if moved:
+            self._moves += 1
+            self._move_history.append(self.precincts)
+        return moved
 
     # == Statistics + Weights ==
+
+    @property
+    def move_history(self):
+        return self._move_history
 
     @property
     def _iterations(self):
@@ -284,8 +296,14 @@ cdef class PyRakan:
 
     @ALPHA.setter
     def ALPHA(self, double value):
+        self._weight_changes.append(self._moves)
         self.__crakan.alpha = value
 
     @BETA.setter
     def BETA(self, double value):
+        self._weight_changes.append(self._moves)
         self.__crakan.beta = value
+
+    @property
+    def weight_changes(self):
+        return self._weight_changes
