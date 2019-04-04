@@ -29,7 +29,7 @@ class BaseRakan(PyRakan):
     max_size = 10000  # 10k logs should be a sizeable bite for the server
     step_size = 1    # Which steps to record
     auto_save = 100000
-    
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -178,7 +178,7 @@ class BaseRakan(PyRakan):
             self.export(json_path=os.path.join(dir_path, "map.geojson"))
         if include_save:
             self.save(nx_path=os.path.join(dir_path, "save.dnx"))
-        with open("rakan/template.htm") as handle:
+        with open("rakan/template_move_history.htm") as handle:
             template = handle.read()
             with open(os.path.join(dir_path, "index.html"), "w") as w_handle:
                 w_handle.write(template.replace(

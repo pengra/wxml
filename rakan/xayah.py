@@ -135,10 +135,7 @@ class Xayah(object):
         ))
 
     def __getitem__(self, key):
-        pass
-
-    def __setitem__(self, key, value):
-        pass
+        return self._events[key]
 
     @property
     def iterations(self):
@@ -243,7 +240,7 @@ class Xayah(object):
     def export_graph_scores(self, start, end, step):
         if end is None:
             end = self.iterations - 1
-        
+
         if (end < start):
             raise ValueError("End must come after Start")
         elif (start < -1 or start > self.iterations):
