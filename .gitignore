@@ -9,9 +9,14 @@ secrets*.*
 *.html
 *.json
 *.geojson
-*.ipynb
+.ipynb_checkpoints/*
 *.png
 =*
 core
 output/*
 build/*
+*.xyh
+*.xyh-journal
+*.txt
+*~tmp*
+~tmp

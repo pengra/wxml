@@ -52,7 +52,6 @@ pandocfilters==1.4.2
 parso==0.3.2
 pexpect==4.6.0
 pickleshare==0.7.5
-pkg-resources==0.0.0
 plotly==3.5.0
 pluggy==0.8.0
 progress==1.4
@@ -69,7 +68,7 @@ pytest-cov==2.6.0
 pytest-cython==0.1.0
 python-dateutil==2.7.5
 pytz==2018.9
-PyYAML==3.13
+PyYAML>=4.2b1
 pyzmq==17.1.2
 qtconsole==4.4.3
 requests==2.21.0
