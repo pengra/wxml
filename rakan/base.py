@@ -124,7 +124,7 @@ class BaseRakan(PyRakan):
                 "#B10DC9", # Purple
                 "#39CCCC", # Teal
                 "#01FF70", # Lime
-            ][precinct.district], linewidth=0.1)
+            ][precinct.district % 15], linewidth=0.1)
             bar.next()
         plt.savefig(image_path, dpi=900)
         plt.close(fig)
@@ -230,12 +230,39 @@ class BaseRakan(PyRakan):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
         for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+            
             self.add_precinct(
-                int(self.nx_graph.nodes[node]['dis']),
-                int(self.nx_graph.nodes[node]['pop']),
-                int(self.nx_graph.nodes[node]['d_active']),
-                int(self.nx_graph.nodes[node]['r_active']),
-                int(self.nx_graph.nodes[node]['o_active']),
+                dis,
+                pop,
+                d_active,
+                r_active,
+                o_active,
             )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
