@@ -3,16 +3,13 @@ A script that elimantes all edges that are connected by diagonals
 """
 
 FILENAME = "WA.dnx"
-JSON_LOC = "map.0.geojson"
-
+OUT_FILENAME = "WA2.dnx"
 
 import networkx
 import collections
 import itertools
 import json
 
-with open(JSON_LOC) as handle:
-    JSON_BLOB = json.loads(handle.read())
 
 def main():
     graph = networkx.read_gpickle(FILENAME)
@@ -52,19 +49,11 @@ def main():
         if not ok:
             dismissed += 1
             graph.remove_edge(node1, node2)
-            JSON_BLOB['features'][node1]['properties']['district'] = 11
-            JSON_BLOB['features'][node2]['properties']['district'] = 11
 
-    with open("map.geojson", 'w') as handle:
-        handle.write(json.dumps(JSON_BLOB))
+    networkx.write_gpickle(graph, OUT_FILENAME)
 
     print("Shortcutted:", shortcut_confirmed)
     print("Dismissed:", dismissed)
-
-def vectorize_coordinates(vertexes):
-    pass
-    
-
 
 if __name__ == "__main__":
     main()
