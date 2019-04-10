@@ -16,7 +16,7 @@ from independence_tester import test
 try:
     nx_path = sys.argv[1]
 except:
-    nx_path = "iowa.dnx"
+    nx_path = "WA.dnx"
 
 class Rakan(BaseRakan):
 
@@ -32,7 +32,7 @@ class Rakan(BaseRakan):
         self.BETA = Decimal(0)
 
         # Get some distance from the seed map
-        for i in range(random_independence * random_maps): 
+        for i in range(random_independence * random_maps):
             self.step()
             if i % random_independence == 0:
                 self.image("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
@@ -50,7 +50,7 @@ class Rakan(BaseRakan):
             self.step()
             if i % phase1_independence == 0:
                 self.image("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-        
+
         # Phase 2: Gets us to ~13-30% from ideal
         # Score converges after ~150 iterations
 
@@ -65,7 +65,7 @@ class Rakan(BaseRakan):
             if i % phase2_independence == 0:
                 self.image("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
-        
+
         # Phase 3: Gets us ~0.5-3% from ideal
         # Score converges after <2745 iterations
 
@@ -81,7 +81,7 @@ class Rakan(BaseRakan):
                 self.image("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
         # RINSE REPEAT
-        
+
 
 """
 Example code to build a Rakan instance.
