@@ -35,7 +35,7 @@ class Rakan(BaseRakan):
         for i in range(random_independence * random_maps):
             self.step()
             if i % random_independence == 0:
-                self.image("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+                self.show("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
         # Phase 1: Gets us to ~74% from ideal
         # Score converges after ~30 iterations
@@ -49,8 +49,8 @@ class Rakan(BaseRakan):
         for i in range(phase1_independence * phase1_iterations):
             self.step()
             if i % phase1_independence == 0:
-                self.image("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-
+                self.show("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+                
         # Phase 2: Gets us to ~13-30% from ideal
         # Score converges after ~150 iterations
 
@@ -63,7 +63,7 @@ class Rakan(BaseRakan):
         for i in range(phase2_independence * phase2_iterations):
             self.step()
             if i % phase2_independence == 0:
-                self.image("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+                self.show("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
 
         # Phase 3: Gets us ~0.5-3% from ideal
@@ -78,7 +78,7 @@ class Rakan(BaseRakan):
         for i in range(phase2_independence * phase2_iterations):
             self.step()
             if i % phase2_independence == 0:
-                self.image("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+                self.show("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
 
         # RINSE REPEAT
 
@@ -168,7 +168,7 @@ x
             import pdb; pdb.set_trace()
         # image
         elif response.startswith('i '):
-            image = threading.Thread(target=lambda: rakan.image(image_path=response.split(' ', 1)[1] + '.png'))
+            image = threading.Thread(target=lambda: rakan.show(image_path=response.split(' ', 1)[1] + '.png'))
             image.start()
             print("Image thread started")
         # quit
