@@ -77,7 +77,7 @@ class Rakan(PyRakan):
                 "#39CCCC",  # Teal
                 "#01FF70",  # Lime
             ][precinct.district % 15], linewidth=0.1)
-        
+
         if image_path is None:
             return plt.show()
         else:

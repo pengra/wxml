@@ -59,7 +59,6 @@ def pick_move(possible_moves, sizes):
         if sizes[possible_moves[idx][1]] == min_possible_size:
             return possible_moves[idx]
 
-# 'WA.dnx', 300, 10, 'super_map.csv', 'supers.dnx'
 def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_dnx_path):
     r = Rakan()
 

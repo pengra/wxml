@@ -2,8 +2,8 @@
 A script that elimantes all edges that are connected by diagonals
 """
 
-FILENAME = "WA.dnx"
-OUT_FILENAME = "WA2.dnx"
+FILENAME = "WA4.dnx"
+OUT_FILENAME = "WA4.dnx"
 
 import networkx
 import collections
@@ -15,7 +15,7 @@ def main():
     graph = networkx.read_gpickle(FILENAME)
     edges = [_ for _ in graph.edges]
     print("Discovered %i edges" % len(edges))
-    
+
     shortcut_confirmed = 0
     dismissed = 0
 
@@ -23,7 +23,7 @@ def main():
         # print("({i}/{total}) Grabbing node {edge1} & {edge2} vertexes".format(i=i,total=len(edges), edge1=node1, edge2=node2), end=' ... ')
         n1_vertexes = graph.nodes[node1]['vertexes'][0]
         n2_vertexes = graph.nodes[node2]['vertexes'][0]
-        
+
         shared_vertexes = len(set(n1_vertexes).intersection(set(n2_vertexes)))
 
         if shared_vertexes >= 2:
@@ -34,7 +34,7 @@ def main():
         n1x = [_[1] for _ in n1_vertexes]
         n2y = [_[0] for _ in n2_vertexes]
         n2x = [_[1] for _ in n2_vertexes]
-        
+
         n1y = (min(n1y), max(n1y))
         n1x = (min(n1x), max(n1x))
         n2y = (min(n2y), max(n2y))

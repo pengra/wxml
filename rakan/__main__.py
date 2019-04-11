@@ -50,7 +50,7 @@ class Rakan(BaseRakan):
             self.step()
             if i % phase1_independence == 0:
                 self.show("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-                
+
         # Phase 2: Gets us to ~13-30% from ideal
         # Score converges after ~150 iterations
 
@@ -64,7 +64,6 @@ class Rakan(BaseRakan):
             self.step()
             if i % phase2_independence == 0:
                 self.show("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-
 
         # Phase 3: Gets us ~0.5-3% from ideal
         # Score converges after <2745 iterations
