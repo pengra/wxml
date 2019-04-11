@@ -143,7 +143,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     closed_nodes = []
     dist_sizes = [1 for i in range(districts)]
     for i in range(districts):
-        strt = np.random.randint(0,supers)
+        strt = np.random.randint(0,len(corrected_adj_graph))
         while strt in starters or len(corrected_adj_graph[strt]) == 0:
             strt = np.random.randint(0,supers)
         closed_nodes.append(strt)
