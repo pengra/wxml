@@ -9,6 +9,10 @@ def pointInAlignment(first, second, third):
     return abs(a1-a2) < 0.01 #1 degree
 
 def newGraph(old_file="../WA.dnx"):
+    '''
+    a method to create a graph with reduced number of vertices. Currently,
+    reduces too many vertices to the point where the graph looks jagged. 
+    '''
     angles = []
     graph = networkx.read_gpickle(old_file)
     newGraph = graph.copy()

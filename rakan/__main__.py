@@ -16,7 +16,7 @@ from independence_tester import test
 try:
     nx_path = sys.argv[1]
 except:
-    nx_path = "WA.dnx"
+    nx_path = "./dnx/WA.dnx"
 
 class Rakan(BaseRakan):
 
