@@ -2,8 +2,8 @@
 A script that elimantes all edges that are connected by diagonals
 """
 
-FILENAME = "WA.dnx"
-OUT_FILENAME = "WA2.dnx"
+FILENAME = "WA4.dnx"
+OUT_FILENAME = "WA4.dnx"
 
 import networkx
 import collections

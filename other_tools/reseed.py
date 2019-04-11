@@ -15,14 +15,14 @@ def seed_districts(graph, districts):
         graph_pool = [_ for _ in graph.nodes]
         random.shuffle(graph_pool)
 
-        district_sizes = [[1, district] for district in range(1, districts + 1)]
+        district_sizes = [[1, district] for district in range(districts)]
 
         # Start the district with some seeds
-        for district in range(1, districts + 1):
+        for district in range(districts):
             bar.next()
             
             seed = graph_pool.pop()
-            graph.nodes.get(seed)['district'] = district
+            graph.nodes[seed]['dis'] = district
 
         # While there are unclaimed nodes
         while graph_pool:
@@ -33,34 +33,36 @@ def seed_districts(graph, districts):
                 round_complete = False
                 # Find the nodes that belong to a district
                 for node, props in graph.nodes(data=True): 
-                    if props.get('district') == district:
+                    if props['dis'] == district:
                         # Iterate through edges and find an unclaimed neighbor
                         for _, neighbor in graph.edges(node):
                             if neighbor in graph_pool:
                                 graph_pool.remove(neighbor)
                                 district_sizes[i][0] += 1
                                 bar.next()
-                                graph.nodes.get(neighbor)['district'] = district
+                                graph.nodes[neighbor]['dis'] = district
                                 round_complete = True
                                 break
                     if round_complete: break # Quicker breaking
                 if round_complete: break # Quicker breaking
 
-            if len(graph_pool) == last_run:
-                for node in graph_pool:
-                    graph.remove_node(node)
-                break
+            # if len(graph_pool) == last_run:
+            #     for node in graph_pool:
+            #         graph.remove_node(node)
+            #     break
 
         bar.finish()
 
     else:
         for node in graph.nodes():
-            graph.nodes.get(node)['district'] = 1
+            graph.nodes[node]['dis'] = 0
     
     return graph
 
 if __name__ == "__main__":
-    g = networkx.read_gpickle("WA2.dnx")
+    g = networkx.read_gpickle("WA4.dnx")
+    for node in g.nodes:
+        g.nodes[node]['dis'] = -1
     g = seed_districts(g, 10)
-    networkx.write_gpickle(g, "WA3.dnx")
+    networkx.write_gpickle(g, "WA4.dnx")
 
