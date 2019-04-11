@@ -57,7 +57,6 @@ class Rakan(PyRakan):
             ys = [coord[1]
                   for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
             ax.fill(xs, ys, color=[
-
                 "#001f3f",  # Navy
                 "#3D9970",  # Olive
                 "#FF851B",  # Orange
