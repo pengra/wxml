@@ -44,7 +44,13 @@ class Rakan(PyRakan):
         """
         Observes 
         """
-        pass
+        mode = 'w'
+        if os.path.isfile(file_path):
+            mode = 'a'
+        with open(file_path, mode) as handle:
+            for line in self._move_history:
+                handle.write(','.join(line))
+        self._move_history = []
 
     """
     Show rakan's current state. Specify an image_path to save the image to file.

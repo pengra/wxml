@@ -265,7 +265,7 @@ cdef class PyRakan:
         moved = self.__crakan.step()
         if moved:
             self._moves += 1
-            self._move_history.append(self.precincts)
+            self._move_history.append([_.district for _ in self.precincts])
         return moved
 
     # == Statistics + Weights ==

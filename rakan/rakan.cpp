@@ -6847,13 +6847,18 @@ static PyObject *__pyx_pw_5rakan_7PyRakan_51step(PyObject *__pyx_v_self, CYTHON_
 
 static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan *__pyx_v_self) {
   bool __pyx_v_moved;
+  PyObject *__pyx_v__ = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   bool __pyx_t_1;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  Py_ssize_t __pyx_t_7;
+  PyObject *(*__pyx_t_8)(PyObject *);
+  int __pyx_t_9;
   __Pyx_RefNannySetupContext("step", 0);
 
   /* "rakan.pyx":265
@@ -6876,7 +6881,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan
  *         moved = self.__crakan.step()
  *         if moved:             # <<<<<<<<<<<<<<
  *             self._moves += 1
- *             self._move_history.append(self.precincts)
+ *             self._move_history.append([_.district for _ in self.precincts])
  */
   __pyx_t_2 = (__pyx_v_moved != 0);
   if (__pyx_t_2) {
@@ -6885,7 +6890,7 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan
  *         moved = self.__crakan.step()
  *         if moved:
  *             self._moves += 1             # <<<<<<<<<<<<<<
- *             self._move_history.append(self.precincts)
+ *             self._move_history.append([_.district for _ in self.precincts])
  *         return moved
  */
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_moves); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 267, __pyx_L1_error)
@@ -6899,15 +6904,65 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan
     /* "rakan.pyx":268
  *         if moved:
  *             self._moves += 1
- *             self._move_history.append(self.precincts)             # <<<<<<<<<<<<<<
+ *             self._move_history.append([_.district for _ in self.precincts])             # <<<<<<<<<<<<<<
  *         return moved
  * 
  */
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_move_history); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 268, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_precincts); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 268, __pyx_L1_error)
+    __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 268, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_Append(__pyx_t_4, __pyx_t_3); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(1, 268, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_precincts); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 268, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
+      __pyx_t_6 = __pyx_t_5; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
+      __pyx_t_8 = NULL;
+    } else {
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 268, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 268, __pyx_L1_error)
+    }
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_8)) {
+        if (likely(PyList_CheckExact(__pyx_t_6))) {
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 268, __pyx_L1_error)
+          #else
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 268, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_5);
+          #endif
+        } else {
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(1, 268, __pyx_L1_error)
+          #else
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 268, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_5);
+          #endif
+        }
+      } else {
+        __pyx_t_5 = __pyx_t_8(__pyx_t_6);
+        if (unlikely(!__pyx_t_5)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(1, 268, __pyx_L1_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_5);
+      }
+      __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_5);
+      __pyx_t_5 = 0;
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v__, __pyx_n_s_district); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 268, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_5))) __PYX_ERR(1, 268, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_9 = __Pyx_PyObject_Append(__pyx_t_4, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(1, 268, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
@@ -6916,13 +6971,13 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan
  *         moved = self.__crakan.step()
  *         if moved:             # <<<<<<<<<<<<<<
  *             self._moves += 1
- *             self._move_history.append(self.precincts)
+ *             self._move_history.append([_.district for _ in self.precincts])
  */
   }
 
   /* "rakan.pyx":269
  *             self._moves += 1
- *             self._move_history.append(self.precincts)
+ *             self._move_history.append([_.district for _ in self.precincts])
  *         return moved             # <<<<<<<<<<<<<<
  * 
  *     # == Statistics + Weights ==
@@ -6946,9 +7001,12 @@ static PyObject *__pyx_pf_5rakan_7PyRakan_50step(struct __pyx_obj_5rakan_PyRakan
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("rakan.PyRakan.step", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v__);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
