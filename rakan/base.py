@@ -257,3 +257,9 @@ class Rakan(PyRakan):
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
+
+    """
+    A statistical test to check two random precincts are in the same district
+    """
+    def precinct_in_same_district(self, rid1, rid2):
+        return self.precincts[rid1].district == self.precincts[rid2].district
