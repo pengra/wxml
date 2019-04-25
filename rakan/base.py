@@ -169,7 +169,48 @@ class Rakan(PyRakan):
         if include_json:
             with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
                 handle.write(json.dumps(self.move_history))
-
+                
+    def build_from_graph(self, nx_graph):
+        self.nx_graph = nx_graph
+        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
+        for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+            
+            self.add_precinct(
+                int(self.nx_graph.nodes[node]['dis']),
+                int(self.nx_graph.nodes[node]['pop']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
+            )
+        for (node1, node2) in self.nx_graph.edges:
+            self.set_neighbors(node1, node2)
+        self._iterations = self.nx_graph.graph.get('iterations', 0)
     """
     Build rakan from a .dnx file.
     """

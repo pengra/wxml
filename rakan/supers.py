@@ -57,7 +57,7 @@ def pick_move(possible_moves, sizes):
         if sizes[possible_moves[idx][1]] == min_possible_size:
             return possible_moves[idx]
 
-def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_dnx_path):
+def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_dnx_path, vis= False, supers_vis_path = 'supers.png'):
     r = Rakan()
 
     r.read_nx(base_dnx_path)
@@ -67,16 +67,13 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     groups = [supers for i in range(len(r))]
     sizes = [1 for i in range(supers)]
 
-    #new_rak = Rakan(len(r), supers+1)
-
-    #new_rak.nx_graph = r.nx_graph
 
     starting = get_n_precincts(supers, len(r))
     used = set()
     possible_moves = []
 
     for i in range(supers):
-        #r.move_precinct(starting[i], i)
+
         groups[starting[i]]=i
         used.add(starting[i])
         adj_graph.add_node(i)
@@ -85,6 +82,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
         adj_graph.nodes[i]['d_active'] = r.nx_graph.nodes[starting[i]]['d_active']
         adj_graph.nodes[i]['r_active'] = r.nx_graph.nodes[starting[i]]['r_active']
         adj_graph.nodes[i]['o_active'] = r.nx_graph.nodes[starting[i]]['o_active']
+
         for dist in r.get_neighbors(starting[i]).values():
             for p in dist:
                 if not p in used:
@@ -126,6 +124,8 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
             adj_graph.remove_edge(edges[0],i)
         else:
             precincts_to_keep.append(i)
+
+
     corrected_adj_graph = nx.Graph()
     for i in range(len(precincts_to_keep)):
         corrected_adj_graph.add_node(i)
@@ -133,10 +133,28 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
         corrected_adj_graph.nodes[i]['r_active'] = adj_graph.nodes[precincts_to_keep[i]]['r_active']
         corrected_adj_graph.nodes[i]['o_active'] = adj_graph.nodes[precincts_to_keep[i]]['o_active']
         corrected_adj_graph.nodes[i]['pop'] = adj_graph.nodes[precincts_to_keep[i]]['pop']
+        corrected_adj_graph.nodes[i]['name'] = 'super ' + str(i)
+        corrected_adj_graph.nodes[i]['vertexes'] = None
 
     for i in range(len(precincts_to_keep)):
         for node in adj_graph[precincts_to_keep[i]]:
             corrected_adj_graph.add_edge(i, precincts_to_keep.index(node))
+
+    if vis:
+        g =  r.nx_graph
+        g.graph['districts'] = supers
+        for i in range(len(g.nodes)):
+            g.nodes[i]['dis'] = precincts_to_keep.index(groups[i])
+           # print(g.nodes[i]['dis'])
+        r.build_from_graph(g)
+        r.show(supers_vis_path)
+        g =  r.nx_graph
+        g.graph['districts'] = supers
+        for i in range(len(g.nodes)):
+            g.nodes[i]['dis'] = groups[i]
+           # print(g.nodes[i]['dis'])
+        r.build_from_graph(g)
+        r.show('uncorrected.png')
     # create new districts
     starters = []
     open_nodes = []
@@ -157,8 +175,6 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
 
 
     while len(open_nodes) > 0:
-
-        #move = open_nodes[np.random.randint(0, len(open_nodes))]
         move = pick_move(open_nodes, dist_sizes)
         open_nodes=remove_possible_move(open_nodes, move)
 
@@ -177,12 +193,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
         filewriter.writerow([i, precincts_to_keep.index(groups[i])])
 
     s_map.close()
-    #for i in range(len(r)):
-    #    dist = groups[i]
-    #    if dist != None:
-    #        new_rak.add_precinct(dist)
-    #    else:
-    #        new_rak.add_precinct(9)
+
 
 
     print("Mean size")
