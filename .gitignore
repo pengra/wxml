@@ -3,7 +3,6 @@
 site/
 *.pyc
 *.rnx
-*.dnx
 *.snx
 secrets*.*
 *.html
@@ -20,3 +19,5 @@ build/*
 *.txt
 *~tmp*
 ~tmp
+.idea
+.idea/*
