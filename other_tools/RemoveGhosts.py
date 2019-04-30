@@ -99,18 +99,29 @@ for i in range(len(no_shp)-1):
     del no_shp[i]['pres_16_ri']
     del no_shp[i]['region_nam']
 
+print("size before: ", len(no_shp))
 #Delete any precinct with zero votes from ghost
 for i in range(len(no_shp) - 1):
     if(no_shp[i]['pres_16_re'] == None or no_shp[i]['pres_16_re'] == 0):
-        del no_shp[i]
+        #del no_shp[i]
+        no_shp.pop(i)
 
+
+print("size after: ", len(no_shp))
 #Trying to find a matching county to merge non-shp precincts to 
 '''
 throws errors when i == 5, as 5 was a deleted precinct
 Consider using pop?
 '''
-
+'''
 for i in range(len(no_shp) -1):
     for j in range(len(big_dct2)-1):
         if(no_shp[i]['COUNTY'] == big_dct2[j]['COUNTY'] or no_shp[i]['county_nam'] == big_dct2[j]['county_nam']):
             print(i, j)
+'''
+for i in range(len(no_shp) -1):
+    for j in range(len(big_dct2)-1):
+        #if the county in no_shp = 
+        if(no_shp[i]['COUNTY'] == big_dct2[j]['COUNTY'] or no_shp[i]['county_nam'] == big_dct2[j]['county_nam']):
+            big_dct2[j]['fid_to_merge'] = no_shp[i]['fid']
+            big_dct2[j]['pres_16_re_merged'] = big_dct2[j]['pres_16_re'] + no_shp[i]['pres_16_re']
