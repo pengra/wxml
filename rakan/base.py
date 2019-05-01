@@ -1,5 +1,9 @@
-from rakan import PyRakan
-from servertools import Event, PENGRA_ENDPOINT
+try:
+    from rakan.rakan import PyRakan
+    JUPYTER_MODE = True
+except ImportError:
+    from rakan import PyRakan
+    JUPYTER_MODE = False
 
 import asyncio
 import websockets
@@ -19,75 +23,15 @@ import json
 import time
 import os
 
-class BaseRakan(PyRakan):
-    """
-    Basic Rakan format. Use as a template.
-    Use for production code.
-    """
-    nx_graph = None # the graph object
-    max_size = 10000 # 10k logs should be a sizeable bite for the server
+
+class Rakan(PyRakan):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._id = None
-        self._move_history = [Event('seed', self)] # the set of moves unreported to xayah
-
-    def step(self):
-        if super().step():
-            self._move_history.append(Event('move', self))
-        else:
-            self._move_history.append(Event('fail', self))
-        
-        if len(self._move_history) >= self.max_size:
-            self.notify_server()
-
-    def notify_server(self):
-        copy = [_.json for _ in self._move_history]
-        self._move_history = [Event('seed', self)]
-        # If haven't been reported yet, request run id
-        if self._id is None:
-            # Lock current thread until complete.
-            response = requests.post(
-                PENGRA_ENDPOINT, data={
-                    'mode': 'createrun',
-                    'code': os.getenv('XAYAH_CODE', 'default_code'),
-                    'state': self.nx_graph.graph['fips'],
-                    'districts': self.nx_graph.graph['districts'],
-                }
-            )
-            self._id = response.json()['id']
-        
-        # New request thread
-        threading.Thread(target=lambda: requests.post(
-            PENGRA_ENDPOINT, data={
-                'mode': 'bulkevent',
-                'code': os.getenv('XAYAH_CODE', 'default_code'),
-                'run': self._id,
-            },
-            files={
-                'file': ('events.pk3', pickle.dumps(copy))
-            }
-        ).json()).start()
-
-        
-
-    @property
-    def ALPHA(self):
-        return self._ALPHA
-
-    @property
-    def BETA(self):
-        return self._BETA
-
-    @ALPHA.setter
-    def ALPHA(self, value: float):
-        self._ALPHA = value
-        self._move_history.append(Event("weight", self))
-
-    @BETA.setter
-    def BETA(self, value: float):
-        self._BETA = value
-        self._move_history.append(Event("weight", self))
+        self.nx_graph = None
+        self.ALPHA = 0
+        self.BETA = 0
+        self.move_history = []
 
     """
     Save the current rakan state to a file.
@@ -99,36 +43,46 @@ class BaseRakan(PyRakan):
         self.nx_graph.graph['iterations'] = self.iterations
         networkx.write_gpickle(self.nx_graph, nx_path)
 
+    def export_csv(self, file_path="save.csv"):
+        """
+        Observes
+        """
+        pass
+
     """
-    Save the current rakan state to a image.
+    Show rakan's current state. Specify an image_path to save the image to file.
     """
-    def image(self, image_path="img.png"):
+    def show(self, image_path=None):
         fig, ax = plt.subplots(1)
-        bar = IncrementalBar("Creating Image", max=len(self.precincts))
         for precinct in self.precincts:
-            xs = [coord[0] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
-            ys = [coord[1] for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
+            xs = [coord[0]
+                  for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
+            ys = [coord[1]
+                  for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
             ax.fill(xs, ys, color=[
-                "#001f3f", # Navy
-                "#3D9970", # Olive
-                "#FF851B", # Orange
-                "#85144b", # Maroon
-                "#AAAAAA", # Silver
-                "#0074D9", # Blue
-                "#2ECC40", # Green
-                "#FF4136", # Red
-                "#F012BE", # Fuchsia
-                "#111111", # Black
-                "#7FDBFF", # Aqua
-                "#FFDC00", # Yellow
-                "#B10DC9", # Purple
-                "#39CCCC", # Teal
-                "#01FF70", # Lime
-            ][precinct.district], linewidth=0.1)
-            bar.next()
-        plt.savefig(image_path, dpi=900)
-        plt.close(fig)
-        bar.finish()
+
+                "#001f3f",  # Navy
+                "#3D9970",  # Olive
+                "#FF851B",  # Orange
+                "#85144b",  # Maroon
+                "#AAAAAA",  # Silver
+                "#0074D9",  # Blue
+                "#2ECC40",  # Green
+                "#FF4136",  # Red
+                "#F012BE",  # Fuchsia
+                "#111111",  # Black
+                "#7FDBFF",  # Aqua
+                "#FFDC00",  # Yellow
+                "#B10DC9",  # Purple
+                "#39CCCC",  # Teal
+                "#01FF70",  # Lime
+            ][precinct.district % 15], linewidth=0.1)
+
+        if image_path is None:
+            return plt.show()
+        else:
+            plt.savefig(image_path, dpi=900)
+            plt.close(fig)
 
 
     """
@@ -159,7 +113,7 @@ class BaseRakan(PyRakan):
                 }
             })
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
-        
+
         geojson = json.dumps({
             "type": "FeatureCollection",
             "features": features
@@ -214,15 +168,49 @@ class BaseRakan(PyRakan):
                 ))
         if include_json:
             with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
-                handle.write(json.dumps([_.json for _ in self.move_history]))
-
-    @property
-    def move_history(self):
-        """
-        Read only accessor to latest moves
-        """
-        return self._move_history
-
+                handle.write(json.dumps(self.move_history))
+                
+    def build_from_graph(self, nx_graph):
+        self.nx_graph = nx_graph
+        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
+        for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+            
+            self.add_precinct(
+                int(self.nx_graph.nodes[node]['dis']),
+                int(self.nx_graph.nodes[node]['pop']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
+            )
+        for (node1, node2) in self.nx_graph.edges:
+            self.set_neighbors(node1, node2)
+        self._iterations = self.nx_graph.graph.get('iterations', 0)
     """
     Build rakan from a .dnx file.
     """
@@ -230,18 +218,40 @@ class BaseRakan(PyRakan):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
         for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+
             self.add_precinct(
-                self.nx_graph.nodes[node]['dis'], 
-                self.nx_graph.nodes[node]['pop'],
-                self.nx_graph.nodes[node]['d_active'],
-                self.nx_graph.nodes[node]['r_active'],
-                self.nx_graph.nodes[node]['o_active'],
+                int(self.nx_graph.nodes[node]['dis']),
+                int(self.nx_graph.nodes[node]['pop']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
             )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
-        self._move_history = [Event('seed', self)]
-
-    def walk(self, *args, **kwargs):
-        raise NotImplementedError("Not implemented by user!")
-

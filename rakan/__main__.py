@@ -1,6 +1,4 @@
-from base import BaseRakan
-from servertools import Event
-from servertools import save_current_scores
+from base import Rakan as BaseRakan
 from progress.bar import IncrementalBar
 
 import sys
@@ -13,11 +11,12 @@ import http.server
 import random as rand
 from decimal import Decimal
 from sys import getsizeof
+from independence_tester import test
 
 try:
     nx_path = sys.argv[1]
 except:
-    nx_path = "iowa.dnx"
+    nx_path = "./dnx/WA.dnx"
 
 class Rakan(BaseRakan):
 
@@ -25,32 +24,69 @@ class Rakan(BaseRakan):
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
     """
     def walk(self):
-        five_billion = 5000000000 // 100 # Shortened due to crash
-        ten_thousand = 10000
-        for i, alpha in list(enumerate([4e-10, 5e-10, 6e-10, 7e-10, 8e-10]))[::-1]:
-            for j, beta in [(4, 0.08), (5, 0.008)]:
-                self.ALPHA = Decimal(alpha)
-                self.BETA = Decimal(beta)
-                bar = IncrementalBar("Running Version alpha=" + str(alpha) + ", beta=" + str(beta), max=five_billion)
-                for k in range(five_billion):
-                    self.step()
-                    if k % ten_thousand == 0:
-                        self.report("output/iowa." + str(i) + "." + str(j) + "." + str(k))
-                        self.write_array("output/iowa_report." + str(i) + "." + str(j) + ".txt")
-                    bar.next()
-                bar.finish()
+        one_million = 10 ** 6
+        random_independence = 148
+        random_maps = 10
 
-    """
-    A statistical test to check two random precincts are in the same district
-    """
-    def precinct_in_same_district(self, rid1, rid2):
-        return self.precincts[rid1].district == self.precincts[rid2].district
+        self.ALPHA = Decimal(0)
+        self.BETA = Decimal(0)
+
+        # Get some distance from the seed map
+        for i in range(random_independence * random_maps):
+            self.step()
+            if i % random_independence == 0:
+                self.show("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        # Phase 1: Gets us to ~74% from ideal
+        # Score converges after ~30 iterations
+
+        phase1_independence = 1177
+        phase1_iterations = 10
+
+        self.ALPHA = Decimal(1e-10)
+        self.BETA = Decimal(0.2)
+
+        for i in range(phase1_independence * phase1_iterations):
+            self.step()
+            if i % phase1_independence == 0:
+                self.show("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        # Phase 2: Gets us to ~13-30% from ideal
+        # Score converges after ~150 iterations
+
+        phase2_independence = 2745
+        phase2_iterations = 10
+
+        self.ALPHA = Decimal(1e-9)
+        self.BETA = Decimal(0.2)
+
+        for i in range(phase2_independence * phase2_iterations):
+            self.step()
+            if i % phase2_independence == 0:
+                self.show("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        # Phase 3: Gets us ~0.5-3% from ideal
+        # Score converges after <2745 iterations
+
+        phase3_independence = 3295
+        phase3_iterations = 30
+
+        self.ALPHA = Decimal(5e-8)
+        self.BETA = Decimal(0.3)
+
+        for i in range(phase2_independence * phase2_iterations):
+            self.step()
+            if i % phase2_independence == 0:
+                self.show("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
+
+        # RINSE REPEAT
+
 
 """
 Example code to build a Rakan instance.
 Read a networkx graph and sends it off to Xayah upon its connection.
 """
-def build_rakan(nx_path):
+def build_rakan(nx_path, xyh_path="save.xyh"):
     r = Rakan(0, 0)
     r.read_nx(nx_path)
     return r
@@ -68,8 +104,6 @@ q
     Run that many iterations
 w
     Call user defined rakan.walk()
-p
-    Produce a server that Xayah can communicate to. (Already running)
 e <name>
     Export the current state as geojson int <name>.geojson.
 r <name>
@@ -81,15 +115,43 @@ pdb
 a <value>
     Set a new Alpha value (population weight)
 b <value>
-    Set a new Beta value (compactness weight)
+    Set a new Beta value (compactnpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
 l <path>
     Load a new .dnx file
 i <path>
-    Spawn a thread that saves the current map as an image to the path specified.
+    Spawn a thread that saves the populations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_populationge to the path specified.
 pdb
     To enter PDB mode.
 m
-    To check memory consumption of Rakan
+    To check memory consumption ofpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+t <file_name> <rid1 (optional)> <rpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+    To check independence of the wpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
+x
+    Save previous walk for loadingpopulations = [_.population for _ in rakan.districts]
+                    total_population = sum(populations)
+                    average_population = total_population / len(populations)
+                    absolute_population_deltas = [abs(_ - average_population) for _ in populations]
+                    absolute_population_differences = sum(absolute_population_deltas) / average_population
 """
     server = None
 
@@ -103,13 +165,9 @@ m
         # debug
         if response == 'pdb':
             import pdb; pdb.set_trace()
-        elif response == 'p':
-            if server is None:
-                server = threading.Thread(target=(lambda: save_current_scores(rakan)))
-                server.start()
         # image
         elif response.startswith('i '):
-            image = threading.Thread(target=lambda: rakan.image(image_path=response.split(' ', 1)[1] + '.png'))
+            image = threading.Thread(target=lambda: rakan.show(image_path=response.split(' ', 1)[1] + '.png'))
             image.start()
             print("Image thread started")
         # quit
@@ -147,7 +205,6 @@ m
             print("C++ Representation Object: {:.2f} KB".format(getsizeof(rakan) / (1024)))
             print("Python District Representation: {:.2f} KB".format(getsizeof(rakan.districts) / (1024)))
             print("Python Precinct Representation: {:.2f} KB".format(getsizeof(rakan.precincts) / (1024)))
-            print("Move History: {:.2f} MB".format(sum([getsizeof(_) for _ in rakan._move_history]) / (1024 ** 2)))
         # run
         elif response.isnumeric():
             target = int(response)
@@ -190,9 +247,6 @@ m
                     absolute_node_deltas = [abs(_ - average_nodes) for _ in nodes]
                     absolute_node_differences = sum(absolute_node_deltas) / average_nodes
                     print("Precinct difference from ideal: {:.2f}%".format(absolute_node_differences * 100))
-
-                    history_size = max(min(len(rakan._move_history), target), 1)
-                    print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_.type == 'fail' for _ in rakan._move_history][-history_size:]) * 100) / history_size))
             else:
                 print("Score: ", rakan.score())
                 print("Pop Score: ", rakan.population_score())
@@ -206,14 +260,17 @@ m
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
-                history_size = len(rakan._move_history)
-                print("Rejection rate of last {} moves: {:.2f}%".format(history_size, (sum([_ == False for _ in rakan._move_history]) * 100) / history_size))
         # walk
         elif response == 'w':
             start = time.time()
             rakan.walk()
             end = time.time()
             print("Walk time:", end - start, "seconds")
+        elif response == 'x':
+            print('Xayah Iterations:', rakan.iterations)
+            print('Rakan Iterations:', rakan.iterations)
+            print("Xayah save behind by {} iterations".format(len(rakan._events)))
+            threading.Thread(target=rakan.save()).start()
         # new weights
         elif response.startswith('a'):
             if len(response.split(' ')) == 1:
@@ -251,12 +308,22 @@ m
             print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
             print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
             print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
+        elif response.startswith('t '):
+            options = response.split(' ', 3) # t (file name) (rid1) (rid2)
+            result = False
+            if len(options) == 2:
+                result = test(options[1])
+            elif len(options) == 4:
+                result = test(options[1], options[2], options[3])
+            else:
+                print("Invalid set of inputs")
+                continue
+
+            if result:
+                print("The sequence from the file {} is independent".format(options[1]))
+            else:
+                print("The sequence from the file {} is NOT independent".format(options[1]))
         # ??
-        elif response == 't':
-            rand.seed(time())
-            rid1, rid2 = rand.sample(range(0, len(rakan.precincts)), 2)
-            result = rakan.precinct_in_same_district(rid1, rid2)
-            print("Tested precincts {} and {}. Result: {}".format(rid1, rid2, result))
         else:
             print("Unknown Command")
 

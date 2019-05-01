@@ -10,26 +10,26 @@ from libcpp.pair cimport pair as cpair
 cdef extern from "dynamicboundary.cpp": pass
 cdef extern from "graph.cpp": pass
 
-cdef extern from "dynamicboundary.h" namespace "rakan": 
+cdef extern from "dynamicboundary.h" namespace "rakan":
     # THIS IS FOR DEBUGGING ONLY.
     # DO NOT USE UNLESS IF YOU KNOW WHAT YOU'RE DOING
-    cdef cppclass DynamicBoundary: 
+    cdef cppclass DynamicBoundary:
         cvector[cpair[clist[int], clist[int]]] _tree
-        cpair[int, int] get_district_edge(int index) except +;
-        int _d_edges;
-        int _s_edges;
-        int _nodes;
-        
+        cpair[int, int] get_district_edge(int index) except +
+        int _d_edges
+        int _s_edges
+        int _nodes
+
         # Construction
-        void add_node(int) except +;
-        void add_edge(int, int, bool) except +;
+        void add_node(int) except +
+        void add_edge(int, int, bool) except +
 
-        cpair[int, int] get_random_district_edge() except +;
-        cpair[int, int] get_district_edge(int) except +;
-        void toggle_edge(int, int) except +;
+        cpair[int, int] get_random_district_edge() except +
+        cpair[int, int] get_district_edge(int) except +
+        void toggle_edge(int, int) except +
 
-        int edge_count() except +;
-        int node_count() except +;
+        int edge_count() except +
+        int node_count() except +
 
 cdef extern from "graph.h" namespace "rakan":
     cdef cppclass Precinct:
@@ -44,7 +44,7 @@ cdef extern from "graph.h" namespace "rakan":
         int republican_votes
         int other_votes
         clist[Precinct*] neighbors
-        
+
     cdef cppclass District:
         int rid
         int district
@@ -55,42 +55,41 @@ cdef extern from "graph.h" namespace "rakan":
         int other_votes
         District() except +
         clist[Precinct*] precincts
-		
+
     cdef cppclass Rakan:
         Rakan() except +
         Rakan(int size, int district) except +
 
         # == API for debugging in python ==
-        cvector[District*] districts() except +;
-        cvector[Precinct*] atlas() except +;
-        DynamicBoundary edges() except +;
+        cvector[District*] districts() except +
+        cvector[Precinct*] atlas() except +
+        DynamicBoundary edges() except +
 
         # == Statistics ==
-        long iterations;
+        long iterations
 
         # == Weights ==
-        double alpha;
-        double beta;
+        double alpha
+        double beta
 
         # == Last Move ==
-        cpair[int, int] _last_move;
+        cvector[int] _last_move
 
         # == API for myself ==
         clist[int] _unchecked_changes
-        clist[int] _checked_changes
 
         # == API for the mathematicains ==
 
         # Construction of Rakan
         int add_precinct(int district, int population, int d_pop, int r_pop, int o_pop) except +
         void set_neighbors(int rid1, int rid2) except +
-        
+
         # Useful API for walking
         cmap[int, clist[int]] get_neighbors(int rid) except + # given an rid, get a map of {districts: [rids]}
-        cmap[int, clist[int]] get_diff_district_neighbors(int rid) except + # given an rid, get a map of {different districts: [rids]} 
+        cmap[int, clist[int]] get_diff_district_neighbors(int rid) except + # given an rid, get a map of {different districts: [rids]}
         cbool are_connected(int rid1, int rid2, int black_listed_rid) except + # A dual breadth first serach to determine connectivity via the same district will not use the black_listed rid as part of path
         cbool is_valid() except + # is the graph still valid?
-        cpair[int, int] propose_random_move() except + # propose a random move in the form of rid, new district
+        cvector[int] propose_random_move() except + # propose a random move in the form of rid, new district
         void move_precinct(int rid, int district) except + # move the specified rid to the new district
 
         # scoring
@@ -101,10 +100,13 @@ cdef extern from "graph.h" namespace "rakan":
         int total_boundary_length() except +
         int total_boundary_length(int rid, int district) except +
         int democrat_seats() except +
+        double democrat_proportion(int district) except +
         int democrat_seats(int rid, int district) except +
         int republican_seats() except +
+        double republican_proportion(int district) except +
         int republican_seats(int rid, int district) except +
         int other_seats() except +
+        double other_proportion(int district) except +
         int other_seats(int rid, int district) except +
         double score() except +
         double score(int rid, int district) except +

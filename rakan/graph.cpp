@@ -206,7 +206,7 @@ std::map<int, std::list<int>> Rakan::get_diff_district_neighbors(int rid)
 
 // are the two precincts connected via the same district path?
 // Will not use the black_listed_rid as part of path.
-bool Rakan::are_connected(int rid1, int rid2, int black_listed_rid = -1, int kill_multiplier = 1)
+bool Rakan::are_connected(int rid1, int rid2, int black_listed_rid = -1, int kill_multiplier = 10)
 {
     // This works by doing a double breadth first search
     ATLAS_RID_CHECK(rid1);
@@ -325,12 +325,14 @@ bool Rakan::is_valid()
 // all edges involving two different districted precincts are equally likely to be proposed
 // Move proposed as pair integers, where the first integer is the rid
 // and the second integer is the district number to convert it to.
-std::pair<int, int> Rakan::propose_random_move()
+std::vector<int> Rakan::propose_random_move()
 {
     // Get a random pair of districts that are adjacent but in different districts
     std::pair<int, int> random_rids = this->_edges.get_random_district_edge();
     // Get the district of the second value and propose to move the first precinct into that district.
-    return std::pair<int, int>(random_rids.first, this->_atlas[random_rids.second]->district);
+    std::vector<int> result(3);
+    result = {random_rids.first, this->_atlas[random_rids.first]->district, this->_atlas[random_rids.second]->district};
+    return result;
 }
 
 // Check that the district isn't being deleted.
@@ -686,6 +688,17 @@ int Rakan::democrat_seats()
     return seats;
 }
 
+
+// Get the proportion of democrat votes in a district
+double Rakan::democrat_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+
+    return ((double) d_votes)/(d_votes+r_votes+o_votes);
+}
+
 // Give the number of democratic seats in a simulated election
 // after a proposed move
 int Rakan::democrat_seats(int rid, int district)
@@ -731,6 +744,16 @@ int Rakan::republican_seats()
         }
     }
     return seats;
+}
+
+// Get the proportion of democrat votes in a district
+double Rakan::republican_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+
+    return ((double) r_votes)/(d_votes+r_votes+o_votes);
 }
 
 // Give the number of republican seats in a simulated election
@@ -780,6 +803,16 @@ int Rakan::other_seats()
     return seats;
 }
 
+// Get the proportion of other votes in a district
+double Rakan::other_proportion(int district)
+{
+    int d_votes = this->_districts[district]->democrat_votes;
+    int r_votes = this->_districts[district]->republican_votes;
+    int o_votes = this->_districts[district]->other_votes;
+
+    return ((double) o_votes)/(d_votes+r_votes+o_votes);
+}
+
 // Give the number of other seats in a simulated election
 // after a proposed move
 int Rakan::other_seats(int rid, int district)
@@ -818,14 +851,16 @@ int Rakan::other_seats(int rid, int district)
 // Returns true when a change in the map has been made
 bool Rakan::step()
 {
-    std::pair<int, int> move = this->propose_random_move();
+    std::vector<int> move = this->propose_random_move();
+    int rid = move.at(0);
+    int new_district = move.at(2);
     try
     {
         // Sometimes propose_random_move severs districts, and move_precinct will catch that.
-        if (this->distribution(this->generator) <= (this->score() / this->score(move.first, move.second)))
+        if (this->distribution(this->generator) <= (this->score_ratio(rid, new_district)))
         {
-            this->move_precinct(move.first, move.second);
-            this->_last_move = std::pair<int, int>(move.first, move.second);
+            this->move_precinct(rid, new_district);
+            this->_last_move = std::vector<int>(move);
             this->iterations++;
             return true;
         }
@@ -857,6 +892,14 @@ double Rakan::score(int rid, int district)
     return std::exp(
         (this->alpha * this->population_score(rid, district)) +
         (this->beta * this->compactness_score(rid, district)));
+}
+
+double Rakan::score_ratio(int rid, int district)
+{
+    return std::exp(
+        (this->alpha * (this->population_score() - this->population_score(rid, district))) +
+        (this->beta * (this->compactness_score() - this->compactness_score(rid, district)))
+    );
 }
 
 } // namespace rakan
