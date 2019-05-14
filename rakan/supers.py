@@ -17,6 +17,7 @@ def translate(source_dnx_path, dictionary_path, base_dnx_path, destination_dnx_p
     csv_reader = csv.reader(s_map, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
     adj_graph = r.nx_graph
+    
     for row in csv_reader:
         if row[0] != 'precinct':
             adj_graph.nodes[int(row[0])]['dis'] = supers_graph.nodes[int(row[1])]['dis']
@@ -27,8 +28,11 @@ def translate(source_dnx_path, dictionary_path, base_dnx_path, destination_dnx_p
 def get_n_precincts(n, m):
     pos = [i for i in range(m)]
     vals = []
+    
     for i in range(n):
-        vals.append(pos.pop(random.randint(0,len(pos)-1)))
+        idx = pos.pop(random.randint(0,len(pos)-1))
+        vals.append(idx)
+    
     return vals
 
 def remove_possible_move(possible_moves, move):
@@ -39,18 +43,35 @@ def remove_possible_move(possible_moves, move):
     return new_possible_moves
 
 def prim_change(move, r, groups):
-    prim =0
+    prim = 0
     for dist in r.get_neighbors(move[0]).values():
         for p in dist:
             if groups[p] != move[1]:
                 prim +=1
     return prim
-                
-def pick_move(possible_moves, sizes):
+
+def get_boarders(possible_moves, adj_graph, groups):
+    boarders = {}
+    for m in possible_moves:
+        b = 0
+        for p in adj_graph[m[0]]:
+            if groups[p] != m[1]:
+                b += 1
+        boarders[m[0]] = b
+    return boarders 
+
+def pick_move(possible_moves, sizes, boarders = None):
     #idx = np.random.randint(0,len(possible_moves))
     min_possible_size = 1000000000000
     for move in possible_moves:
-        min_possible_size = min(min_possible_size, sizes[move[1]])
+        if boarders != None:
+            s = boarders[move[0]]
+        else:
+            s = sizes[move[1]]
+        if  min_possible_size > s:
+            min_possible_size = s
+            best_move = move
+    return best_move
     idxs = [i for i in range(len(possible_moves))]
     np.random.shuffle(idxs)
     for idx in idxs:
@@ -65,49 +86,56 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     adj_graph = nx.Graph()
     
     groups = [supers for i in range(len(r))]
-    sizes = [1 for i in range(supers)]
+    sizes = [0 for i in range(supers)]
     
     
     starting = get_n_precincts(supers, len(r))
+    
     used = set()
     possible_moves = []
     
     for i in range(supers):
-        
+         adj_graph.add_node(i)
+    
+    for i in range(supers):
         groups[starting[i]]=i
         used.add(starting[i])
-        adj_graph.add_node(i)
         adj_graph.nodes[i]['dis'] = r.nx_graph.nodes[starting[i]]['dis']
         adj_graph.nodes[i]['pop'] = r.nx_graph.nodes[starting[i]]['pop']
         adj_graph.nodes[i]['d_active'] = r.nx_graph.nodes[starting[i]]['d_active']
         adj_graph.nodes[i]['r_active'] = r.nx_graph.nodes[starting[i]]['r_active']
         adj_graph.nodes[i]['o_active'] = r.nx_graph.nodes[starting[i]]['o_active']
-        
-        for dist in r.get_neighbors(starting[i]).values():
-            for p in dist:
-                if not p in used:
-                    possible_moves.append([p,i])
-                else:
-                     adj_graph.add_edge(i, groups[p])
+        possible_moves = remove_possible_move(possible_moves, [starting[i],0])
+        sizes[i] += r.nx_graph.nodes[starting[i]]['pop']
+        for p in r.nx_graph[starting[i]]:
+            if not p in used:
+                possible_moves.append([p,i])
+            else:
+                adj_graph.add_edge(i, groups[p])
+                adj_graph.edges[i, groups[p]]['weight'] = 1
     
     while len(possible_moves) > 0:
-        move = pick_move(possible_moves, sizes)
+        boarders = get_boarders(possible_moves, r.nx_graph, groups)
+        move = pick_move(possible_moves, sizes, boarders)
         used.add(move[0])
         groups[move[0]] = move[1]
         adj_graph.nodes[move[1]]['pop'] += r.nx_graph.nodes[move[0]]['pop']
         adj_graph.nodes[move[1]]['d_active'] += r.nx_graph.nodes[move[0]]['d_active']
         adj_graph.nodes[move[1]]['r_active'] += r.nx_graph.nodes[move[0]]['r_active']
         adj_graph.nodes[move[1]]['o_active'] += r.nx_graph.nodes[move[0]]['o_active']
-        sizes[move[1]] += 1
+        sizes[move[1]] += r.nx_graph.nodes[move[0]]['pop']
         possible_moves = remove_possible_move(possible_moves, move)
-        for dist in r.get_neighbors(move[0]).values():   
-            for p in dist:
-                if not p in used:
-                    possible_moves.append([p,move[1]])
-                else:
-                    if move[1] != groups[p]:
+        for p in r.nx_graph[move[0]]:
+            if not p in used:
+                possible_moves.append([p,move[1]])
+            else:
+                if move[1] != groups[p]:
+                    if adj_graph.has_edge(move[1], groups[p]):
+                        adj_graph.edges[move[1], groups[p]]['weight'] += 1
+                    else:
                         adj_graph.add_edge(move[1], groups[p])
-    
+                        adj_graph.edges[move[1], groups[p]]['weight'] = 1
+    ''''
     precincts_to_keep = []
     for i in range(supers):
         edges = [k for k in adj_graph[i].keys()]
@@ -139,8 +167,11 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     for i in range(len(precincts_to_keep)):
         for node in adj_graph[precincts_to_keep[i]]:
             corrected_adj_graph.add_edge(i, precincts_to_keep.index(node))
-            
+            corrected_adj_graph.edges[i, precincts_to_keep.index(node)]['weight'] = adj_graph.edges[node, precincts_to_keep[i]]['weight']
+    '''
+    corrected_adj_graph = adj_graph
     if vis:
+        '''
         g =  r.nx_graph
         g.graph['districts'] = supers
         for i in range(len(g.nodes)):
@@ -148,6 +179,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
            # print(g.nodes[i]['dis'])
         r.build_from_graph(g)
         r.show(supers_vis_path)
+        '''
         g =  r.nx_graph
         g.graph['districts'] = supers
         for i in range(len(g.nodes)):
@@ -155,6 +187,9 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
            # print(g.nodes[i]['dis'])
         r.build_from_graph(g)
         r.show('uncorrected.png')
+        
+    corrected_adj_graph = adj_graph
+        
     # create new districts
     starters = []
     open_nodes = []
@@ -163,7 +198,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     for i in range(districts):
         strt = np.random.randint(0,len(corrected_adj_graph))
         while strt in starters or len(corrected_adj_graph[strt]) == 0:
-            strt = np.random.randint(0,supers)
+            strt = np.random.randint(0,len(corrected_adj_graph))
         closed_nodes.append(strt)
         starters.append(strt)
     
@@ -190,7 +225,7 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
     filewriter.writerow(['precinct','superprecinct'])
     for i in range(len(groups)):
-        filewriter.writerow([i, precincts_to_keep.index(groups[i])])
+        filewriter.writerow([i, groups[i]])
         
     s_map.close()
     
@@ -204,6 +239,6 @@ def build_supers(base_dnx_path, supers, districts, dictionary_path, destination_
     print(max(sizes))
     print("Min:")
     print(min(sizes))
-    corrected_adj_graph.graph['districts'] = r.nx_graph.graph['districts']
+    corrected_adj_graph.graph['districts'] = districts
     
     nx.write_gpickle(corrected_adj_graph, destination_dnx_path)
