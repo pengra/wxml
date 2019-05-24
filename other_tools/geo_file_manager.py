@@ -56,7 +56,7 @@ def shape_to_dnx(input_file="ohio/precincts_results.shp", output_file="ohio.dnx"
         bar.next()
 
     nx.write_gpickle(dnx, DNX_PATH + output_file)
-    print("\nfinished!")
+    print("\nfinished converting shp to dnx!")
 
 
 def visualize_dnx(file_name="ohio.dnx", connections=True, borders=True):
@@ -64,7 +64,6 @@ def visualize_dnx(file_name="ohio.dnx", connections=True, borders=True):
     print("reading in the gpickle...")
     G = nx.read_gpickle(DNX_PATH + file_name)
     pos = nx.get_node_attributes(G, 'vertexes')
-    print(G.edges)
 
     # Remove ghost precincts and find centers for the ones aren't ghosts
     precinct_centers = {}
@@ -100,12 +99,11 @@ def visualize_dnx(file_name="ohio.dnx", connections=True, borders=True):
     plt.savefig(IMG_PATH + file_name.replace(".dnx", ".png"));
 
     warnings.simplefilter("default")
-    print("finished!")
+    print("finished visualizing ", file_name, "!")
 
 # cannot visualize node connections, because shapefiles do not have the adjacency info
 def visuzlize_shp(file_name="ohio/precincts_results"):
     warnings.simplefilter("ignore")
-
     print("reading in shape files...")
     sf = shp.Reader(SHP_PATH + file_name)
 
@@ -128,6 +126,7 @@ def visuzlize_shp(file_name="ohio/precincts_results"):
     plt.savefig(IMG_PATH + file_name.split("/")[-1] +".png");
 
     warnings.simplefilter("default")
-    print("finished!")
+    print("finished visualizing ", file_name, "!")
 
+shape_to_dnx()
 visualize_dnx()

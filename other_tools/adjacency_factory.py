@@ -13,7 +13,6 @@ def get(shapefile_obj, id):
 
 def summarize_precincts_info(sf):
     result = {}
-    #limits = [math.inf, -math.inf, math.inf, -math.inf]
     for i in range(len(sf)):
         x = 0
         y = 0
@@ -21,7 +20,6 @@ def summarize_precincts_info(sf):
         if len(points) == 0:
             continue
         for p in points:
-            #limits = [min(limits[0], p[0]), max(limits[1], p[0]), min(limits[2], p[1]), max(limits[3], p[1])]
             x += p[0]
             y += p[1]
         x /= len(points)
@@ -46,8 +44,7 @@ def get_close_precincts(sf, summary, id):
         precinct_queue = precinct_queue + precinct_dict[k]
     return precinct_queue[:300]
 
-#def get_adjacency_list(file_name, outfile, threshold=10, fid_field=None):
-def get_adjacency_list(file_name, threshold=10, fid_field=None):
+def get_adjacency_list(file_name, threshold=10):
     sf = shapefile.Reader(file_name).shapes()
     summary = summarize_precincts_info(sf)
 
@@ -57,57 +54,33 @@ def get_adjacency_list(file_name, threshold=10, fid_field=None):
     layer2 = ds2[0]
 
     all_edges = set()
-    black_list = set()
-    #outfh = open(outfile, 'w')
     target = len(layer)
-    bar = IncrementalBar("creating adjacency list...".format(target), max=target)
+    bar = IncrementalBar("creating adjacency list...", max=target)
     for i, feat in enumerate(layer):
-        if fid_field == None:
-            fid = feat.fid
-        else:
-            fid = feat[fid_field]
+        bar.next()
+        # If polygon have no points, skip
+        if i not in summary.keys():
+            continue
+        fid = feat.fid
 
-        try:
-            #geom_orig = feat.geom
-            geom_buf = feat.geom.geos.buffer(threshold)
-        except:
-            _temp = 1 # do nothing
-
+        geom_buf = feat.geom.geos.buffer(threshold)
         close_ones = get_close_precincts(sf, summary, feat.fid)
         layer2.spatial_filter = geom_buf.extent
-        #new_edges = set()
-        #for feat2 in layer2:
         for _fid in close_ones:
             feat2 = layer2[_fid]
+            fid2 = feat2.fid
 
-            if fid_field == None:
-                fid2 = feat2.fid
-            else:
-                fid2 = feat2[fid_field]
-
-            #curr_edge = (fid, fid2)
+            # efficiency improvement
             if fid2 <= fid:
                 continue
+            adjacent = feat2.geom.geos.intersects(geom_buf)
+            pattern = feat2.geom.geos.relate(feat.geom.geos)
 
-            try:
-                # Determine adjacency
-                # Using the distance method is ~ 4X slower than buffer->intersect
-                # adjacent = feat2.geom.geos.distance(geom_orig.geos) <= threshold
-                adjacent = feat2.geom.geos.intersects(geom_buf)
+            # second part removes diagonals. "FF2F1" and "21210" are first 4 digits of DE-9IM Matrix code
+            if adjacent and (pattern[:5] == "FF2F1" or pattern[:5] == "21210"):
+                all_edges.add((fid, fid2))
 
-                if adjacent:
-                    all_edges.add((fid, fid2))
-                    #new_edges.add(curr_edge)
-                    #outfh.write("%d,%d\n" % (fid, fid2))
-            except:
-                _temp = 1 # do nothing
-        #print(fid, " : " , new_edges)
-        #outfh.flush()
         layer2.spatial_filter = None
-        bar.next()
 
-    #outfh.close()
     print(".")
     return list(all_edges)
-
-get_adjacency_list("../shp/ohio/precincts_results.shp")
