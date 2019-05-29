@@ -255,7 +255,10 @@ class Rakan(PyRakan):
                 int(self.nx_graph.nodes[node].get('o_active', 0)),
             )
         for (node1, node2) in self.nx_graph.edges:
-            self.set_neighbors(node1, node2)
+            if 'weight' in self.nx_graph.edges[(node1, node2)]:
+                self.set_neighbors(node1, node2, self.nx_graph.edges[(node1, node2)]['weight'])
+            else:
+                self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
 
     """
@@ -263,3 +266,22 @@ class Rakan(PyRakan):
     """
     def precinct_in_same_district(self, rid1, rid2):
         return self.precincts[rid1].district == self.precincts[rid2].district
+    
+    def set_check_point(self):
+        self.check_point = set()
+        dists = [self.precincts[i].district for i in range(len(self.nx_graph))]
+        
+        
+        for i in range(1,len(self.nx_graph)):
+            for j in range(i):
+                if dists[i]==dists[j]:
+                    self.check_point.add((i,j))
+                    
+    def get_diff(self):
+        diff = 0
+        dists = [self.precincts[i].district for i in range(len(self.nx_graph))]
+        for i in range(1,len(self.nx_graph)):
+            for j in range(i):
+                if not (((i,j) in self.check_point) == (dists[i]==dists[j])):
+                    diff += 1
+        return diff

@@ -12,6 +12,8 @@ import random as rand
 from decimal import Decimal
 from sys import getsizeof
 from independence_tester import test
+import random_sequence_tests
+import matplotlib.pyplot as plt
 
 try:
     nx_path = sys.argv[1]
@@ -24,64 +26,61 @@ class Rakan(BaseRakan):
     Example Walk. This is the primary method for defining "runs" discussed at meetings.
     """
     def walk(self):
-        one_million = 10 ** 6
-        random_independence = 148
-        random_maps = 10
-
-        self.ALPHA = Decimal(0)
-        self.BETA = Decimal(0)
-
-        # Get some distance from the seed map
-        for i in range(random_independence * random_maps): 
-            self.step()
-            if i % random_independence == 0:
-                self.show("output/iowa_phase0_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-
-        # Phase 1: Gets us to ~74% from ideal
-        # Score converges after ~30 iterations
-
-        phase1_independence = 1177
-        phase1_iterations = 10
-
-        self.ALPHA = Decimal(1e-10)
-        self.BETA = Decimal(0.2)
-
-        for i in range(phase1_independence * phase1_iterations):
-            self.step()
-            if i % phase1_independence == 0:
-                self.show("output/iowa_phase1_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
         
-        # Phase 2: Gets us to ~13-30% from ideal
-        # Score converges after ~150 iterations
 
-        phase2_independence = 2745
-        phase2_iterations = 10
-
-        self.ALPHA = Decimal(1e-9)
-        self.BETA = Decimal(0.2)
-
-        for i in range(phase2_independence * phase2_iterations):
-            self.step()
-            if i % phase2_independence == 0:
-                self.show("output/iowa_phase2_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-
+        vals = [1e-5, 1e-6, 1e-7, 1e-8, 1e-9]
+        seqs = []
+        result = ''
+        for a in vals:
+            for b in vals:
+                seq = []
+                self.ALPHA = 0
+                self.BETA = 0
+                for i in range(10000):
+                    self.step()
+                    
+                self.ALPHA = a
+                self.BETA = b
+                mean_pop_score=0
+                mean_comp_score=0
+                sample_size = 0
+                diff = 1
+                i = 0
+                while diff > 0 and i < 100000:
+                    self.set_check_point()
+                    for j in range(100):
+                        self.step()
+                        seq.append(self.precinct_in_same_district(18,78))
+                        mean_pop_score = (sample_size*mean_pop_score + self.population_score())/(1+sample_size)
+                        mean_comp_score = (sample_size*mean_comp_score + self.compactness_score())/(1+sample_size)
+                        sample_size += 1
+                    diff = self.get_diff()
+                    i += 100
+                out = 'Alpha: '+str(a) +'\n'
+                out += 'Beta: ' + str(b) +'\n'
+                out += 'Mean pop score: '+ str(mean_pop_score) + '\n'
+                out += 'Pop score final: ' + str(self.population_score()) + '\n'
+                out += 'Mean comp score: '+ str(mean_comp_score) + '\n'
+                out += 'Comp score final: ' + str(self.compactness_score()) + '\n'
+                out += 'Converged: '+ str(diff == 0)+'\n============\n'
+                print(out)
+                result += out
+                seqs.append(seq)
+        f=open('param_test.txt','w')
+        f.write(result)
+        f.close()
+        inds = [[] for i in range(25)]
+        for n in range(0, 50000, 50):
+            for i in range(25):
+                inds[i].append(random_sequence_tests.r_value_independence_test(seqs[i], n))
+        fig = plt.figure()
+        for i in range(25):
+            plt.subplot(5,5,i+1)
+            plt.plot(range(0,50000,50), inds[i])
+        plt.savefig('independence.png')
         
-        # Phase 3: Gets us ~0.5-3% from ideal
-        # Score converges after <2745 iterations
-
-        phase3_independence = 3295
-        phase3_iterations = 30
-
-        self.ALPHA = Decimal(5e-8)
-        self.BETA = Decimal(0.3)
-
-        for i in range(phase2_independence * phase2_iterations):
-            self.step()
-            if i % phase2_independence == 0:
-                self.show("output/iowa_phase3_" + str(self.ALPHA) + "_" + str(self.BETA) + "_" + str(i) + '.png')
-
-        # RINSE REPEAT
         
+               
 
 """
 Example code to build a Rakan instance.
@@ -155,7 +154,9 @@ x
                     absolute_population_differences = sum(absolute_population_deltas) / average_population
 """
     server = None
-
+    sample_size = 0
+    mean_pop_score = 0
+    mean_comp_score = 0
     rakan = build_rakan(nx_path)
     graph = rakan.nx_graph # for pdb context
     rakan.is_valid()
@@ -163,6 +164,7 @@ x
 
     while True:
         response = input(">>> ")
+        
         # debug
         if response == 'pdb':
             import pdb; pdb.set_trace()
@@ -215,10 +217,14 @@ x
                     old_score = rakan.score()
                     old_pop = rakan.population_score()
                     old_comp = rakan.compactness_score()
+                    rakan.set_check_point()
                     start = time.time()
                     for _ in range(target):
                         bar.next()
                         rakan.step()
+                        mean_pop_score = (sample_size*mean_pop_score + rakan.population_score())/(1+sample_size)
+                        mean_comp_score = (sample_size*mean_comp_score + rakan.compactness_score())/(1+sample_size)
+                        sample_size += 1
 
                 except (Exception, KeyboardInterrupt):
                     pass
@@ -234,6 +240,8 @@ x
                     print("Score change (old: {}, new: {}): {}".format(old_score, new_score, new_score - old_score))
                     print("Pop Score change (old: {}, new: {}): {}".format(old_pop, new_pop, new_pop - old_pop))
                     print("Comp Score change (old: {}, new: {}): {}".format(old_comp, new_comp, new_comp - old_comp))
+                    print("Precinct Difference: {}".format(rakan.get_diff()))
+                    
 
                     populations = [_.population for _ in rakan.districts]
                     total_population = sum(populations)
@@ -261,6 +269,11 @@ x
                 absolute_deltas = [abs(_ - average) for _ in populations]
                 absolute_differences = sum(absolute_deltas) / average
                 print("Population difference from ideal: {:.2f}%".format(absolute_differences * 100))
+        elif response == 'mcomp':
+            print(mean_comp_score)
+        elif response == 'pcomp':
+            print(mean_pop_score)
+            
         # walk
         elif response == 'w':
             start = time.time()
