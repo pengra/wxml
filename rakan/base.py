@@ -31,7 +31,7 @@ class Rakan(PyRakan):
         self.nx_graph = None
         self.ALPHA = 0
         self.BETA = 0
-        self.move_history = []
+        #self.move_history = []
 
     """
     Save the current rakan state to a file.
