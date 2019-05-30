@@ -3,13 +3,12 @@
 site/
 *.pyc
 *.rnx
-*.dnx
 *.snx
 secrets*.*
 *.html
 *.json
 *.geojson
-*.ipynb
+.ipynb_checkpoints/*
 *.png
 =*
 core
@@ -19,3 +18,6 @@ build/*
 *.xyh-journal
 *.txt
 *~tmp*
+~tmp
+.idea
+.idea/*

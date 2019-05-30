@@ -35,11 +35,11 @@ cdef class PyPrecinct:
 
     @property
     def rid(self):
-        return self.__cprecinct.rid;
+        return self.__cprecinct.rid
 
     @property
     def district(self):
-        return self.__cprecinct.district;
+        return self.__cprecinct.district
 
     @district.setter
     def district(self, int value):
@@ -123,6 +123,10 @@ cdef class PyRakan:
 
     def _reset(self, int size, int districts):
         self.__crakan = cRakan(size, districts)
+        self._move_history = []
+        self._weight_changes = []
+        self._moves = 0
+        self._iterations = 0
 
     def __dealloc__(self):
         pass
@@ -165,10 +169,6 @@ cdef class PyRakan:
     @property
     def _unchecked_changes(self) -> list:
         return self.__crakan._unchecked_changes
-
-    @property
-    def _checked_changes(self) -> list:
-        return self.__crakan._checked_changes
 
     @property
     def _last_move(self) -> list:
@@ -262,9 +262,17 @@ cdef class PyRakan:
     # == Stepping ==
 
     def step(self):
-        return self.__crakan.step()
+        moved = self.__crakan.step()
+        if moved:
+            self._moves += 1
+            self._move_history.append(self.precincts)
+        return moved
 
     # == Statistics + Weights ==
+
+    @property
+    def move_history(self):
+        return self._move_history
 
     @property
     def _iterations(self):
@@ -279,17 +287,23 @@ cdef class PyRakan:
         return self._iterations
 
     @property
-    def _ALPHA(self):
+    def ALPHA(self):
         return self.__crakan.alpha
 
     @property
-    def _BETA(self):
+    def BETA(self):
         return self.__crakan.beta
 
-    @_ALPHA.setter
-    def _ALPHA(self, double value):
+    @ALPHA.setter
+    def ALPHA(self, double value):
+        self._weight_changes.append(self._moves)
         self.__crakan.alpha = value
 
-    @_BETA.setter
-    def _BETA(self, double value):
+    @BETA.setter
+    def BETA(self, double value):
+        self._weight_changes.append(self._moves)
         self.__crakan.beta = value
+
+    @property
+    def weight_changes(self):
+        return self._weight_changes

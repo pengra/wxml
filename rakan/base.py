@@ -1,5 +1,9 @@
-from rakan import PyRakan
-from xayah import Xayah
+try:
+    from rakan.rakan import PyRakan
+    JUPYTER_MODE = True
+except ImportError:
+    from rakan import PyRakan
+    JUPYTER_MODE = False
 
 import asyncio
 import websockets
@@ -20,77 +24,43 @@ import time
 import os
 
 
-class BaseRakan(PyRakan):
-    """
-    Basic Rakan format. Use as a template.
-    Use for production code.
-    """
-    nx_graph = None  # the graph object
-    max_size = 10000  # 10k logs should be a sizeable bite for the server
-    step_size = 1    # Which steps to record
-    auto_save = 100000
-    
+class Rakan(PyRakan):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._id = None
-        self._xayah = Xayah("save.xyh")  # the set of moves unreported to xayah
-
-    def step(self):
-        result = super().step()
-        if self.iterations % self.step_size == 0 and result:
-            self._xayah.move(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-            ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
-        else:
-            self._xayah.fail(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-            ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
-        if self.iterations % self.auto_save == 0:
-            threading.Thread(target=self._xayah.save()).start()
-
-    @property
-    def ALPHA(self):
-        return self._ALPHA
-
-    @property
-    def BETA(self):
-        return self._BETA
-
-    @ALPHA.setter
-    def ALPHA(self, value: float):
-        self._ALPHA = value
-        self._xayah.weight(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
-
-    @BETA.setter
-    def BETA(self, value: float):
-        self._BETA = value
-        self._xayah.weight(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
+        self.nx_graph = None
+        self.ALPHA = 0
+        self.BETA = 0
+        #self.move_history = []
 
     """
     Save the current rakan state to a file.
     Modifies self.nx_graph
     """
-
     def save(self, nx_path="save.dnx"):
         for precinct in self.precincts:
             self.nx_graph.nodes[precinct.rid]['dis'] = precinct.district
         self.nx_graph.graph['iterations'] = self.iterations
         networkx.write_gpickle(self.nx_graph, nx_path)
 
-    """
-    Save the current rakan state to a image.
-    """
+    def export_csv(self, file_path="save.csv"):
+        """
+        Observes
+        """
+        pass
 
-    def image(self, image_path="img.png"):
+    """
+    Show rakan's current state. Specify an image_path to save the image to file.
+    """
+    def show(self, image_path=None):
         fig, ax = plt.subplots(1)
-        bar = IncrementalBar("Creating Image", max=len(self.precincts))
         for precinct in self.precincts:
             xs = [coord[0]
                   for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
             ys = [coord[1]
                   for coord in self.nx_graph.nodes[precinct.rid]['vertexes'][0]]
             ax.fill(xs, ys, color=[
+
                 "#001f3f",  # Navy
                 "#3D9970",  # Olive
                 "#FF851B",  # Orange
@@ -106,17 +76,19 @@ class BaseRakan(PyRakan):
                 "#B10DC9",  # Purple
                 "#39CCCC",  # Teal
                 "#01FF70",  # Lime
-            ][precinct.district], linewidth=0.1)
-            bar.next()
-        plt.savefig(image_path, dpi=900)
-        plt.close(fig)
-        bar.finish()
+            ][precinct.district % 15], linewidth=0.1)
+
+        if image_path is None:
+            return plt.show()
+        else:
+            plt.savefig(image_path, dpi=900)
+            plt.close(fig)
+
 
     """
     Save the current rakan state to a geojson file.
     Does not modify self.nx_graph
     """
-
     def export(self, json_path="save.json"):
         features = []
         for rid, precinct in enumerate(self.precincts):
@@ -155,7 +127,6 @@ class BaseRakan(PyRakan):
 
     """
     """
-
     def write_array(self, file_path="report.txt"):
         mode = 'a' if os.path.isfile(file_path) else 'w'
         with open(file_path, mode) as handle:
@@ -168,7 +139,6 @@ class BaseRakan(PyRakan):
     Generate a mapjsgl page.
     Used for analyzing how the districts have crawled around.
     """
-
     def report(self, dir_path="save", include_json=True, include_export=True, include_save=True):
         try:
             os.mkdir(dir_path)
@@ -198,16 +168,49 @@ class BaseRakan(PyRakan):
                 ))
         if include_json:
             with open(os.path.join(dir_path, "moves.json"), 'w') as handle:
-                handle.write(json.dumps([_.json for _ in self.move_history]))
-
-    @property
-    def move_history(self):
-        """
-        Read only accessor to latest moves
-        """
-        return []
-        #return list(self._xayah)
-
+                handle.write(json.dumps(self.move_history))
+                
+    def build_from_graph(self, nx_graph):
+        self.nx_graph = nx_graph
+        self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
+        for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+            
+            self.add_precinct(
+                int(self.nx_graph.nodes[node]['dis']),
+                int(self.nx_graph.nodes[node]['pop']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
+            )
+        for (node1, node2) in self.nx_graph.edges:
+            self.set_neighbors(node1, node2)
+        self._iterations = self.nx_graph.graph.get('iterations', 0)
     """
     Build rakan from a .dnx file.
     """
@@ -215,24 +218,40 @@ class BaseRakan(PyRakan):
         self.nx_graph = networkx.read_gpickle(nx_path)
         self._reset(len(self.nx_graph.nodes), self.nx_graph.graph['districts'])
         for node in sorted(self.nx_graph.nodes):
+            if 'dis' in self.nx_graph.nodes[node]:
+                dis = int(self.nx_graph.nodes[node]['dis'])
+            else:
+                self.nx_graph.nodes[node]['dis'] = 0
+                dis = 0
+            if 'pop' in self.nx_graph.nodes[node]:
+                pop = self.nx_graph.nodes[node]['pop']
+            else:
+                self.nx_graph.nodes[node]['pop'] = 0
+                pop = 0
+            if 'd_active' in self.nx_graph.nodes[node]:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = self.nx_graph.nodes[node]['d_active']
+            else:
+                self.nx_graph.nodes[node]['d_active'] = 0
+                d_active = 0
+            if 'r_active' in self.nx_graph.nodes[node]:
+                r_active =self.nx_graph.nodes[node]['r_active']
+            else:
+                self.nx_graph.nodes[node]['r_active'] = 0
+                r_active = 0
+            if 'o_active' in self.nx_graph.nodes[node]:
+                o_active =self.nx_graph.nodes[node]['o_active']
+            else:
+                self.nx_graph.nodes[node]['o_active'] = 0
+                o_active = 0
+
             self.add_precinct(
                 int(self.nx_graph.nodes[node]['dis']),
                 int(self.nx_graph.nodes[node]['pop']),
-                int(self.nx_graph.nodes[node]['d_active']),
-                int(self.nx_graph.nodes[node]['r_active']),
-                int(self.nx_graph.nodes[node]['o_active']),
+                int(self.nx_graph.nodes[node].get('d_active', 0)),
+                int(self.nx_graph.nodes[node].get('r_active', 0)),
+                int(self.nx_graph.nodes[node].get('o_active', 0)),
             )
         for (node1, node2) in self.nx_graph.edges:
             self.set_neighbors(node1, node2)
         self._iterations = self.nx_graph.graph.get('iterations', 0)
-        self._xayah.seed(precincts=self.precincts, ALPHA=self.ALPHA, BETA=self.BETA, population_score=self.population_score(
-        ), compactness_score=self.compactness_score(), score=self.score(), d_win=self.democrat_seats(), r_win=self.republican_seats(), o_win=self.other_seats())
-
-    """
-    A statistical test to check two random precincts are in the same district
-    """
-    def precinct_in_same_district(self, rid1, rid2):
-        return self.precincts[rid1].district == self.precincts[rid2].district
-
-    def walk(self, *args, **kwargs):
-        raise NotImplementedError("Not implemented by user!")
